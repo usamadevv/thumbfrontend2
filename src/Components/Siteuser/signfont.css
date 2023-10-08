@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Delius&family=Inter:wght@200;300;400;600;700&family=Sacramento&display=swap');
+.singfont
+{
+    font-family: 'Sacramento', cursive!important;
+    font-size: 35px;
+    padding: 5px;
+    color: gray;
+width: max-content;
+}
+.boxsign2{
+    padding-top: 80px;
+    height: max-content!important;
+
+}

@@ -1,0 +1,42 @@
+ <div className="lkj">
+              <PieChart width={800} height={400} >
+
+                <Pie
+                  data={data}
+                  cx={200}
+                  cy={200}
+                  innerRadius={60}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  paddingAngle={0}
+                  dataKey="value"
+                >
+                  {/* {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))} */}
+                </Pie>
+                {/* <Pie
+          data={data}
+          cx={420}
+          cy={200}
+          startAngle={0}
+          endAngle={360}
+          innerRadius={60}
+          outerRadius={80}
+          fill="#8884d8"
+          paddingAngle={0}
+          dataKey="value"
+          blendStroke
+        >
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie> */}
+              </PieChart>
+
+              
+              {ids && ids.split('4sd').length <= 2 &&
+
+              <button className='addemp  addemp2' onClick={e => updateuser()} >Update</button>
+
+          }
