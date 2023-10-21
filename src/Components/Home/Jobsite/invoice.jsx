@@ -13,6 +13,7 @@ import prof from '../../../images/prof.png'
 
 import { BsClockFill } from 'react-icons/bs'
 
+
 import Calendar from 'react-calendar'
 
 import { IoClose } from 'react-icons/io5'
@@ -87,23 +88,21 @@ function importthisx(val,val2){
         OT_Pay_rate: l===2?Number(val.otpayrate) + Number(val.otpayrate) * Number(mkup) / 100:val.otpayrate,
         Ot_Hrs:0,
         cpr:val.cpr,
-        cprapply:val.cprapply==='normal'?'no':"yes",
+        cprapply:l!==2?'yes':'no',
         days:0,
         deductions:0,
         Taxes:'Yes',
         distance:0,
         nc_4:'-',
         net:0,
-
 onperdiem: 0,
-
 onperdiemel: "Yes",
 
 perdiem: 0,
 
 perdiemel: "Yes",
 
-siteid: preparedata.length>0?preparedata[0].siteid:'193039',
+siteid: '193039',
 
 skill: val.skill,
 
@@ -521,6 +520,13 @@ const [boxprojects, setboxprojects] = useState('boxprojects2')
 const [currentWeekNumber2, setcurrentWeekNumber2] = useState(0)
 
     function save() {
+        axios.post(`${tz}/siteuser/updateuserhours`, {
+            preparedata:preparedata
+        }).then(rees=>{
+console.log(rees)
+        })
+
+
         const currentWeekNumber = Math.ceil((new Date() - new Date(new Date().getFullYear(), 0, 1) + 1) / 604800000);
         const currentYear = new Date().getFullYear();
 
@@ -622,6 +628,7 @@ const [currentWeekNumber2, setcurrentWeekNumber2] = useState(0)
     const [clientadd, setclientadd] = useState('')
     const [last2, setlast2] = useState('')
     function preparesheet(valx) {
+        console.log()
         console.log(ind)
         console.log(lastselected)
         console.log(ind.search(lastselected))
@@ -715,7 +722,7 @@ const [currentWeekNumber2, setcurrentWeekNumber2] = useState(0)
                                 Employee: element.name,
                                 skill: element.skill,
                                 Hrs: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Hrs)||0,
-                                Payrate: valx === 1 ? Number(element.payrate) : Number(element.payrate) + Number(element.payrate) * Number(val.markup) / 100,
+                                Payrate: valx === 1 ? Number(element.payrate).toFixed(2) : Number(Number(element.payrate) + Number(element.payrate) * Number(val.markup) / 100).toFixed(2) ,
                                 siteid:val._id,
                                 cpr:element.cpr,
                                 cprapply:(allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.cprapply)||'no',
@@ -737,24 +744,36 @@ const [currentWeekNumber2, setcurrentWeekNumber2] = useState(0)
 
 
                             }])
-                            if(indx===val.user.length-1&&done===0){
-                                empdata.forEach(elementx => {
+                           if(indx===val.user.length-1&&done===0){
+                                {/* empdata.forEach(elementx => {
                                     const itemExistsInArrayB = val.user.some((item) => item.userid === elementx._id);
                                   console.log(itemExistsInArrayB)
                                     if(elementx.clientid===currid&&!itemExistsInArrayB){
                                         importthisx(elementx,new Date(new Date().setDate(new Date().getDate() + ((clients.find((client) => client._id === val.clientid) || {}).weekend- (new Date().getDay() === 0 ? 7 : new Date().getDay()) + 1))).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' }).replace(/\//g, '-'))
                                     }
                                 });
+                            */}
                                 done=1
                             }
+
 
                         });
                     }
                     else if (done===0&&index===data.length-1){
+                        clients.forEach(element => {
+                            if(element._id===currid){
+                                setincname(element.username)
+                                setinadd(element.address)
+                            }
+                            
+                        });
                      
                         empdata.forEach(elementx => {
                             
                             if(elementx.clientid===currid){
+                               
+                                
+
                                 importthisx(elementx,'select')
                             }
                         });
@@ -798,7 +817,7 @@ const [currentWeekNumber2, setcurrentWeekNumber2] = useState(0)
                                 Employee: element.name,
                                 skill: element.skill,
                                 Hrs: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Hrs)||0,
-                                Payrate: valx === 1 ? Number(element.payrate) : Number(element.payrate) + Number(element.payrate) * Number(val.markup) / 100,
+                                Payrate:  valx === 1 ? Number(element.payrate).toFixed(2) : Number(Number(element.payrate) + Number(element.payrate) * Number(val.markup) / 100).toFixed(2),
                                 siteid:val._id,
                                 cpr:element.cpr,
                                 cprapply:element.payratetype==='custom'?'yes':'no',
@@ -847,20 +866,27 @@ const [currentWeekNumber2, setcurrentWeekNumber2] = useState(0)
 
                             }])
                             if(indx===val.user.length-1&&done===0){
-                                empdata.forEach(elementx => {
+                                 {/*empdata.forEach(elementx => {
                                     const itemExistsInArrayB = val.user.some((item) => item.userid === elementx._id);
                                   console.log(itemExistsInArrayB)
                                     if(elementx.clientid===currid&&!itemExistsInArrayB){
                                         importthisx(elementx,new Date(new Date().setDate(new Date().getDate() + ((clients.find((client) => client._id === val.clientid) || {}).weekend- (new Date().getDay() === 0 ? 7 : new Date().getDay()) + 1))).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' }).replace(/\//g, '-'))
                                     }
                                 });
+                            */}
                                 done=1
                             }
 
                         });
                     }
                     else if (done===0&&index===data.length-1){
-                     
+                        clients.forEach(element => {
+                            if(element._id===currid){
+                                setincname(element.username)
+                                setinadd(element.address)
+                            }
+                            
+                        });
                         empdata.forEach(elementx => {
                             
                             if(elementx.clientid===currid){
@@ -974,7 +1000,7 @@ const [currentWeekNumber2, setcurrentWeekNumber2] = useState(0)
                                 cpr:element.cpr,
                                 cprapply:element.payratetype==='custom'?'yes':'no',
                                 Hrs: 0,
-                                Payrate: valx === 1 ? Number(element.payrate) : Number(element.payrate) + Number(element.payrate) * Number(val.markup) / 100,
+                                Payrate: valx === 1 ? Number(element.payrate).toFixed(2) : Number(Number(element.payrate) + Number(element.payrate) * Number(val.markup) / 100).toFixed(2) ,
 
                                 distance: parseInt(element.distance),
                                 days: 0,
@@ -994,13 +1020,14 @@ const [currentWeekNumber2, setcurrentWeekNumber2] = useState(0)
                             }])
                             if(inex===val.user.length-1&&done===0){
                              
-                                empdata.forEach(elementx => {
+                              {/*   empdata.forEach(elementx => {
                                     const itemExistsInArrayB = val.user.some((item) => item.userid === elementx._id);
                                   console.log(itemExistsInArrayB)
                                     if(elementx.clientid===currid&&!itemExistsInArrayB){
                                         importthisx(elementx,new Date(new Date().setDate(new Date().getDate() + ((clients.find((client) => client._id === val.clientid) || {}).weekend- (new Date().getDay() === 0 ? 7 : new Date().getDay()) + 1))).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' }).replace(/\//g, '-'))
                                     }
                                 });
+                            */}
                                 done=1
                             }
 
@@ -1072,7 +1099,7 @@ const [currentWeekNumber2, setcurrentWeekNumber2] = useState(0)
                                 days: 0,
                                 distance: parseInt(element.distance),
                                 cpr:element.cpr,
-                                cprapply:element.payratetype==='custom'?'yes':'no',
+                                cprapply:'yes',
                                 userid: element.userid,
                                 siteid:val._id,
                                 perdiem:val.perdiemamnt,   onperdiem:val.onperdiemamnt,
@@ -1091,13 +1118,14 @@ const [currentWeekNumber2, setcurrentWeekNumber2] = useState(0)
                             }])
                             if(inex===val.user.length-1&&done===0){
                            
-                                empdata.forEach(elementx => {
+                               {/*  empdata.forEach(elementx => {
                                     const itemExistsInArrayB = val.user.some((item) => item.userid === elementx._id);
                                   console.log(itemExistsInArrayB)
                                     if(elementx.clientid===currid&&!itemExistsInArrayB){
                                         importthisx(elementx,new Date(new Date().setDate(new Date().getDate() + ((clients.find((client) => client._id === val.clientid) || {}).weekend- (new Date().getDay() === 0 ? 7 : new Date().getDay()) + 1))).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' }).replace(/\//g, '-'))
                                     }
                                 });
+                            */}
                                 done =1
                             }
 
@@ -1529,6 +1557,7 @@ const [currentWeekNumber2, setcurrentWeekNumber2] = useState(0)
 
             })
             if (preparedata.length - 1 === index) {
+                
                 settxp(tx)
                 console.log(tx)
                 var cstyl2x =
@@ -2759,9 +2788,9 @@ setl(1)
                                     <h3>
                                         Bill To:
                                     </h3>
-                                    <h2>{incname}</h2>
+                                    <h2>{incname?incname:currcompany}</h2>
                                     <h2>{inadd}</h2>
-{!multiple&&<>
+{!multiple&&innum&&<>
 
 
     <h2>Project # {innum}</h2>
@@ -2818,7 +2847,7 @@ setl(1)
                                 </div>
 
                                 {txp && txp.map((val, index) => (
-                                   val["REG HRS"]>0&&  <>
+                                   (val["REG HRS"]>0||val["OT HRS"]>0) && <>
                                         {index % 2 === 0 ?
                                             <div className="tavbody">
                                                 <h6 style={{ width: '100px' }}>
@@ -2849,7 +2878,10 @@ setl(1)
                                                 </h6>
                                                 <h6> $ {val["OT RTE"]}</h6>
 
-                                                <h6>$ {val["TOTAL"]}</h6>
+                                                <h6> {Number(val["TOTAL"]).toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  })}</h6>
 
                                             </div> :
                                             <div className="tavbody tavbo">
@@ -2880,7 +2912,10 @@ setl(1)
                                                     {val["OT HRS"]}
                                                 </h6>
                                                 <h6>$ {val["OT RTE"]}</h6>
-                                                <h6>$ {val["TOTAL"]}</h6>
+                                                <h6> {Number(val["TOTAL"]).toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  })}</h6>
 
                                             </div>
 
@@ -2908,7 +2943,10 @@ setl(1)
 
                                     </h6>
                                     <h6>Total</h6>
-                                    <h6 style={{ width: 'max-content' }}> $ {parseFloat(totalall.toFixed(2))} </h6>
+                                    <h6 style={{ width: 'max-content' }}>  {parseFloat(totalall.toFixed(2)).toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  })} </h6>
 
                                 </div>
 
@@ -4184,11 +4222,11 @@ comval?clients && clients.map(val => (
                                             <h2 style={{ width: '80px', marginBottom: '0px' }}>Taxes</h2>
                                             <h1 style={{ width: '180px' }}>Company</h1>
 
-                                            <h6>Weekend</h6>
+                                            <h6 style={{ width: '80px', marginBottom: '0px' }} >Weekend</h6>
                                             <h3> Name</h3>
-                                            <h4 >Distance</h4>
+                                            <h4  style={{ width: '80px', marginBottom: '0px' }}  >Distance</h4>
 
-                                            <h4 >Pay type</h4>                                            <h4 style={{ width: '80px', marginBottom: '0px' }}>Hrs</h4>
+                                                     <h4 style={{ width: '80px', marginBottom: '0px' }}>Hrs</h4>
 
                                             <h4 style={{ width: '80px', marginBottom: '0px' }}>Pay rate</h4>
 
@@ -4226,24 +4264,11 @@ comval?clients && clients.map(val => (
 <h2 style={{ width: '80px', marginBottom: '0px' }}><img src='' alt="" className='valimg' />{val.Taxes} </h2>
 <h1 style={{ width: '180px' }}>{val.Client}</h1>
 
-<h6>{val.Date}</h6>
+<h6 style={{ width: '80px', marginBottom: '0px' }} >{val.Date}</h6>
 <h3>{val.Employee}</h3>
 
-<h4>{parseInt(val.distance)} M</h4>
-<h4>
+<h4 style={{ width: '80px', marginBottom: '0px' }} >{parseInt(val.distance)} M</h4>
 
-{tempjson.cprapply==='yes'?  <div className="taxes2" onClick={e => handlecpr(tempjson.cprapply)}>
-                                    <div className="circle2">
-
-                                    </div>
-                                </div>:  <div className="taxes" onClick={e => handlecpr(tempjson.cprapply)}>
-                                    <div className="circle">
-
-                                    </div>
-                                </div>
-
-                              }
-</h4>
 <h4 style={{ width: '80px', marginBottom: '0px' }}  ><input className='hrsedit' type="text" value={tempjson.Hrs}  onChange={e => settempjson(tempjson => ({
                                     ...tempjson,
 
@@ -4276,8 +4301,32 @@ tempjson.Payrate
     applyperdiemx &&
     <>
 
-        <h4 style={{ width: '80px', marginBottom: '0px' }}> $ {parseFloat(val.perdiem.toFixed(2))} </h4>
-        <h4 style={{ width: '80px', marginBottom: '0px' }}> $ {val.onperdiem} </h4>
+        <h4 style={{ width: '80px', marginBottom: '0px' }}>   {tempjson.siteid==='193039'?
+    <input className='hrsedit' type="text" value={tempjson.perdiem}  onChange={e => settempjson(tempjson => ({
+        ...tempjson,
+
+
+        perdiem: e.target.value
+
+    }))} />
+            :
+            <>
+            $ {parseFloat(val.perdiem)} 
+            </>
+            } </h4>
+        <h4 style={{ width: '80px', marginBottom: '0px' }}>  {tempjson.siteid==='193039'?
+    <input className='hrsedit' type="text" value={tempjson.onperdiem}  onChange={e => settempjson(tempjson => ({
+        ...tempjson,
+
+
+        onperdiem: e.target.value
+
+    }))} />
+            :
+            <>
+            $ {parseFloat(val.onperdiem.toFixed(2))} 
+            </>
+            }</h4>
 
         <h4 style={{ width: '80px', marginBottom: '0px' }}>    <input className='hrsedit' type="text" value={tempjson.days}  onChange={e => settempjson(tempjson => ({
                                                                     ...tempjson,
@@ -4317,14 +4366,11 @@ val.Employee.toLowerCase().search(searchval.toLowerCase())>=0&&
 <h2 style={{ width: '80px', marginBottom: '0px' }}><img src='' alt="" className='valimg' />{val.Taxes} </h2>
 <h1 style={{ width: '180px' }}>{val.Client}</h1>
 
-<h6>{val.Date}</h6>
+<h6 style={{ width: '80px', marginBottom: '0px' }} >{val.Date}</h6>
 <h3>{val.Employee}</h3>
 
-<h4>{parseInt(val.distance)} M</h4>
-<h4>
-{val.cprapply==='yes'?'Custom':'Regular'}
+<h4 style={{ width: '80px', marginBottom: '0px' }} >{parseInt(val.distance)} M</h4>
 
-</h4>
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >{val.Hrs}</h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >$ {l===2?val.Payrate:l===1&&val.cprapply==='yes'?val.cpr:val.Payrate} </h4>
@@ -4338,7 +4384,7 @@ val.Employee.toLowerCase().search(searchval.toLowerCase())>=0&&
     applyperdiemx &&
     <>
 
-        <h4 style={{ width: '80px', marginBottom: '0px' }}>$ {parseFloat(val.perdiem.toFixed(2))} </h4>
+        <h4 style={{ width: '80px', marginBottom: '0px' }}>$ {parseFloat(val.perdiem)} </h4>
         <h4 style={{ width: '80px', marginBottom: '0px' }}>$ {val.onperdiem} </h4>
 
         <h4 style={{ width: '80px', marginBottom: '0px' }}>{val.days}</h4>
@@ -4381,24 +4427,11 @@ val.Employee.toLowerCase().search(searchval.toLowerCase())>=0&&
 <h2 style={{ width: '80px', marginBottom: '0px' }}><img src='' alt="" className='valimg' />{val.Taxes} </h2>
 <h1 style={{ width: '180px' }}>{val.Client}</h1>
 
-<h6>{val.Date}</h6>
+<h6 style={{ width: '80px', marginBottom: '0px' }} >{val.Date}</h6>
 <h3>{val.Employee}</h3>
 
-<h4>{parseInt(val.distance)} M</h4>
-<h4>
+<h4 style={{ width: '80px', marginBottom: '0px' }} >{parseInt(val.distance)} M</h4>
 
-{tempjson.cprapply==='yes'?  <div className="taxes2" onClick={e => handlecpr(tempjson.cprapply)}>
-                                    <div className="circle2">
-
-                                    </div>
-                                </div>:  <div className="taxes" onClick={e => handlecpr(tempjson.cprapply)}>
-                                    <div className="circle">
-
-                                    </div>
-                                </div>
-
-                              }
-</h4>
 <h4 style={{ width: '80px', marginBottom: '0px' }}  ><input className='hrsedit' type="text" value={tempjson.Hrs}  onChange={e => settempjson(tempjson => ({
                                     ...tempjson,
 
@@ -4433,8 +4466,38 @@ tempjson.cpr:
     applyperdiemx &&
     <>
 
-        <h4 style={{ width: '80px', marginBottom: '0px' }}>$ {parseFloat(val.perdiem.toFixed(2))} </h4>
-        <h4 style={{ width: '80px', marginBottom: '0px' }}> $ {val.onperdiem} </h4>
+        <h4 style={{ width: '80px', marginBottom: '0px' }}>
+            
+            {tempjson.siteid==='193039'?
+    <input className='hrsedit' type="text" value={tempjson.perdiem}  onChange={e => settempjson(tempjson => ({
+        ...tempjson,
+
+
+        perdiem: e.target.value
+
+    }))} />
+            :
+            <>
+            $ {parseFloat(val.perdiem)} 
+            </>
+            }
+          
+            
+        
+            </h4>
+        <h4 style={{ width: '80px', marginBottom: '0px' }}>   {tempjson.siteid==='193039'?
+    <input className='hrsedit' type="text" value={tempjson.onperdiem}  onChange={e => settempjson(tempjson => ({
+        ...tempjson,
+
+
+        onperdiem: e.target.value
+
+    }))} />
+            :
+            <>
+            $ {parseFloat(val.onperdiem.toFixed(2))} 
+            </>
+            } </h4>
 
         <h4 style={{ width: '80px', marginBottom: '0px' }}>    <input className='hrsedit' type="text" value={tempjson.days}  onChange={e => settempjson(tempjson => ({
                                                                     ...tempjson,
@@ -4475,14 +4538,11 @@ tempjson.cpr:
 <h2 style={{ width: '80px', marginBottom: '0px' }}><img src='' alt="" className='valimg' />{val.Taxes} </h2>
 <h1 style={{ width: '180px' }}>{val.Client}</h1>
 
-<h6>{val.Date}</h6>
+<h6 style={{ width: '80px', marginBottom: '0px' }} >{val.Date}</h6>
 <h3>{val.Employee}</h3>
 
-<h4>{parseInt(val.distance)} M</h4>
-<h4>
-{val.cprapply==='yes'?'Custom':'Regular'}
+<h4 style={{ width: '80px', marginBottom: '0px' }} >{parseInt(val.distance)} M</h4>
 
-</h4>
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >{val.Hrs}</h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >$ {l===2?val.Payrate:l===1&&val.cprapply==='yes'?val.cpr:val.Payrate} </h4>
@@ -4496,7 +4556,7 @@ tempjson.cpr:
     applyperdiemx &&
     <>
 
-        <h4 style={{ width: '80px', marginBottom: '0px' }}> $ {parseFloat(val.perdiem.toFixed(2))}  </h4>
+        <h4 style={{ width: '80px', marginBottom: '0px' }}> $ {parseFloat(val.perdiem)}  </h4>
         <h4 style={{ width: '80px', marginBottom: '0px' }}> $ {val.onperdiem} </h4>
 
         <h4 style={{ width: '80px', marginBottom: '0px' }}>{val.days}</h4>

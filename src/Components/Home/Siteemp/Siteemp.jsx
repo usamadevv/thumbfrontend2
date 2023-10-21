@@ -4,7 +4,7 @@ import { RiLightbulbFlashLine, RiTimerFlashFill } from 'react-icons/ri'
 import { BiTime } from 'react-icons/bi'
 import {HiArrowLeft} from 'react-icons/hi'
 import { MdSnooze } from 'react-icons/md'
-import { AiOutlineReload } from 'react-icons/ai'
+import { AiFillCamera, AiOutlineReload } from 'react-icons/ai'
 import axios from 'axios'
 import { useEffect } from 'react'
 
@@ -16,6 +16,7 @@ import ReactPaginate from 'react-paginate';
 import {MdLocationOn} from 'react-icons/md'
 import { tz } from '../../apis'
 
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { AiFillDelete } from 'react-icons/ai'
 import XLSX from 'sheetjs-style'
 import jsPDF from 'jspdf';
@@ -27,7 +28,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import * as file from 'file-saver'
-const Siteemp = () => {
+const Siteemp = ({props}) => {
     const [clientidd, setclientidd] = useState('')
     function setclientx(val){
         var r=val.split('4x3cd')
@@ -201,7 +202,7 @@ setlatlang('')
                     setaddress('')
                     setphone('')
                     setitin('')
-                    setstatus('')
+                    setstatus('Active')
                     setidb('')
                     setnc('')
                     settaxas('')
@@ -232,7 +233,11 @@ setlatlang('')
               password:password
 
 
-            }).then(res => {
+            }).then(res2 => {
+              if(res2.data.Siteuserd==='user exist'){
+alert('User already exist')
+              }
+              else{
                 axios.get(`${tz}/siteuser/active`).then(res => {
                     console.log(res)
                     setdata(res.data.Siteuserd)
@@ -245,6 +250,7 @@ setlatlang('')
             setcurrentItems(res.data.Siteuserd.slice(itemOffset, endOffset))
             setpageCount(Math.ceil(res.data.Siteuserd.length / 10))
                 })
+              }
             })
 
 
@@ -274,6 +280,7 @@ setlatlang('')
 
 
             }).then(res => {
+
                 axios.get(`${tz}/super/getall`).then(res => {
                     console.log(res)
                     setsupervisors(res.data.Supervisor)
@@ -293,7 +300,7 @@ setlatlang('')
                 pass:superpass
 
 
-            }).then(res => {
+            }).then(res2 => {
                 axios.get(`${tz}/super/getall`).then(res => {
                     console.log(res)
                     setsupervisors(res.data.Supervisor)
@@ -485,6 +492,97 @@ setamountd(0)
         }
     }, [])
     const [csr, setcsr] = useState('')
+    function fileupload(filex){
+     
+        var d= new Date()
+        console.log(d.getTime())
+        
+    const storage = getStorage();
+    const storageRef = ref(storage, `images/${d.getTime().toString()}`);
+    
+    const uploadTask = uploadBytesResumable(storageRef, filex);
+    
+    // Register three observers:
+    // 1. 'state_changed' observer, called any time the state changes
+    // 2. Error observer, called on failure
+    // 3. Completion observer, called on successful completion
+    uploadTask.on('state_changed', 
+      (snapshot) => {
+        // Observe state change events such as progress, pause, and resume
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log('Upload is ' + progress + '% done');
+        switch (snapshot.state) {
+          case 'paused':
+            console.log('Upload is paused');
+            break;
+          case 'running':
+            console.log('Upload is running');
+            break;
+        }
+      }, 
+      (error) => {
+        // Handle unsuccessful uploads
+      }, 
+      () => {
+        // Handle successful uploads on complete
+        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log('File available at', downloadURL);
+    
+          axios.post(`${tz}/siteuser/originalphoto`,{
+             
+             
+         _id:currone._id,
+         imgurl:downloadURL
+        }).then((resa2)=>{
+             // Find the index of the item with the given ID
+    const itemIndex = currentItems.findIndex(item => item._id === currone._id);
+
+    if (itemIndex !== -1) {
+      // Create a new array with the updated item
+      const updatedItems = [...currentItems];
+      updatedItems[itemIndex] = {
+        ...updatedItems[itemIndex],
+        imgurl2: downloadURL
+      };
+
+      // Update the state with the updated array
+      setcurrentItems(updatedItems);
+
+
+      
+setcurrone(updatedItems[itemIndex])
+
+    }
+
+    const itemIndex2 = data.findIndex(item => item._id === currone._id);
+
+    if (itemIndex2 !== -1) {
+      // Create a new array with the updated item
+      const updatedItems2 = [...data];
+      updatedItems2[itemIndex2] = {
+        ...updatedItems2[itemIndex2],
+        imgurl2: downloadURL
+      };
+
+      // Update the state with the updated array
+      setdata(updatedItems2);
+
+  }
+            alert('Profile picture changed successfully')
+           
+    
+            
+           
+    
+        })
+    
+    
+        });
+      }
+    );
+    }
     function updateuser() {
         if (showusers === 'users') {
             setactiontype('update')
@@ -495,6 +593,7 @@ setamountd(0)
                     setname(val.name)
                     setidno(val.idno)
                     setclient(val.client)
+                    setclientidd(val.clientid)
                     setskill(val.skill)
                     setpr(val.payrate)
                     setcpr(val.cpr)
@@ -502,6 +601,7 @@ setamountd(0)
                     setphone(val.phone)
                     setitin(val.itin)
                     setstatus(val.status)
+
                     setidb(val._id)
                     setnc(val.nc)
                     settaxas(val.taxes)
@@ -872,7 +972,7 @@ setlatlang(val.langlat)
                             setaddress('')
                             setphone('')
                             setitin('')
-                            setstatus('')
+                            setstatus('Active')
                             setidb('')
                             setnc('')
                             settaxas('')
@@ -1614,8 +1714,15 @@ setlatlang(val.langlat)
    
         <div className="divx">
        <div className="bcircle">
+     <div className="iconcha">
+     <AiFillCamera className='iconchai' />
+     <input type="file" onChange={e=>fileupload(e.target.files[0])} />
+     </div>
         {
-            currone.imgurl?
+            currone.imgurl2?
+            <img className='imgur' src={currone.imgurl2} alt="" />
+            
+            : currone.imgurl?
             <img className='imgur' src={currone.imgurl} alt="" />
             
             :

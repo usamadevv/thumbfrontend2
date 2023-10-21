@@ -582,6 +582,7 @@ function openhistory(val){
                     <AiOutlineMessage className='icondash1' />
 
                     Notes
+                    <div className="nut nutx">{user&&user.contacts&&user.contacts.map(obj => obj.unseen).reduce((a, b) => a + b, 0)}</div> 
                 </h3>
                 <h3 onClick={e=>seti(41)}>
                     <FaTasks className='icondash1' />
@@ -1265,7 +1266,13 @@ You joined hundred of users who are already skyrocketing their career with us.
 }
 
 {i===3&&
-<Empnotes/>
+<Empnotes
+props={{
+    user:user,
+  
+
+}}
+/>
 
 }
 {i===4&&

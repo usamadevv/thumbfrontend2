@@ -55,10 +55,14 @@ useEffect(() => {
            const year = lastFridayDate.getFullYear();
        
            const formattedDate = `${month}/${day}/${year}`;
-           console.log(formattedDate);
 
-       resq.data.Siteatt.forEach(element => {
-        if(element.date>=formattedDate){
+           console.log(formattedDate);
+if(props.user.hrsweek&&props.user.hrsweek>=formattedDate){
+  setuserhrs(props.user.hrs)
+}
+else{
+  resq.data.Siteatt.forEach(element => {
+    if(element.date>=formattedDate){
 console.log(element)
 var time = element.workinghours.split(':');
 var hours = parseInt(time[0]);
@@ -66,11 +70,15 @@ var minutes = parseInt(time[1]);
 
 setuserhrs(userhrs=>userhrs+hours)
 
-setusermins(usermins=>usermins+minutes)        }
+setusermins(usermins=>usermins+minutes)  
+
+}
 
 
-         
-       });
+     
+   });
+}
+       
       
          
 
@@ -252,6 +260,33 @@ function submit(){
 
     })
 }
+const [cpass, setcpass] = useState('')
+const [npass, setnpass] = useState('')
+const [cupass, setcupass] = useState('')
+const [adduser2, setadduser2] = useState('adduser2')
+function changepass(){
+if(props.user.password===cupass){
+  if(npass===cpass){
+    axios.post(`${tz}/siteuser/pass`,{
+         
+         
+      email:props.user.email,
+      password:npass,
+  }).then((resa2)=>{
+alert('Password successfully updated')
+setadduser2('adduser2')
+
+  })
+  }
+  else{
+    alert('Password does not match')
+  }
+
+}
+else{
+  alert('Incorrect password')
+}
+}
   return (
     <>
        <div className={adduser}>
@@ -271,8 +306,42 @@ function submit(){
                 </div>
                 
               
-                <button className='btn1' onClick={e=>submit()}>Submit</button>
+                <button className='btn1f' onClick={e=>submit()}>Submit</button>
                 <button onClick={e=>setadduser('adduser2')}  className='btn2'>Cancel</button>
+<div className="inputname"></div>
+              </>
+
+              
+
+
+            </div>
+
+        </div>
+        <div className={adduser2}>
+            <div className="subadduser fsubadd">
+         
+              <>
+             
+      
+                <div className="inputname">
+                    <h1>Current password:</h1>
+                    <input onChange={e=>setcupass(e.target.value)} type="text" value={cupass} />
+
+                </div>
+
+                <div className="inputname">
+                    <h1>New password:</h1>
+                    <input onChange={e=>setnpass(e.target.value)} type="text" value={npass} />
+
+                </div>  
+                <div className="inputname">
+                    <h1>Confirm new password:</h1>
+                    <input onChange={e=>setcpass(e.target.value)} type="text" value={cpass} />
+
+                </div>              
+              
+                <button className='btn1f' onClick={e=>changepass()}>Submit</button>
+                <button onClick={e=>setadduser2('adduser2')}  className='btn2'>Cancel</button>
 <div className="inputname"></div>
               </>
 
@@ -295,7 +364,7 @@ function submit(){
 
         </div>
    
-        <div className="divx">
+        <div className="divx reldiv">
        <div className="bcircle" >
            {!props.user.imgurl?
         
@@ -319,14 +388,15 @@ function submit(){
   <div className="hrsin">
     <div className="hrsint">
 
-    <p>{userhrs>40?40:userhrs+Math.floor(usermins / 60)}</p>
+    <p>{Number(userhrs)>40?40:Number(userhrs)+Math.floor(usermins / 60)}</p>
     <h6>Hours this week</h6>
     </div>
     <div className="hrsmint">
 
-    <p>{userhrs>40? userhrs+Math.floor(usermins / 60)-40:0}</p>
+    <p>{Number(userhrs)>40? Number(userhrs)+Math.floor(usermins / 60)-40:0}</p>
     <h6>Overtime this week</h6>
     </div>
+ 
   </div>
        <div className="cinfo">
         <h1>
@@ -337,6 +407,11 @@ function submit(){
         <h1>
             <MdLocationOn className='mdl' />Phone</h1>
         <p>{phone}</p>
+       </div>
+       <div className="cinfo">
+        <h1>
+            <MdLocationOn className='mdl' />Password  <FaPencilAlt onClick={e=>setadduser2('adduser')} style={{cursor:'pointer'}} /> </h1>
+        <p>********</p>
        </div>
       
       
@@ -374,7 +449,7 @@ function submit(){
       }
        </>
        :
-       <div className="divx">
+       <div className="divx reldiv">
        
         <p>Select Company to view</p>
        </div> }

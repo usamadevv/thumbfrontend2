@@ -8,6 +8,8 @@ import axios from 'axios'
 import { useEffect } from 'react'
 import { VscChromeClose } from 'react-icons/vsc'
 import { HiArrowLeft } from 'react-icons/hi'
+
+import prof from '../../../images/prof.png'
 import { BsClockFill } from 'react-icons/bs'
 
 import { IoClose } from 'react-icons/io5'
@@ -2419,10 +2421,109 @@ console.log(allhours)
     function opm() {
         setaduserx('adduser')
     }
+    const [searval, setsearval] = useState('')
+    const [adduserd2, setadduserd2] = useState('adduser2')
+    function addcom(element){
+     
+        var usdata = currone.user;
+
+        usdata = [...usdata, {
+          name: element.name,
+          skill: element.skill,
+          payrate: element.payrate,
+          otpayrate: element.otpayrate,
+          nc: element.nc,
+          cpr: element.cpr,
+          payratetype: 'normal',
+          empno: element.idno,
+          taxes: element.taxes,
+          userid: element._id,
+          latlang: element.langlat,
+          distance: 0,
+          perdiem: 'No',
+          onperdiem: 'No',
+          food: 'No',
+        }];
+        
+
+        axios.post(`${tz}/jobsite/adduser`, {
+         
+            user: usdata,
+           
+            _id: currone._id
+
+
+
+
+        }).then(res => {
+          console.log(res)
+          setadduserd2('adduser2')
+          axios.get(`${tz}/jobsite/getall`).then(res => {
+           
+            setdata(res.data.Jobsite)
+            setadduser('adduser2')
+setcurrone(null)
+            setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
+            setpageCount(Math.ceil(res.data.Jobsite.length / 5))
+            setactiontype('edit')
+        })
+        })
+    }
     return (
 
         <>
+     <div className={adduserd2}>
+                <div className="longsub">
+                    <input type="Search" placeholder='Search..' className='inkl' onChange={e=>setsearval(e.target.value)} />
+                    <IoClose className='posif' onClick={e => setadduserd2('adduser2')} />
+        
+                    {
+                        searval? empdata && empdata.map(val2 => (
+                       
+                           val2.name.toLowerCase().search(searval.toLowerCase())>=0&&<>
+                                    <div className="rowval">
+                                       <div className="imgh">
+                                        {!val2.imgurl?
+                                        <img src={prof} alt="" />:
+                                        <img src={val2.imgurl} alt="" />
 
+                                        }
+                                       </div>
+                                        <div className="midone">
+                                            <h1>{val2.name}</h1>
+                                            <p>{val2.skill}</p>
+                                        </div>
+                                        <button onClick={e=>addcom(val2)} >Add</button>
+                                    </div>
+                                    <div className="linn"></div>
+                                </>
+                      
+                        )):empdata && empdata.map(val2 => (
+                   
+                            <>
+                                <div className="rowval">
+                                   <div className="imgh">
+                                    {!val2.imgurl?
+                                    <img src={prof} alt="" />:
+                                    <img src={val2.imgurl} alt="" />
+
+                                    }
+                                   </div>
+                                    <div className="midone">
+                                        <h1>{val2.name}</h1>
+                                        <p>{val2.skill}</p>
+                                    </div>
+                                    <button onClick={e=>addcom(val2)}  >Add</button>
+                                </div>
+                                <div className="linn"></div>
+                            </>
+                  
+                    ))
+                    
+                  
+}
+                </div>
+            </div>
             <div className={aduserl}>
                 <div className="mainpage1" >
                     <ReactToPrint
@@ -3495,10 +3596,14 @@ console.log(allhours)
                                                     <p>{currone.sitename}</p>
                                                 </div>
                                                 <div className="divx2">
-                                                    <div className="prt prt2">
+                                                    <div className="prt prt2" style={{position:'relative'}}>
                                                         <h1>{currone.user.length} </h1>
                                                         <p>Users</p>
+                                                        <div className="crfle" onClick={e=>setadduserd2('adduser')}>
+                                                            +
+                                                        </div>
                                                     </div>
+
                                                     <div className="prt">
                                                         <h1>9</h1>
                                                         <p>Clocked inn</p>

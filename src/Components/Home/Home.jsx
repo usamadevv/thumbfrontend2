@@ -10,6 +10,7 @@ import { BsClockHistory } from 'react-icons/bs'
 import {AiOutlineSearch} from 'react-icons/ai'
 import {BsFillBellFill} from 'react-icons/bs'
 import { FaUserAlt } from 'react-icons/fa'
+import {BiChevronRight} from 'react-icons/bi'
 import { VscNote } from 'react-icons/vsc'
 import { BiFileBlank } from 'react-icons/bi'
 import {FaFileInvoiceDollar} from 'react-icons/fa'
@@ -111,12 +112,20 @@ function logout(){
         setgrp3('group1')
         setgrp1('group2')
     }
+    const [left, setleft] = useState('left')
+    const [right, setright] = useState('right smallright')
     return (
     <>
     {datax&&
         <div className="dashboard">
-        <div className="left">
-            <h1>Monitor</h1>
+        <div className={left}>
+          {left==='left'?
+            <h1 onClick={e=>setleft('left smallleft')}>Monitor</h1>:
+            <div className="rnd" onClick={e=>setleft('left')}>
+              <BiChevronRight className='rgt' />
+            </div>
+
+          }
             <h5 className='manax'>Management & HR</h5>
             <p className={`${grp1} ${i===0&&'activemenu'}`} onClick={e => setis(0)} > <MdOutlineDashboard className='iconj' /> <p>Dashboard</p></p>
 
@@ -193,7 +202,7 @@ function logout(){
           }
 
           
-          <p className={`${grp3} ${i===12&&'activemenu'}`} onClick={e => setis(12)}> <BiFileBlank className='iconj' /><p>Notes</p></p>
+          <p className={`${grp3} ${i===12&&'activemenu'}`} onClick={e => setis(12)}> <BiFileBlank className='iconj' /><p>Notes</p> <div className="nut nutx">{datax.contacts&&datax.contacts.map(obj => obj.unseen).reduce((a, b) => a + b, 0)}</div> </p>
          
           <h5 className='mana'> General</h5>
           {datax.reports==='Allowed'&&
@@ -241,7 +250,7 @@ function logout(){
 
 
         </div>
-        <div className="right">
+        <div className={right}>
           <div className="rheader">
             <div className="h1">
               {i===16?

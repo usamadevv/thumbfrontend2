@@ -63,34 +63,61 @@ const [userd2, setuserd2] = useState()
 const [data2, setdata2] = useState()
 const [sitestaff, setsitestaff] = useState()
 useEffect(() => {
+
     axios.get(`${tz}/note/getall`).then(res=>{
         console.log(res)
         setuserd(res.data.Notes)
     }).catch(err=>console.log(err))
-    axios.get(`${tz}/super/getall`).then(res=>{
-        console.log(res)
-        setuserd2(res.data.Supervisor)
-})
-    axios.get(`${tz}/siteuser/getall`).then(res=>{
-        console.log(res)
-        setsitestaff(res.data.Siteuserd)
+ 
+    axios.get(`${tz}/siteuser/getall`).then(resx=>{
+        console.log(resx)
+        var sstaff=resx.data.Siteuserd
+        axios.post(`${tz}/admin/find`,{
+            _id:localStorage.getItem('userid')
+    
+        }).then(res=>{
+            console.log(res)
+            setaddedusers(res.data.Admin)
+            axios.get(`${tz}/super/getall`).then(resxx=>{
+                console.log(resxx)
+            
+                var sstaff2=resxx.data.Supervisor
+                setuserd2(  sstaff2.sort((a, b) => {
+                    const dateA = res.data.Admin.contacts.find(obj => obj.userid === a._id)?.timestamp || '';
+                    const dateB = res.data.Admin.contacts.find(obj => obj.userid === b._id)?.timestamp || '';
+                
+                    // Use the Intl.Collator to compare ISO 8601 date strings
+                    return new Intl.Collator(undefined, { numeric: true }).compare(dateB, dateA);
+                }))
+
+
+        })
+           
+            
+            // Sort arrayOfObjects2 based on the dates in arrayOfObjects
+          setsitestaff(  sstaff.sort((a, b) => {
+            const dateA = res.data.Admin.contacts.find(obj => obj.userid === a._id)?.timestamp || '';
+            const dateB = res.data.Admin.contacts.find(obj => obj.userid === b._id)?.timestamp || '';
+        
+            // Use the Intl.Collator to compare ISO 8601 date strings
+            return new Intl.Collator(undefined, { numeric: true }).compare(dateB, dateA);
+        }))
+           
+            
+        
+    
+        }).catch(err=>console.log(err))
+    
     }).catch(err=>console.log(err))
 
     
-    axios.post(`${tz}/admin/find`,{
-        _id:localStorage.getItem('userid')
-
-    }).then(res=>{
-        console.log(res)
-        setaddedusers(res.data.Admin)
-    }).catch(err=>console.log(err))
-
+   
   return () => {
     
   }
 }, [])
-
-
+const [activeflt, setactiveflt] = useState('user')
+const [process, setprocess] = useState(false)
 var data=[
     {
         name:'usama',
@@ -143,7 +170,7 @@ if(addedusers&&addedusers.addedusers&&addedusers.addedusers.length>0){
     if(element.userid===val._id){
         y=1
         setadduser('adduser2')
-        openthischat(element)
+        openthischat(element,utype)
 
 
     }
@@ -237,7 +264,17 @@ else{
 }
 const [activeid, setactiveid] = useState()
 
-function openthischat(val){
+function openthischat(val,val2){
+
+    axios.post(`${tz}/admin/viewed`,{
+        sender:localStorage.getItem('userid') ,
+               user:val._id,
+               unseen:0
+       
+           }).then( resx=>{
+              
+           })
+    setutype(val2)
     console.log(val)
     setactiveid(val)
     axios.post(`${tz}/note/find`,{
@@ -272,6 +309,7 @@ function deleted(val){
 }
 const [msg, setmsg] = useState('')
 function sendmsg(){
+    setprocess(true)
     
     if(activeid){
         axios.get(`${tz}/att/time`).then(res1 => {
@@ -291,15 +329,67 @@ function sendmsg(){
     
         }).then( res=>{
             console.log(res)
-            setadduser('adduser2')
-            setmsg('')
-            openthischat(activeid)
+           
+           if(utype==='user'){
+            axios.post(`${tz}/siteuser/adduser`,{
+                sender: activeid._id,
+                       user:localStorage.getItem('userid'),
+                       unseen:1
+               
+                   }).then( resx=>{
+                      
+                       axios.post(`${tz}/admin/adduser`,{
+                           sender:localStorage.getItem('userid'),
+                                  user:activeid._id,
+                                  unseen:0
+                          
+                              }).then( resx2=>{
+                                  setadduser('adduser2')
+                                  setmsg('')
+                                  openthischat(activeid,utype)
+                                  console.log(resx)
+                  setprocess(false)
+                  
+                              })
+       
+                   })
+           }
+           else{
+            axios.post(`${tz}/super/adduser`,{
+                sender: activeid._id,
+                       user:localStorage.getItem('userid'),
+                       unseen:1
+               
+                   }).then( resx=>{
+                      
+                       axios.post(`${tz}/admin/adduser`,{
+                           sender:localStorage.getItem('userid'),
+                                  user:activeid._id,
+                                  unseen:0
+                          
+                              }).then( resx2=>{
+                                  setadduser('adduser2')
+                                  setmsg('')
+                                  openthischat(activeid,utype)
+                                  console.log(resx)
+                  
+                                  setprocess(false)
+                  
+                              })
+       
+                   })
+           }
+
+
+           
         })
     
         })
     }
     else{
         alert('Please select user!')
+        setprocess(false)
+                  
     }
     
 
@@ -307,6 +397,9 @@ function sendmsg(){
 const [searchval, setsearchval] = useState('')
 const messageEl = useRef(null);
 const [messages, setmessages] = useState()
+const [utype, setutype] = useState('user')
+
+
 function addtask() {
 settasks(tsk=>[...tsk,task])
 settask('')
@@ -354,14 +447,20 @@ function addtask2() {
                     <div className="searchbar">
                         <input type="text" onChange={e=>setsearchval(e.target.value)} placeholder='Search...' />
                     </div>
+                    <div className="fltbtns">
+                        <button style={{background:activeflt==='super'?'#5D69D4':'white',color:activeflt==='super'?'white':'grey'}} onClick={e=>setactiveflt('super')}>Supervisors</button>
+                        <button style={{background:activeflt==='user'?'#5D69D4':'white',color:activeflt==='user'?'white':'grey'}} onClick={e=>setactiveflt('user')}>Users</button>
+
+                    </div>
+
                 </div>
-               
+             {activeflt==='super'&&  <>
                 {
                   
                   searchval.length>0?
                   adduser!=='adduser'&&userd2&&userd2.map(val=>(
                     val.name.toLowerCase().search(searchval.toLowerCase())>=0&&
-                    <div className={`cardmsg ${activeid&&activeid.name===val.name&&'msgback'}`} onClick={e=>openthischat(val)}>
+                    <div className={`cardmsg ${activeid&&activeid.name===val.name&&'msgback'}`} onClick={e=>openthischat(val,'super')}>
                     <div className="profmsg">
                         {val.name.charAt(0).toUpperCase()}
                     </div>
@@ -379,7 +478,13 @@ function addtask2() {
                 ))
                 :
                 adduser!=='adduser'&&userd2&&userd2.map(val=>(
-                    <div className={`cardmsg ${activeid&&activeid.name===val.name&&'msgback'}`} onClick={e=>openthischat(val)}>
+                    addedusers&&addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id)&& 
+                    <div className={`cardmsg ${activeid&&activeid.name===val.name&&'msgback'}`} onClick={e=>openthischat(val,'super')}>
+   {addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).unseen>0&&<div className="nut">
+   { addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).unseen}
+   
+   </div>
+   } 
                             {val&&!val.imgurl?
         
         <img src={prof} alt="" className='profmsg' />:
@@ -400,12 +505,14 @@ function addtask2() {
                 ))
 
                 }
-                  {
+                </>
+                }
+                {activeflt==='user'&&<>  {
                   
                   searchval.length>0?
                   adduser!=='adduser'&&sitestaff&&sitestaff.map(val=>(
                     val.name.toLowerCase().search(searchval.toLowerCase())>=0&&
-                    <div className={`cardmsg ${activeid&&activeid.name===val.name&&'msgback'}`} onClick={e=>openthischat(val)}>
+                    <div className={`cardmsg ${activeid&&activeid.name===val.name&&'msgback'}`} onClick={e=>openthischat(val,'user')}>
                         {val&&!val.imgurl?
         
         <img src={prof} alt="" className='profmsg' />:
@@ -428,7 +535,15 @@ function addtask2() {
                 ))
                 :
                 adduser!=='adduser'&&sitestaff&&sitestaff.map(val=>(
-                    <div className={`cardmsg ${activeid&&activeid.name===val.name&&'msgback'}`} onClick={e=>openthischat(val)}>
+                  
+                 addedusers&&addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id)&& 
+                 <div className={`cardmsg ${activeid&&activeid.name===val.name&&'msgback'}`} onClick={e=>openthischat(val,'user')}>
+{addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).unseen>0&&<div className="nut">
+{ addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).unseen}
+
+</div>
+}
+
                             {val&&!val.imgurl?
         
         <img src={prof} alt="" className='profmsg' />:
@@ -446,7 +561,7 @@ function addtask2() {
                     </div>
                 ))
 
-                }
+                }</>}
 
             </div>
             <div className="rightsection">
@@ -478,7 +593,14 @@ function addtask2() {
                     }
                     <div className="sendingnotes">
                         <input placeholder='Type note here...'  value={msg} type="text" onChange={e=>setmsg(e.target.value)} />
-                        <button className='sendbtnb' onClick={e=>sendmsg()} ><RiSendPlaneFill /></button>
+                        <button className='sendbtnb' onClick={e=>sendmsg()} >
+                        {process?
+                            <div className="loader">
+                                
+                            </div>:<RiSendPlaneFill />
+
+                           }
+                        </button>
                     </div>
                 </div>
 

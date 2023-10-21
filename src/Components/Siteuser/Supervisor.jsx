@@ -2182,6 +2182,7 @@ No
                     <AiOutlineMessage className='icondash1' />
 
                     Notes
+
                 </h3>
               
 
@@ -2217,6 +2218,7 @@ Projects
                     <FaRegBuilding className='icondash1' />
 
                     Notes
+                    <div className="nut nutx">{user&&user.contacts&&user.contacts.map(obj => obj.unseen).reduce((a, b) => a + b, 0)}</div> 
                 </h3>
                 <h3 onClick={e => setadduser('adduser')} className='buttson'>
                     
@@ -2357,6 +2359,13 @@ Logout
        <div className="divx">
        
         <p>Select Company to view</p>
+        <div className="badge badge2" onClick={e => logout()} style={{height:'25px',cursor:'pointer'}}>
+
+
+Logout
+
+</div>
+
        </div> }
 
     </div>
@@ -2928,7 +2937,14 @@ showusers==='ns'?
 
                 }
                   {i === 199 &&
-                    <Supernotes />
+                    <Supernotes 
+                    props={{
+                        user: user,
+                        project:project,
+                     
+
+                    }} 
+                    />
 
                 }
                 {i === 11 &&

@@ -140,7 +140,7 @@ const [currentItems, setcurrentItems] = useState([])
 const [pageCount, setpageCount] = useState(0)
 
 const handlePageClick = (event) => {
-  const newOffset = (event.selected * 5) % userd.length;
+  const newOffset = (event.selected * 10) % userd.length;
   console.log(
     `User requested page number ${event.selected}, which is offset ${newOffset}`
   );
@@ -155,7 +155,7 @@ useEffect(() => {
     axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/73.07832,33.69003;72.47081,34.10994?access_token=pk.eyJ1IjoiYXlhYW56YXZlcmkiLCJhIjoiY2ttZHVwazJvMm95YzJvcXM3ZTdta21rZSJ9.WMpQsXd5ur2gP8kFjpBo8g').then(res=>{
         console.log(res)
     })
-    axios.get(`${tz}/client/active`).then(res=>{
+    axios.get(`${tz}/client/getall`).then(res=>{
         console.log(res)
         setuserd(res.data.Client)
         setcurrentItems(res.data.Client.slice(itemOffset, endOffset))
@@ -177,7 +177,7 @@ const [currentItems2, setcurrentItems2] = useState([])
 const [pageCount2, setpageCount2] = useState(0)
 
 const handlePageClick2 = (event) => {
-  const newOffset = (event.selected * 5) % userd2.length;
+  const newOffset = (event.selected * 10) % userd2.length;
   console.log(
     `User requested page number ${event.selected}, which is offset ${newOffset}`
   );
