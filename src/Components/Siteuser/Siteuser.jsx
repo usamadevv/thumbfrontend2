@@ -633,10 +633,12 @@ function openhistory(val){
 <p className={`group1 ${i===0&&'activemenu'}`} onClick={e => seti(13)} > <AiOutlineDashboard className='iconj' /> </p>
 
 </div>
-            <h3 onClick={e=>seti(3)}>
-                <AiOutlineMessage className='icondash1' />
+            <h3 onClick={e=>seti(3)} style={{position:'relative'}}>
+                <AiOutlineMessage className='icondash1'   />
 
                 Notes
+                <div className="nut "  style={{left:'-30px',position:'absolute'}} >{user&&user.contacts&&user.contacts.map(obj => obj.unseen).reduce((a, b) => a + b, 0)}</div> 
+             
             </h3>
           
           {/*user&&user.status!=='Inactive'&&
@@ -1161,7 +1163,8 @@ You joined hundred of users who are already skyrocketing their career with us.
 <IoMdCheckmarkCircleOutline className='mhgf mhgf2' />
 </div>
 <div className="detbalance">
-    <h1>Skill </h1>
+    <h1>
+        Position </h1>
 
     <h1>{user&&user.skill}</h1>
 </div>

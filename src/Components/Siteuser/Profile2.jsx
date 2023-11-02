@@ -389,12 +389,12 @@ else{
     <div className="hrsint">
 
     <p>{Number(userhrs)>40?40:Number(userhrs)+Math.floor(usermins / 60)}</p>
-    <h6>Hours this week</h6>
+    <h6>Hours</h6>
     </div>
     <div className="hrsmint">
 
     <p>{Number(userhrs)>40? Number(userhrs)+Math.floor(usermins / 60)-40:0}</p>
-    <h6>Overtime this week</h6>
+    <h6>Overtime </h6>
     </div>
  
   </div>

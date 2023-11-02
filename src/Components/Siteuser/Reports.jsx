@@ -1631,7 +1631,7 @@ value={value2} />
          >Days</div>
          <div>Perdiem</div>
 
-         <div>O.N</div>
+         <div>Sunday Perdiem</div>
        </div>
 
      {  attreportx2.length>0&&
@@ -1867,7 +1867,7 @@ value={value2} />
         className='ggg'  >Days</div>
         <div>Perdiem</div>
 
-        <div>O.N</div>
+        <div>Sunday Perdiem</div>
       </div>
 
     {  attreportx2.length>0&&
@@ -1985,17 +1985,18 @@ value={value2} />
                        </div>
 
             <div className="subreportcard">
-            <h1>Weekly worked hours report</h1>
+            <h1>Timesheets</h1>
             </div>
             </div>
-            <div className={yearly3} onClick={e=>setreports(true)}>
+                     {/**  <div className={yearly3} onClick={e=>setreports(true)}>
             <div className="circf2">
                            <MdOutlineAccessTimeFilled className='sio2' />
                        </div>
-            <div className="subreportcard">
+  <div className="subreportcard">
             <h1>Sign in Sign out Report</h1>
             </div>
-            </div>
+            </div> */} 
+          
 
 
            </div>

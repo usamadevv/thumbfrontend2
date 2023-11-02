@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import { GiEnergyArrow } from 'react-icons/gi'
 import { RiLightbulbFlashLine, RiTimerFlashFill } from 'react-icons/ri'
 import { BiTime } from 'react-icons/bi'
-import { MdSnooze } from 'react-icons/md'
+import { MdDelete, MdSnooze } from 'react-icons/md'
 import { AiOutlineReload } from 'react-icons/ai'
+import {GrFormAdd} from 'react-icons/gr'
 import axios from 'axios'
 import { useEffect } from 'react'
 import { VscChromeClose } from 'react-icons/vsc'
@@ -1786,7 +1787,7 @@ const Jobsite = () => {
                 status: 'Active',
                 sitename: sname,
                 markup: markupcuee,
-                user: userdata,
+                user: userdata2,
                 no: pno,
                 task: tasks,
                 address: address,
@@ -1808,6 +1809,8 @@ const Jobsite = () => {
                     setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
                     setpageCount(Math.ceil(res.data.Jobsite.length / 5))
                     setactiontype('edit')
+                    setuserdata2([])
+                    setuserdata([])
                 })
 
             })
@@ -1823,7 +1826,7 @@ const Jobsite = () => {
                 task: tasks,
                 markup: markupcuee,
                 weekend:weekend,
-                user: userdata,
+                user: userdata2,
                 no: pno,
                 address: address,
                 perdiemamnt: perdiemamnt,
@@ -1841,6 +1844,8 @@ const Jobsite = () => {
 
                     setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
                     setpageCount(Math.ceil(res.data.Jobsite.length / 5))
+                    setuserdata2([])
+                    setuserdata([])
                 })
             })
         }
@@ -1907,14 +1912,14 @@ console.log(allhours)
     const [ind, setind] = useState('')
     function addindex(index,val) {
         setlastcom(val.clientid)
-        if (ind.search(' ' + index.toString() + ' ') >= 0) {
+        if (ind.search(val._id) >= 0) {
 
             console.log(ind)
-            setind(ind.replace(' ' + index.toString() + ' ', ''))
+            setind(ind.replace(val._id + '4sd', '')) 
         }
         else {
 
-            setind(ind + ' ' + index.toString() + ' ')
+            setind(ind + val._id + '4sd')
             console.log(ind)
         }
 
@@ -2010,6 +2015,7 @@ console.log(allhours)
 
         });
     }
+    const [userdata2, setuserdata2] = useState([])
 
     function skipthis2(element) {
 
@@ -2017,10 +2023,28 @@ console.log(allhours)
         setuserdata([])
         y.forEach((elemen, index) => {
             if (index === element) {
+                setuserdata2(pre => [...pre, elemen])
 
             }
             else {
                 setuserdata(pre => [...pre, elemen])
+            }
+
+
+        });
+    }
+    function skipthis3(element) {
+
+        var y = userdata2
+        setuserdata2([])
+        y.forEach((elemen, index) => {
+            if (index === element) {
+               
+                setuserdata(pre => [...pre, elemen])
+            }
+            else {
+                setuserdata2(pre => [...pre, elemen])
+           
             }
 
 
@@ -2036,16 +2060,14 @@ console.log(allhours)
     function deletedata() {
 
         console.log(ind)
-        var r = []
+    
+        var r = ind.split('4sd')
+        r[r.length - 1] = r[r.length - 2]
+        console.log(r)
         data.forEach((element, index) => {
             if (index === data.length - 1) {
 
-                if (ind.search(' ' + index.toString() + ' ') >= 0) {
-                    r.push(element._id)
-
-
-
-                }
+            
                 axios.post(`${tz}/jobsite/delete`, {
                     ids: r
 
@@ -2315,11 +2337,16 @@ console.log(allhours)
 
 
         }
+        else if(steps===4){
+
+            setsteps(steps => steps + 1)
+        }
     }
     const [compnay, setcompnay] = useState('City Force LLC')
     const [adduser2, setadduser2] = useState('adduser2')
     const [add, setadd] = useState('1106 W CORNWALLIS RD, STE 105')
     const [actiontype, setactiontype] = useState('edit')
+    const [cname2, setcname2] = useState({})
     function updateuser() {
         setactiontype('update')
         setadduser('adduser fixedarea')
@@ -2327,16 +2354,18 @@ console.log(allhours)
         setcname(currone.clientname)
         setsname(currone.sitename)
 
+        const clientWithIdOne = clients.find(client => client._id === currone.clientid)
+setcname2(clientWithIdOne)
         settasks(currone.task)
-        
         setmarkupcuee(currone.markup)
         setweekend(currone.weekend)
 
-        setuserdata(currone.user)
+        setuserdata2(currone.user)
         setpno(currone.no)
         setaddress(currone.address)
         setchklatlang(JSON.parse(currone.latlang))
-
+        allemps(clientWithIdOne.username + 'eiuka' + clientWithIdOne.markup + 'eiuka' + clientWithIdOne._id + 'eiuka' + clientWithIdOne.address+ 'eiuka' + clientWithIdOne.weekend)
+      
 
 
     }
@@ -2408,7 +2437,7 @@ console.log(allhours)
     const [aduserx, setaduserx] = useState('adduser2')
     const [perdiemamnt, setperdiemamnt] = useState(0)
     const [perdiemmil, setperdiemmil] = useState(0)
-
+const [usersearch, setusersearch] = useState('')
     const [onperdiemamnt, setonperdiemamnt] = useState(0)
     const [onperdiemmil, setonperdiemmil] = useState(0)
 
@@ -3045,7 +3074,7 @@ setcurrone(null)
 
                         }
                         {j === 0 &&
-                            <div className="subadduser hadduser ">
+                            <div className="subadduser hadduser hdauser ">
 
                                 <IoClose className='iov' onClick={e => setadduserx('adduser2')} />
                                 <> <div className="prcs" >
@@ -3153,13 +3182,14 @@ setcurrone(null)
 
                                                 <select className='select2' name="cars" id="cars" onChange={e => allemps(e.target.value)}>
 
-                                                    {!cname ? <option >Choose Company</option>
+                                                    {!cname2 ? <option >Choose Company</option>
 :
-<option >{cname}</option>
+<option value={cname2.username + 'eiuka' + cname2.markup + 'eiuka' + cname2._id + 'eiuka' + cname2.address+ 'eiuka' + cname2.weekend}>{cname2.username}</option>
+                                                     
                                                     }
                                                     {
                                                         clients && clients.map(val => (
-
+(cname2&&cname2._id!==val._id)&&
                                                             <option value={val.username + 'eiuka' + val.markup + 'eiuka' + val._id + 'eiuka' + val.address+ 'eiuka' + val.weekend}>{val.username}</option>
                                                         ))
                                                     }
@@ -3248,18 +3278,26 @@ setcurrone(null)
                                                         </div>
 
                                                     </> :
+                                                    steps===4?
 
+<>
+<h3 className='adio'>Add users</h3>
+<div className="newst1" style={{width:'95%',margin:'auto'}} >
+
+<input type="text" style={{width:'40%'}} placeholder='Search..' onChange={e => setusersearch(e.target.value)} />
+</div>
                                                     <div className="tablerow trow">
+                                            
                                                         <div className="subtable">
                                                             <div className="headertable clop">
-                                                                <h2 style={{ width: '50px', paddingLeft: '10px' }}>Action</h2>
+                                                      <h2 style={{ width: '50px', paddingLeft: '10px' }}>Add</h2>
                                                                 <h1>Employee</h1>
 
                                                                 <h6>Skill</h6>
-                                                                <h4>Pay rate</h4>
-                                                                <h5>OT Pay rate</h5>
+                                                                <h4 style={{width:'60px'}} >Pay rate</h4>
+                                                                <h5 style={{width:'90px'}} >OT Pay rate</h5>
 
-                                                                <h5>Distance</h5>
+                                                                <h5  style={{width:'80px'}}>Distance</h5>
 
                                                                 <h2 style={{ width: '80px' }}>
 
@@ -3281,19 +3319,75 @@ setcurrone(null)
 
 
                                                             </div>
-                                                            {userdata && userdata.map((val, index) => (
+                                                            {usersearch.length===0?
+                                                             userdata && userdata.map((val, index) => (
                                                                 <>
                                                                     <div className="headertable">
-                                                                        <h2 style={{ width: '50px', paddingLeft: '10px' }}>
-                                                                            <AiFillDelete onClick={e => skipthis2(index)} /></h2>
-                                                                        <h1><img src='' alt="" className='valimg' /> {val.name}</h1>
+                                                                 <h2 style={{ width: '50px', paddingLeft: '10px' }}>
+                                                                            <GrFormAdd style={{fontSize:'25px'}} onClick={e => skipthis2(index)} /></h2> 
+                                                                        <h1>{val.name}</h1>
 
                                                                         <h6>{val.skill}</h6>
 
-                                                                        <h3>{val.payrate}</h3>
-                                                                        <h4>{val.otpayrate}</h4>
+                                                                        <h3  style={{width:'60px'}}>{val.payrate}</h3>
+                                                                        <h4  style={{width:'90px'}}>{val.otpayrate}</h4>
 
-                                                                        <h4>{parseInt(val.distance)} Miles</h4>
+                                                                        <h4  style={{width:'80px'}}>{parseInt(val.distance)} Miles</h4>
+                                                                        <h2 style={{ width: '80px' }}>
+                                                                            {val.perdiem}
+                                                                        </h2>
+                                                                        <h2 style={{ width: '100px' }}>
+                                                                            {val.onperdiem}
+                                                                        </h2>
+
+
+
+
+                                                                        <h2 style={{ width: '80px' }}>
+
+                                                                            {val.food === 'No' ?
+                                                                                <div className="taxes" onClick={e => turn3(val.food, index)}>
+                                                                                    <div className="circle">
+
+                                                                                    </div>
+                                                                                </div> :
+                                                                                <h4 className="taxes2" onClick={e => turn3(val.food, index)}>
+                                                                                    {<div className="circle2">
+
+                                                                                    </div>}
+                                                                                </h4>
+
+                                                                            }
+                                                                        </h2>
+
+                                                                        <h5>{val.taxes}</h5>
+                                                                        {
+                                                                            val.nc !== 'no' ?
+
+                                                                                <h5>{val.nc}%</h5>
+                                                                                :
+
+                                                                                <h5>NO</h5>
+                                                                        }
+
+
+                                                                    </div>
+                                                                </>
+                                                            )):
+                                                            userdata && userdata.map((val, index) => (
+                                                                val.name.toLowerCase().search(usersearch.toLowerCase())>=0&& <>
+                                                                
+                                                                    <div className="headertable">
+                                                                 <h2 style={{ width: '50px', paddingLeft: '10px' }}>
+                                                                            <GrFormAdd style={{fontSize:'25px'}} onClick={e => skipthis2(index)} /></h2> 
+                                                                        <h1>{val.name}</h1>
+
+                                                                        <h6>{val.skill}</h6>
+
+                                                                        <h3  style={{width:'60px'}}>{val.payrate}</h3>
+                                                                        <h4  style={{width:'90px'}}>{val.otpayrate}</h4>
+
+                                                                        <h4  style={{width:'80px'}}>{parseInt(val.distance)} Miles</h4>
                                                                         <h2 style={{ width: '80px' }}>
                                                                             {val.perdiem}
                                                                         </h2>
@@ -3339,11 +3433,110 @@ setcurrone(null)
                                                             }
                                                         </div>
                                                     </div>
+                                                    </>:
+                                                    <>
+                                                    <h3 className='adio'>Users</h3>
+                                                                                                        <div className="tablerow trow">
+                                                                                                
+                                                                                                            <div className="subtable">
+                                                                                                                <div className="headertable clop">
+                                                                                                                <h2 style={{ width: '50px', paddingLeft: '10px' }}>
+                                                                                                                    Delete</h2> 
+                                                               
+                                                                                                                    <h1>Employee</h1>
+                                                    
+                                                                                                                    <h6>Skill</h6>
+                                                                                                                    <h4 style={{width:'60px'}} >Pay rate</h4>
+                                                                                                                    <h5 style={{width:'90px'}} >OT Pay rate</h5>
+                                                    
+                                                                                                                    <h5  style={{width:'80px'}}>Distance</h5>
+                                                    
+                                                                                                                    <h2 style={{ width: '80px' }}>
+                                                    
+                                                                                                                        Perdiem
+                                                                                                                    </h2>
+                                                                                                                    <h2 style={{ width: '100px' }}>
+                                                    
+                                                                                                                        O.N Perdiem
+                                                                                                                    </h2>
+                                                    
+                                                                                                                    <h2 style={{ width: '80px' }}>
+                                                    
+                                                                                                                        Food</h2>
+                                                    
+                                                    
+                                                    
+                                                                                                                    <h3>Taxes</h3>
+                                                                                                                    <h5>NC(%)</h5>
+                                                    
+                                                    
+                                                                                                                </div>
+                                                                                                                {userdata2 && userdata2.map((val, index) => (
+                                                                                                                    <>
+                                                                                                                        <div className="headertable">
+                                                                                                                        <h2 style={{ width: '50px', paddingLeft: '10px' }}>
+                                                                            <MdDelete style={{fontSize:'25px'}} onClick={e => skipthis3(index)} /></h2> 
+                                                               
+                                                                                                                  <h1>{val.name}</h1>
+                                                    
+                                                                                                                            <h6>{val.skill}</h6>
+                                                    
+                                                                                                                            <h3  style={{width:'60px'}}>{val.payrate}</h3>
+                                                                                                                            <h4  style={{width:'90px'}}>{val.otpayrate}</h4>
+                                                    
+                                                                                                                            <h4  style={{width:'80px'}}>{parseInt(val.distance)} Miles</h4>
+                                                                                                                            <h2 style={{ width: '80px' }}>
+                                                                                                                                {val.perdiem}
+                                                                                                                            </h2>
+                                                                                                                            <h2 style={{ width: '100px' }}>
+                                                                                                                                {val.onperdiem}
+                                                                                                                            </h2>
+                                                    
+                                                    
+                                                    
+                                                    
+                                                                                                                            <h2 style={{ width: '80px' }}>
+                                                    
+                                                                                                                                {val.food === 'No' ?
+                                                                                                                                    <div className="taxes" onClick={e => turn3(val.food, index)}>
+                                                                                                                                        <div className="circle">
+                                                    
+                                                                                                                                        </div>
+                                                                                                                                    </div> :
+                                                                                                                                    <h4 className="taxes2" onClick={e => turn3(val.food, index)}>
+                                                                                                                                        {<div className="circle2">
+                                                    
+                                                                                                                                        </div>}
+                                                                                                                                    </h4>
+                                                    
+                                                                                                                                }
+                                                                                                                            </h2>
+                                                    
+                                                                                                                            <h5>{val.taxes}</h5>
+                                                                                                                            {
+                                                                                                                                val.nc !== 'no' ?
+                                                    
+                                                                                                                                    <h5>{val.nc}%</h5>
+                                                                                                                                    :
+                                                    
+                                                                                                                                    <h5>NO</h5>
+                                                                                                                            }
+                                                    
+                                                    
+                                                                                                                        </div>
+                                                                                                                    </>
+                                                                                                                ))
+                                                    
+                                                                                                                }
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        </>
+
                                     }
 
 
                                     {
-                                        steps === 4 && <div className="inputname">
+                                      (  steps === 4||steps===5) && <div className="inputname">
                                       
 
                                         </div>
@@ -3355,12 +3548,12 @@ setcurrone(null)
                                             <>
 
                                                 <button className='btg' onClick={e => steps > 0 ? setsteps(steps => steps - 1) : ""}><HiArrowLeft className='btgp' /> Back</button>
-                                                <button onClick={e => steps < 4 ? setstex() : req()} className='btn1'>{steps < 4 ? "Next" : "Finish"}</button>
+                                                <button onClick={e => steps < 5 ? setstex() : req()} className='btn1'>{steps < 5 ? "Next" : "Finish"}</button>
                                             </>
                                             :
 
 
-                                            <button onClick={e => setmapxs('mapx3')} className='btn1'>{steps < 4 ? "Save" : "Done"}</button>
+                                            <button onClick={e => setmapxs('mapx3')} className='btn1'>{steps < 5 ? "Save" : "Done"}</button>
 
                                         }
                                     </div>           <div className="inputname"></div>
@@ -3510,7 +3703,7 @@ setcurrone(null)
                                                 val.sitename.toLowerCase().search(searchval.toLowerCase()) >= 0 &&
                                                 <>
                                                     <div className="headertable" onClick={e => selectthis(val)} >
-                                                        <h2 className='sxx'> <input onClick={e => addindex(index,val)} type="checkbox" checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false} /> </h2>
+                                                        <h2 className='sxx'> <input onClick={e => addindex(index,val)} type="checkbox" checked={ind.search(val._id) >= 0 ? true : false} /> </h2>
                                                         <h1>{val.sitename}</h1>
 
                                                         <h6>{val.clientname}</h6>
@@ -3530,7 +3723,7 @@ setcurrone(null)
                                                 val.clientname.toLowerCase().search(searchval.toLowerCase()) >= 0 &&
                                                 <>
                                                     <div className="headertable" onClick={e => selectthis(val)} >
-                                                        <h2 className='sxx'> <input onClick={e => addindex(index,val)} type="checkbox" checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false} /> </h2>
+                                                        <h2 className='sxx'> <input onClick={e => addindex(index,val)} type="checkbox" checked={ind.search(val._id) >= 0 ? true : false} /> </h2>
                                                         <h1>{val.sitename}</h1>
 
                                                         <h6>{val.clientname}</h6>
@@ -3550,7 +3743,7 @@ setcurrone(null)
 
                                                 <>
                                                     <div className="headertable" onClick={e => selectthis(val)} >
-                                                        <h2 className='sxx'> <input onClick={e => addindex(index,val)} type="checkbox" checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false} /> </h2>
+                                                        <h2 className='sxx'> <input onClick={e => addindex(index,val)} type="checkbox" checked={ind.search(val._id) >= 0 ? true : false} /> </h2>
                                                         <h1>{val.sitename}</h1>
 
                                                         <h6>{val.clientname}</h6>
@@ -3594,6 +3787,7 @@ setcurrone(null)
 
                                                     </div>
                                                     <p>{currone.sitename}</p>
+                                                    <p>{currone.no}</p>
                                                 </div>
                                                 <div className="divx2">
                                                     <div className="prt prt2" style={{position:'relative'}}>
@@ -3641,6 +3835,7 @@ setcurrone(null)
 
                                                     </div>
                                                     <p>{currone.sitename}</p>
+                                                    <p>{currone.no}</p>
                                                 </div>
                                                 <div className="divx2">
                                                     <div className="prt prt2">

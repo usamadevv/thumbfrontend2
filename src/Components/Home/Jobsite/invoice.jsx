@@ -538,7 +538,7 @@ console.log(rees)
             ts.push({
 
                 taxes: val.Taxes,
-                date: val.Date,
+                date: inend,
                 empname: val.Employee,
                 skill: val.skill,
                 hrs: val.Hrs,
@@ -4005,13 +4005,13 @@ comval?clients && clients.map(val => (
                                                     { proval?data && data.map((val,index) => (
         val.clientid===currjobid&&val.sitename.toLowerCase().search(proval.toLowerCase())>=0&&
         <div className="rowss" >
-            <p>{val.sitename} </p>
+            <p>{val.sitename} - {val.no} </p>
             <input type="checkbox"  checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false}   onClick={e=>addindex(index,val)}/>
         </div>
     )):data && data.map((val,index) => (
         val.clientid===currjobid&&val.sitename.toLowerCase().search(proval.toLowerCase())>=0&&
         <div className="rowss" >
-            <p>{val.sitename} </p>
+            <p>{val.sitename} - {val.no} </p>
             <input type="checkbox"  checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false}   onClick={e=>addindex(index,val)}/>
         </div>
     ))

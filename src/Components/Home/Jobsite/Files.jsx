@@ -68,7 +68,7 @@ function importthis(val) {
         {
           Taxes: element.taxes,
           Client: incname,
-          Date: '1-1-2023',
+          Date: element.date,
           Employee: element.empname,
           skill: element.skill,
           days: element.days,
@@ -2658,7 +2658,7 @@ setweekends(distinctWeekNumbers)
 
                                     </h6>
                                     <h6>Total</h6>
-                                    <h6 style={{ width: 'max-content' }}>{parseFloat(totalall.toFixed(2))} $</h6>
+                                    <h6 style={{ width: 'max-content' }}>$ {parseFloat(totalall.toFixed(2))} </h6>
 
                                 </div>
 

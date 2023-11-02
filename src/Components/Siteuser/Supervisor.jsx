@@ -2178,10 +2178,12 @@ No
 </button>
                 
                 </h3>
-                <h3 onClick={e => seti(199)} style={{width:'max-content'}}>
+                <h3 onClick={e => seti(199)} style={{width:'max-content',position:'relative'}}>
                     <AiOutlineMessage className='icondash1' />
 
                     Notes
+                    <div className="nut  " style={{left:'-20px',position:'absolute'}} >{user&&user.contacts&&user.contacts.map(obj => obj.unseen).reduce((a, b) => a + b, 0)}</div> 
+              
 
                 </h3>
               

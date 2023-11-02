@@ -464,7 +464,10 @@ function addtask2() {
                         <input type="text" onChange={e=>setsearchval(e.target.value)} placeholder='Search...' />
                     </div>
                     <div className="fltbtns">
-                    <button style={{background:activeflt==='admin'?'#5D69D4':'white',color:activeflt==='admin'?'white':'grey'}} onClick={e=>setactiveflt('admin')}>Admin</button>
+                    <button style={{background:activeflt==='admin'?'#5D69D4':'white',color:activeflt==='admin'?'white':'grey'}} onClick={e=>setactiveflt('admin')}>
+                        Admin
+                        
+                        </button>
                        
                         <button style={{background:activeflt==='user'?'#5D69D4':'white',color:activeflt==='user'?'white':'grey'}} onClick={e=>setactiveflt('user')}>Users</button>
 
