@@ -12,6 +12,7 @@ import {HiUser} from 'react-icons/hi'
 import {FaPencilAlt,FaBuilding} from 'react-icons/fa'
 import {IoClose} from 'react-icons/io5'
 
+import * as turf from '@turf/turf'
 import ReactPaginate from 'react-paginate';
 import {MdLocationOn} from 'react-icons/md'
 import { tz } from '../../apis'
@@ -28,6 +29,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import * as file from 'file-saver'
+import Mapview from './Mapview'
 const Siteemp = ({props}) => {
     const [clientidd, setclientidd] = useState('')
     function setclientx(val){
@@ -94,6 +96,7 @@ const Siteemp = ({props}) => {
     const [skildata, setskildata] = useState()
     const [supervisors, setsupervisors] = useState()
     useEffect(() => {
+      
         axios.get(`${tz}/siteuser/active`).then(res => {
             console.log(res)
             setdata(res.data.Siteuserd)
@@ -410,7 +413,7 @@ setamountd(0)
         }
 
     }
-
+  
     const [name, setname] = useState('')
     const [skill, setskill] = useState('')
     const [jobn, setjobn] = useState('')
@@ -421,6 +424,7 @@ setamountd(0)
     const [ids, setids] = useState('')
     const [sites, setsites] = useState()
     const [steps, setsteps] = useState(0)
+    const [travellogs, settravellogs] = useState(false)
     function deleteuser() {
         if (showusers == 'users') {
             console.log(ids)
@@ -546,6 +550,7 @@ setamountd(0)
         ...updatedItems[itemIndex],
         imgurl2: downloadURL
       };
+      
 
       // Update the state with the updated array
       setcurrentItems(updatedItems);
@@ -1086,8 +1091,120 @@ setlatlang(val.langlat)
         setaduser('adduser')
     }
     const [usertype, setusertype] = useState('user')
+    const [trvl, settrvl] = useState(false)
+    function showtravel(){
+      
+for(let i=0;i<currone.travel.length;i++){
 
+     // Calculate the total distance along the LineString
+     const line = turf.lineString(currone.travel[i].coords);
+     const lineDistance = turf.lineDistance(line, { units: 'miles' });
+     const updatedItems = currone;
+     updatedItems.travel[i].dist=lineDistance
+   
+     // Update the state with the updated array
+     setcurrone(updatedItems);
+}
+settrvl(true)
+
+     
+
+        
+   
+      
+  
+  
+        
+
+    }
+const [trvl2, settrvl2] = useState(false)
+const [cords, setcords] = useState([])
+   function coord(val){
+   
+setcords(val)
+settrvl2(true)
+   }
+    
     return (
+        <>
+{trvl?
+
+<div className="trvl" style={{width:'100%',margin:'auto',paddingLeft:40,paddingTop:20}} >
+
+    
+<div className="newst1" >
+
+    {trvl2?
+                  <button className='deleter' onClick={e=>settrvl2(false)}> Back</button>
+    :
+
+    <button className='deleter' onClick={e=>settrvl(false)}> Back</button>
+    }
+
+  
+                   
+
+                </div>
+{!trvl2
+?
+
+<div className="tablerow hideonmobile table2f "  >
+                           <div className="headertable clop sticky">
+                          
+                                <h4 style={{ width: "120px",paddingLeft:10 }}>Date</h4>
+
+
+                                <h2 >Distance</h2>
+                           
+                                <h6>Start time</h6>
+
+                                <h6>End time</h6>
+                                <h2 >Perdiem</h2>
+                                <h6>Action</h6>
+                                
+
+
+                            </div>
+                        <div className="subtable">
+                         
+                           
+                            {searchval.length === 0 && currone.travel && currone.travel.map(val => (
+
+                                <>
+                                    <div className="headertable">
+           
+                                        <h4 style={{ width: "120px",paddingLeft:10 }}>{val.date}</h4>
+                                       
+                                        <h2> {val.dist.toFixed(2)}  Miles</h2>
+                                    
+
+                                        <h6 >{val.start}</h6>
+
+                                        <h6>{val.end}</h6>
+                                        <h2>$ 75 </h2>
+                                        <h6><div onClick={e=>coord(val.coords)} className="tinvoice" style={{cursor:'pointer'}} >View Route</div></h6>
+                                     
+                                    </div>
+                                </>
+                            ))
+
+                            }
+
+  
+                        </div>
+                    </div>
+:
+                   <Mapview
+                   props={{
+                    user: cords,
+                
+
+                }} 
+                   />
+}
+</div>
+
+:
         <>
             {i === 0 &&
                 <>
@@ -1695,6 +1812,7 @@ setlatlang(val.langlat)
             <p>
                 {val.skill&&val.skill.substring(0,20)}
             </p>
+      
         </div>
 
         </div>
@@ -1733,6 +1851,7 @@ setlatlang(val.langlat)
         </div>
         <p>{currone.name}</p>
         <p className='skl'>{currone.skill}</p>
+        <p className='sklo' onClick={e=>showtravel()}>Travel logs</p>
        </div>
        <div className="divx2">
         <div className="prt prt2">
@@ -1965,6 +2084,8 @@ setlatlang(val.langlat)
                 }
 
             </div></>
+            }
+            </>
     )
 }
 

@@ -12,12 +12,12 @@ import { HiArrowLeft } from 'react-icons/hi'
 
 import prof from '../../../images/prof.png'
 import { BsClockFill } from 'react-icons/bs'
-
 import { IoClose } from 'react-icons/io5'
 import { FaFileImage } from 'react-icons/fa'
 
 import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import * as turf from '@turf/turf';
 
 
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
@@ -195,6 +195,8 @@ const Jobsite = () => {
         map3.current.resize()
 
         map3.current.on('style.load', function () {
+
+
             if (val.latlang) {
                 marker3.current = new mapboxgl.Marker()
                     .setLngLat(JSON.parse(val.latlang))
@@ -1686,6 +1688,40 @@ const Jobsite = () => {
 
     }
 
+    useEffect(() => {
+      axios.post(`${tz}/siteuser/travel`,{
+        coords:  [
+            [-122.483696, 37.833818],
+            [-122.483482, 37.833174],
+            [-122.483396, 37.8327],
+            [-122.483568, 37.832056],
+            [-122.48404, 37.831141],
+            [-122.48404, 37.830497],
+            [-122.483482, 37.82992],
+            [-122.483568, 37.829548],
+            [-122.48507, 37.829446],
+            [-122.4861, 37.828802],
+            [-122.486958, 37.82931],
+            [-122.487001, 37.830802],
+            [-122.487516, 37.831683],
+            [-122.488031, 37.832158],
+            [-122.488889, 37.832971],
+            [-122.489876, 37.832632],
+            [-122.490434, 37.832937],
+            [-122.49125, 37.832429],
+            [-122.491636, 37.832564],
+            [-122.492237, 37.833378],
+            [-122.493782, 37.833683]
+            ]
+      }).then(res=>{
+        console.log(res)
+      })
+    
+      return () => {
+        
+      }
+    }, [])
+    
     function selectthis(val) {
         setcurrone(val)
         if (val.latlang) {
@@ -1736,6 +1772,55 @@ const Jobsite = () => {
             map2.current.addControl(geocoder2);
 
             map2.current.on('style.load', function () {
+                map2.current.addSource('route', {
+                    'type': 'geojson',
+                    'data': {
+                    'type': 'Feature',
+                    'properties': {},
+                    'geometry': {
+                    'type': 'LineString',
+                    'coordinates': [
+                    [-122.483696, 37.833818],
+                    [-122.483482, 37.833174],
+                    [-122.483396, 37.8327],
+                    [-122.483568, 37.832056],
+                    [-122.48404, 37.831141],
+                    [-122.48404, 37.830497],
+                    [-122.483482, 37.82992],
+                    [-122.483568, 37.829548],
+                    [-122.48507, 37.829446],
+                    [-122.4861, 37.828802],
+                    [-122.486958, 37.82931],
+                    [-122.487001, 37.830802],
+                    [-122.487516, 37.831683],
+                    [-122.488031, 37.832158],
+                    [-122.488889, 37.832971],
+                    [-122.489876, 37.832632],
+                    [-122.490434, 37.832937],
+                    [-122.49125, 37.832429],
+                    [-122.491636, 37.832564],
+                    [-122.492237, 37.833378],
+                    [-122.493782, 37.833683]
+                    ]
+                    }
+                    }
+                    });
+                    map2.current.addLayer({
+                    'id': 'route',
+                    'type': 'line',
+                    'source': 'route',
+                    'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                    },
+                    'paint': {
+                    'line-color': 'green',
+                    'line-width': 8
+                    }
+                    });
+
+
+
                 res.data.Jobsite.forEach(element => {
                     if (element.latlang) {
                         marker2.current = new mapboxgl.Marker()
@@ -1753,7 +1838,15 @@ const Jobsite = () => {
 
                 });
 
+ // Get the source data
+  const sourceData = map2.current.getSource('route')._data;
+  console.log(sourceData)
 
+  // Calculate the total distance along the LineString
+  const line = turf.lineString(sourceData.geometry.coordinates);
+  const lineDistance = turf.lineDistance(line, { units: 'kilometers' });
+
+  console.log(`Total distance along the line: ${lineDistance} kilometers`);
                 map2.current.resize()
                 geocoder2.on('result', function (e) {
                     if (marker2.current) marker2.current.remove()
@@ -2069,11 +2162,8 @@ console.log(allhours)
 
             
                 axios.post(`${tz}/jobsite/delete`, {
-                    ids: r
-
-
-
-                }).then(res => {
+                    ids: r   
+                             }).then(res => {
                     console.log(res)
                     setdeleteids([])
                     axios.get(`${tz}/jobsite/getall`).then(res2 => {
