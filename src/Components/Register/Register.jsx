@@ -43,14 +43,27 @@ const Register = () => {
   const [gender, setgender] = useState('Male')
   const [pass, setpass] = useState('')
 
+
   const [dob, setdob] = useState('Date of birth')
   const [emailc, setemailc] = useState('')
   const [trades, settrades] = useState(['Sheet Metal','Electrical Ect'])
-
+const [fname, setfname] = useState('')
+const [lname, setlname] = useState('')
   const [cpassc, setcpassc] = useState('')
 
+  const [cityu, setcityu] = useState('')
+  const [zipu, setzipu] = useState('')
+  const [stateu, setstateu] = useState('')
 
-  const [current, setcurrent] = useState('user')
+  const [current, setcurrent] = useState('company')
+  function setcurrentx(val){
+    if(val==='company'){
+
+    }
+    else{
+      setcurrent(val)
+    }
+  }
   function regi() {
 
     if (!companyname || !address || !phone || !emailc || !cemailsyntax) {
@@ -84,18 +97,18 @@ const Register = () => {
       setcheckinfo(false)
 
       axios.post(`${tz}/siteuser/add`, {
-        name: name,
+        name: name+fname+lname,
         nc: 'no',
         taxes: 0,
         skill: skill,
         payrate: '-',
         otpayrate: '-',
         phone: phone2,
-        address: add2,
+        address: zipu+add2+cityu+stateu,
         itin: ITIN,
         status: 'Inactive',
         client: '-',
-        email: email,
+        email: email.toLocaleLowerCase(),
         gender: gender,
         dob: day + "/" + month + '/' + year,
         password: pass,
@@ -134,10 +147,13 @@ else{
       setcheckinfo(true)
 
     }
-    else {
+    else if(usteps===0) {
       setcheckinfo(false)
 
       setusteps(1)
+    }
+    else{
+      setusteps(2)
     }
   }
 
@@ -226,7 +242,7 @@ else{
     }
   }, [])
   const [day, setday] = useState('0')
-  const [month, setmonth] = useState('')
+  const [month, setmonth] = useState('month')
   const [year, setyear] = useState('')
   const [otp, setotp] = useState('')
   const [cotp, setcotp] = useState('')
@@ -391,12 +407,18 @@ else{
             <div className="selecttype">
               {current === 'user' ?
                 <>
-                  <button onClick={e => setcurrent('user')} className='purp rad'>User</button>
-                  <button className='groo rad2' onClick={e => setcurrent('company')}>Company</button></> :
+                  <button onClick={e => setcurrentx('user')} className='purp rad'>User</button>
+                  <button
+                  style={{
+                    cursor:'not-allowed'
+                  }}
+                  className='groo rad2' onClick={e => setcurrentx('company')}>Company</button></> :
                 <>
 
-                  <button className='groo rad' onClick={e => setcurrent('user')}>User</button>
-                  <button className='purp rad2' onClick={e => setcurrent('company')}>Company</button></>
+                  <button className='groo rad' onClick={e => setcurrentx('user')}>User</button>
+                  <button
+                  
+                  className='purp rad2' onClick={e => setcurrentx('company')}>Company</button></>
               }
             </div>
             <div className="register2">
@@ -428,10 +450,10 @@ else{
                             <input placeholder='Email' onChange={cemail}  disabled={showccode === 1 ? true : false} type="
         " />
 
-                            {/*
+                            {
   cemailsyntax&&!cotpverified&&
   <p style={{cursor:'pointer'}} onClick={e=>sendotpc()}>Get Code</p>
-*/}
+}
 
                             {
                               cotpverified &&
@@ -608,23 +630,42 @@ Language:
 
                           <h1>Registration form</h1>
                           <p>Please fill all the required fields</p>
-                          <div className="crin">
-                            <input placeholder='Name' onChange={e => setname(e.target.value)} type="
+                         <div className="crinpp">
+                         <div className="crin">
+                            <input className='vbw' placeholder='First name' onChange={e => setname(e.target.value)} type="
      " />
+     
+     
 
 
-                            <FaUser className='hiout' />
                           </div>
+                          <div className="crin">
+                            <input className='vbw' placeholder='Middle name' onChange={e => setfname(e.target.value)} type="
+     " />
+     
+     
+
+
+                          </div>
+                          <div className="crin">
+                            <input className='vbw' placeholder='Last name' onChange={e => setlname(e.target.value)} type="
+     " />
+     
+     
+
+
+                          </div>
+                         </div>
                           {checkinfo && !name &&
                             <h6 className='redinfo'> Name is required</h6>
                           }
                           <div className="crin crink">
                             <input onChange={useremail} value={email} disabled={showcode === 1 ? true : false} placeholder='Enter email' type="
      " />
-                            {/*
+                            {
   emailsyntax&&!otpverified&&
   <p style={{cursor:'pointer'}} onClick={e=>sendotp()}>Get Code</p>
-      */}
+      }
 
                             {
                               otpverified &&
@@ -690,78 +731,135 @@ Language:
                             By filling out application you will be creating a resume that you can easily shared and store for future use. You will also be in front road sit for companies to contact and hire you asap. At the best pay rate available in your town. This i pop up note
 
                         </p> </button>*/}
-                        </> :
+                        </> :usteps===1?
+
+<> <h1>Registration form</h1>
+<p>Please fill all the required fields</p>
+
+<div className="cftr">
+  <label>DOB</label>
+
+
+
+  <select onChange={e => setmonth(e.target.value)} value={month}  >
+    <option value="01">January</option>
+    <option value="02">February</option>
+    <option value="03">March</option>
+    <option value="04">April</option>
+    <option value="05">May</option>
+    <option value="06">June</option>
+    <option value="07">July</option>
+    <option value="08">August</option>
+    <option value="09">September</option>
+    <option value="10">October</option>
+    <option value="11">November</option>
+    <option value="12">December</option>
+  </select>
+  <select className='dd'  onChange={e => setday(e.target.value)}>
+    <option value=""> Day</option>
+{dates.map(val=>(
+
+  
+<option value={val}>{val}</option>
+))
+
+}
+
+  </select>
+  <select className='yyyy'  onChange={e =>  setyear(e.target.value)}>
+    <option value=""> yyyy</option>
+{years.map(val=>(
+
+  
+<option value={val}>{val}</option>
+))
+
+}
+
+  </select>
+</div>
+<div className="crin">
+
+  <select name="cars" id="cars" style={{width:'100%'}} onChange={e => setgender(e.target.value)}>
+
+
+
+
+  <option value={''}>Gender</option>
+    <option value={'Male'}>Male</option>
+    <option value={'Female'}>Female</option>
+  </select>
+
+<div class="dropdown-icon dpicon2">&#9660;</div>
+</div>
+
+{checkinfo && !gender &&
+  <h6 className='redinfo'> Gender is required</h6>
+}
+
+
+{checkinfo && !dobsyntax &&
+  <h6 className='redinfo'>Date format (mm-dd-yyyy)</h6>
+
+}
+
+
+
+
+<div className="crin crink">
+  <input                type="text"
+autoComplete='off'
+placeholder='skill'
+    onChange={e => setskill(e.target.value)} value={skill} onClick={e => setboxprojects('boxprojects')} />
+  <GrUserWorker className='hiout' />
+{skill.length>0&&skildata.some(item => item.name.toLowerCase().search(skill.toLowerCase())>=0) &&  <div className={boxprojects} style={{paddingLeft:5}} >
+   
+
+
+{skill.length>0&&skildata&&skildata.map(val=>(
+val.name.toLowerCase().search(skill.toLowerCase())>=0&&  <p onClick={e=>setthisskill(val.name)}>
+{val.name}
+<p></p>
+</p>    
+))
+
+}
+ 
+
+  </div>
+
+}
+</div>
+
+{checkinfo && !skill &&
+  <h6 className='redinfo'>Skill is required</h6>
+}
+<div className="crin crink">
+  <p>+1</p>
+  <input placeholder='Phone' 
+     value={phone2}
+     onChange={phoneuser}
+  type="tel" />
+  <BsFillTelephoneFill className='hiout' />
+
+</div>
+{checkinfo && !phone2 &&
+  <h6 className='redinfo'>Enter phone number</h6>
+} {checkinfo && !validnum &&
+  <h6 className='redinfo'>Enter valid number</h6>
+}
+
+
+<div className="crin2 crink" onClick={e => forwardu()}>
+  Next
+</div></>
+:
+                        
                         <> <h1>Registration form</h1>
                           <p>Please fill all the required fields</p>
 
-                          <div className="cftr">
-                            <label>DOB</label>
-
                        
-
-                            <select onChange={e => setmonth(e.target.value)}>
-                              <option value=""> Month</option>
-                              <option value="01">January</option>
-                              <option value="02">February</option>
-                              <option value="03">March</option>
-                              <option value="04">April</option>
-                              <option value="05">May</option>
-                              <option value="06">June</option>
-                              <option value="07">July</option>
-                              <option value="08">August</option>
-                              <option value="09">September</option>
-                              <option value="10">October</option>
-                              <option value="11">November</option>
-                              <option value="12">December</option>
-                            </select>
-                            <select className='dd'  onChange={e => setday(e.target.value)}>
-                              <option value=""> Day</option>
-                          {dates.map(val=>(
-
-                            
-<option value={val}>{val}</option>
-                          ))
-
-                          }
-
-                            </select>
-                            <select className='yyyy'  onChange={e =>  setyear(e.target.value)}>
-                              <option value=""> yyyy</option>
-                          {years.map(val=>(
-
-                            
-<option value={val}>{val}</option>
-                          ))
-
-                          }
-
-                            </select>
-                          </div>
-                          <div className="crin">
-
-                            <select name="cars" id="cars" style={{width:'100%'}} onChange={e => setgender(e.target.value)}>
- 
-
-
-
-                            <option value={''}>Gender</option>
-                              <option value={'Male'}>Male</option>
-                              <option value={'Female'}>Female</option>
-                            </select>
-
-                          <div class="dropdown-icon dpicon2">&#9660;</div>
-                          </div>
-
-                          {checkinfo && !gender &&
-                            <h6 className='redinfo'> Gender is required</h6>
-                          }
-
-
-                          {checkinfo && !dobsyntax &&
-                            <h6 className='redinfo'>Date format (mm-dd-yyyy)</h6>
-
-                          }
-
+                        
 
                           <div className="crin crink">
                             <input placeholder='Address' onChange={e => setadd2(e.target.value)} type="
@@ -771,50 +869,44 @@ Language:
                           {checkinfo && !add2 &&
                             <h6 className='redinfo'>Address is required</h6>
                           }
-
-
-<div className="crin crink">
-                            <input placeholder='Skill'
-                              onChange={e => setskill(e.target.value)} value={skill} type="
-     "  onClick={e => setboxprojects('boxprojects')} />
-                            <GrUserWorker className='hiout' />
-                         {skill.length>0&&skildata.some(item => item.name.toLowerCase().search(skill.toLowerCase())>=0) &&  <div className={boxprojects} style={{paddingLeft:5}} >
-                             
-                      
-
-                        {skill.length>0&&skildata&&skildata.map(val=>(
-                    val.name.toLowerCase().search(skill.toLowerCase())>=0&&  <p onClick={e=>setthisskill(val.name)}>
-                      {val.name}
-                      <p></p>
-                    </p>    
-                        ))
-
-                        }
-                           
-                        
-                            </div>
-
-                         }
+                            <div className="crin crink" >
+                            <input placeholder='Apartment number' onChange={e => setadd2(e.target.value)} type="
+     " />
+                            <RiBuildingLine className='hiout' />
                           </div>
-
-                          {checkinfo && !skill &&
-                            <h6 className='redinfo'>Skill is required</h6>
+                          {checkinfo && !add2 &&
+                            <h6 className='redinfo'>Address is required</h6>
                           }
-                          <div className="crin crink">
-                            <p>+1</p>
-                            <input placeholder='Phone' 
-                               value={phone2}
-                               onChange={phoneuser}
-                            type="tel" />
-                            <BsFillTelephoneFill className='hiout' />
+
+
+<div className="crinpp"  style={{
+ marginTop:25
+}} >
+                         <div className="crin">
+                            <input className='vbw' placeholder='City' onChange={e => setcityu(e.target.value)} type="
+     " />
+     
+     
+
 
                           </div>
-                          {checkinfo && !phone2 &&
-                            <h6 className='redinfo'>Enter phone number</h6>
-                          } {checkinfo && !validnum &&
-                            <h6 className='redinfo'>Enter valid number</h6>
-                          }
-                        
+                          <div className="crin">
+                            <input className='vbw' placeholder='State' onChange={e => setstateu(e.target.value)} type="
+     " />
+     
+     
+
+
+                          </div>
+                          <div className="crin">
+                            <input className='vbw' placeholder='Zip' onChange={e => setzipu(e.target.value)} type="
+     " />
+     
+     
+
+
+                          </div>
+                         </div>
 
                           <div className="crin2 crink" onClick={e => regi2()}>
                             Submit
@@ -868,13 +960,15 @@ Language:
               <div className="selecttype">
                 {current === 'user' ?
                   <>
-                    <button onClick={e => setcurrent('user')} className='purp rad'>Usuario</button>
-                    <button className='groo rad2' onClick={e => setcurrent('company')}>Empresa</button>
+                    <button onClick={e => setcurrentx('user')} className='purp rad'>Usuario</button>
+                    <button  style={{
+                    cursor:'not-allowed'
+                  }} className='groo rad2' onClick={e => setcurrentx('company')}>Empresa</button>
                   </>
                   :
                   <>
-                    <button className='groo rad' onClick={e => setcurrent('user')}>Usuario</button>
-                    <button className='purp rad2' onClick={e => setcurrent('company')}>Empresa</button>
+                    <button className='groo rad' onClick={e => setcurrentx('user')}>Usuario</button>
+                    <button className='purp rad2' onClick={e => setcurrentx('company')}>Empresa</button>
                   </>
                 }
               </div>
@@ -898,9 +992,9 @@ Language:
                             <div className="crin crink">
                               <input placeholder='Correo electrónico' onChange={cemail} disabled={showccode === 1 ? true : false} type="email" />
 
-                              {/*cemailsyntax && !cotpverified &&
+                              {cemailsyntax && !cotpverified &&
                                 <p style={{ cursor: 'pointer' }} onClick={e => sendotpc()}>Obtener Código</p>
-                        */}
+                        }
 
                               {cotpverified &&
                                 <p style={{ color: 'green', fontSize: 21 }}><FiCheckCircle /></p>
@@ -1059,10 +1153,32 @@ val.toLowerCase().search(tcs.toLowerCase())>=0&&      <p className='rowss'  onCl
                           <>
                             <h1>Formulario de Registro</h1>
                             <p>Por favor complete todos los campos requeridos</p>
-                            <div className="crin">
-                              <input placeholder='Nombre' onChange={e => setname(e.target.value)} type="text" />
-                              <FaUser className='hiout' />
-                            </div>
+                            <div className="crinpp">
+                         <div className="crin">
+                            <input className='vbw' placeholder='First name' onChange={e => setname(e.target.value)} type="
+     " />
+     
+     
+
+
+                          </div>
+                          <div className="crin">
+                            <input className='vbw' placeholder='Middle name' onChange={e => setfname(e.target.value)} type="
+     " />
+     
+     
+
+
+                          </div>
+                          <div className="crin">
+                            <input className='vbw' placeholder='Last name' onChange={e => setlname(e.target.value)} type="
+     " />
+     
+     
+
+
+                          </div>
+                         </div>
                             {checkinfo && !name &&
                               <h6 className='redinfo'>Nombre es obligatorio</h6>
                             }
@@ -1136,8 +1252,8 @@ val.toLowerCase().search(tcs.toLowerCase())>=0&&      <p className='rowss'  onCl
                             <div className="cftr">
                             <label>DOB</label>
 
-                            <select onChange={e => setmonth(e.target.value)}>
-                              <option value=""> Month</option>
+                            <select onChange={e => setmonth(e.target.value)} value={month}>
+                          
                               <option value="01">January</option>
                               <option value="02">February</option>
                               <option value="03">March</option>

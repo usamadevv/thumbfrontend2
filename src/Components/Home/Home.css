@@ -546,6 +546,54 @@ color: white!important;
 .pricon2{
     background-color: rgb(172, 32, 232)!important;
 }
+.circ1x{
+    width: 25%;
+    display: flex;
+    align-items: center;
+    padding-left: 20px!important;
+    padding: 10px;
+    border-bottom: 2px solid #4852A8;
+}
+.circ1x>h1{
+    font-size: 14px;
+    color: #4852A8;
+    margin-bottom: 0px;
+}
+.circ1x>.cbge{
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border-radius: 20px;
+    background-color: #4852A8;
+    color: white;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    justify-content: center;
+}
+.grcirc1x>.cbge{
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    font-size: 12px;
+    border-radius: 20px;
+    background-color: #c7c5c5;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.grcirc1x{
+    width: 25%;
+    display: flex;
+    align-items: center;
+   padding-left: 20px;
+}
+.grcirc1x>h1{
+    font-size: 14px;
+    color: #b3b4b6;
+    margin-bottom: 0px;
+}
 .ricircle>p{
     
     font-family: 'Inter', sans-serif!important;
@@ -1119,12 +1167,62 @@ padding-right: 30px;
     font-weight: 600;
     color: #b3b4b6
 }
+.inpexnew>h1{
+    color: #7c7c7c!important;
+    font-size: 14px;
+font-weight: 400;
+margin-top: 10px;
+}
+.inpexnew>input{
+    width: 60%;
+    height: 40px!important;
+    border-radius: 5px;
+    border: none;
+    padding: 2px;
+    border: 1px solid #d4d4d4!important
+    ;
+    
+}
+.inpexs222{
+    width: 29%!important;
+}
+.inpexs222>input{
+    padding-left: 10px!important;
+    width: 100%!important;
+}
+.inpexs22{
+    width: 45%!important;
+
+}
+.inpexs22>select{
+    width: 100%!important;
+}
+.prcs2{
+    position: absolute;
+    top: 10px;
+
+}
+.jubadduser{
+    padding-top: 70px!important;
+}
+.inpexnew>select{
+
+    height: 40px!important;
+    border-radius: 5px!important
+    ;
+    border: none;
+  
+    padding-left: 5px;
+    border: 1px solid #d4d4d4!important
+    ;
+    
+}
 .inpex>input{
     width: 60%;
     height: 30px;
     border: none;
     padding: 2px;
-    border-bottom: 1px solid #d6d4d4
+    border-bottom: 1px solid #e4e4e4
     ;
     
     font-family: 'Inter', sans-serif!important;
@@ -1623,15 +1721,33 @@ border-radius: 20px;
     position: relative;
 
 }
+.divxinfo{
+    margin-left: 20px;
+}
+.divxinfo>p{
+    font-size: 16px;
+    color: #4852A8;
+}
+.sklx{
+    color: #a09b9b!important;
+    font-size: 14px!important;
+}
+.divcf{
+    display: flex;
+    flex-direction: row!important;
+    padding-left: 20px;
+}
 .penh{
     width: 35px;
     height: 35px;
+    border: 1px solid #5D69D4;
     border-radius: 50px;
-    background-color: #5D69D4;
+    background-color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    cursor: pointer;
+    color: #5D69D4;
     position: absolute;
     top:20px;
     right: 20px;
@@ -1866,20 +1982,23 @@ border-radius: 20px;
 background-color: #020B60!important;
 color: white!important;
 }
+.divcf{
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
 .sklo{
     height: 25px;
-        padding-left: 10px;
-        padding-right: 10px;margin-top: 10px;
-        background-color: #f4f0da;
+        padding-right: 10px;
+  
         display: flex;
         align-items: center;
         cursor: pointer;
-        justify-content: center;
+        justify-content: flex-start;
 
     font-family: 'Inter', sans-serif!important;
         border-radius: 100px;
         color: #db911b!important;
-        font-weight: 700!important;
+        font-weight: 500!important;
         font-size: 14px!important;
 }
 
@@ -1906,6 +2025,13 @@ color: white!important;
         z-index: 999999;
         cursor: pointer;
       }
+      .callings{
+        width: 100%;
+        background: rgb(199,197,232);
+        background: linear-gradient(90deg, rgba(199,197,232,1) 0%, rgba(145,145,231,1) 35%, rgba(0,212,255,1) 100%);
+        height: 100%;
+        border-radius: 20px;
+    }
     .skl{
         height: 25px;
         padding-left: 10px;
@@ -1921,6 +2047,10 @@ color: white!important;
         font-weight: 700!important;
         font-size: 14px!important;
     }
+    .skio{}
+    .divcf{
+        margin: 0!important;
+    }
     .prt{
         display: flex;
         align-items: center;
@@ -1931,7 +2061,7 @@ color: white!important;
 
     .prt>h1{
         font-family: 'Inter', sans-serif!important;
-        font-size: 25px;
+        font-size: 20px;
         font-weight: 400;
         color: #00326c;
         margin-bottom: 0px;
@@ -2956,13 +3086,45 @@ border: 8px solid #ecfdf3;
     margin-left: -70px!important;
     background-color: rgb(241, 94, 94)!important;
 }
+.xinp{
+    align-items: center;
+    color: gray;
+}
+.xinp>p{
+    margin-right: 20px;
+}
+.xinp>input{
+    margin-right: 20px;
+    height: 40px;
+    border-radius: 10px;
+border: none;
+border: 1px solid rgb(227, 227, 227);
+}
+.mdc{
+    margin-right: 10px;
+    font-size: 25px;
+}
+
+.xin>select{
+    margin-right: 20px;
+    height: 40px;
+    border-radius: 20px;
+border: none;
+border: 1px solid rgb(227, 227, 227);
+}
+.xin>.xinp>input{
+    width: 130px;
+}
 .inputname>textarea{
     resize: none;
     width: 95%;
     height: 150px;
     border: none;
     padding: 2px;
-    border-bottom: 1px solid gray;
+  
+    border-radius: 20px;
+border: none;
+border: 1px solid rgb(227, 227, 227);
     font-family: 'Inter', sans-serif!important;
     font-size: 14px;
     font-weight: 400;
@@ -3683,8 +3845,8 @@ margin-left: 20px;
 margin-bottom: 20px;
 font-family: 'Inter', sans-serif!important;
 font-size: 16px;
-font-weight: 700;
-color: #00326c;
+font-weight: 500;
+color: #104d94;
 }
 .fabv{
     font-size: 30px;
@@ -3790,8 +3952,16 @@ border: none;
     font-family: 'Inter', sans-serif!important;
 
 }
+.cinfocol{
+    margin-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.cinfocol>.cinfo{
+    border-bottom: none!important;
+}
 .cinfo>p{
-margin-left: 20px;
+
     font-weight: 400!important;
 font-size: 14px;
 color: #A19B9B
@@ -3873,6 +4043,7 @@ border-radius: 15px;
     min-height: 400px;
     width: 29%;
     background-color: white;
+    padding-bottom: 10px;
     background: #FFFFFF;
 border: 1px solid #EAEAEA;
 box-shadow: 0px 4px 40px -20px rgba(0, 0, 0, 0.25);
@@ -4494,9 +4665,20 @@ font-style: italic;
 }
 
 .headermsg{
+    position: relative;
     height: 10%;
     width: 100%;
     background-color: rgb(255, 255, 255);
+}
+.paf{
+    color: #4852A8;
+    font-size: 22px;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+    align-self: center;
+
 }
 .messagesall{
     height: 95%;
@@ -4511,6 +4693,26 @@ padding-left: 30px;
 .msgback{
     background-color: #f1eeee!important;
 }
+.cinfocol>.mdl2{
+    margin-right: 10px;
+width: 50px;
+border-radius: 50px;
+min-width: 50px;
+height: 50px;
+border-radius: 30px;
+background-color:#f6f9ff;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.mdl2>.mdl{
+    font-size: 20px;
+    color: #5D69D4;
+}
+.cinfocol{
+    display: flex;
+    flex-direction: row!important;
+}
 .headermsg{
     padding-left: 10px;
     display: flex;
@@ -4519,8 +4721,9 @@ padding-left: 30px;
 .headermsg>h1{
     
     font-family: 'Inter', sans-serif!important;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 500;
+    margin-bottom: 0px;
     color: rgb(90, 89, 89);
 }
 .msgbox>h1{
@@ -4592,6 +4795,81 @@ padding-top: 15px;
         width: max-content;
         min-width: 25%;
         
+    }
+    .noys{
+        width: 200px;
+        height: 200px;
+        background: rgb(244,228,220);
+        background: linear-gradient(79deg, rgba(244,228,220,1) 0%, rgba(218,83,40,1) 35%, rgba(255,220,212,1) 100%);
+        display: flex;
+        position: absolute;
+        border-radius: 1000px;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    .endcall{
+        position: absolute;
+        bottom: 60px;
+        background-color: #F46767;
+        transform: rotateZ(225deg);
+        width: 50px;
+        height: 50px;
+        border-radius: 50px;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+font-size: 25px;
+color: white;
+    }
+    .calloo{
+        position: fixed;
+        top: 30px;
+        right: 20px;
+        width: 300px;
+        padding-left: 20px;
+        height: 150px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        background-color: white;
+        z-index: 99999;
+        padding-right: 20px;
+        box-shadow: 0px 0px 40px -20px rgba(0, 0, 0, 0.25);
+    }
+    .niu{
+        width: 40px;
+        height: 40px;
+        border-radius: 200px;
+        background-color: #4852A8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .po{
+        color: white;
+        font-size: 18px;
+    }
+    .noys>p{
+        color: white;
+    }
+.fas{
+    font-size: 35px;
+    color: white;
+
+}
+    .noy{
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgb(221,220,244);
+        background: linear-gradient(79deg, rgba(221,220,244,1) 0%, rgba(145,145,231,1) 35%, rgba(0,212,255,1) 100%);
     }
     .nut{
         position: absolute;
@@ -5223,7 +5501,7 @@ font-size: 14px;    margin-right: 10px;
         position: absolute;
         top: 0;
         left: 0;
-        width: 80vw;
+        width: 98vw;
         height: 100vh;
         z-index: 9;
     }

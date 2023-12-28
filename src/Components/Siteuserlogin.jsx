@@ -65,7 +65,10 @@ const Siteuserlogin = () => {
                             localStorage.setItem('siteusername', res.data.Siteuserd[0].name)
                             localStorage.setItem('siteuserapi', '^%$234')
 
+                            localStorage.setItem('emptype2', 'user')
                             localStorage.setItem('siteusertype', 'user')
+
+                            localStorage.setItem('siteuseremail', email.toLowerCase())
                             axios.post(`${tz}/siteuser/updatestatus`, {
                                 login: 'yes',
                                 _id: res.data.Siteuserd[0]._id
@@ -100,6 +103,9 @@ const Siteuserlogin = () => {
                             localStorage.setItem('siteuserid', res.data.Supervisor[0]._id)
                             localStorage.setItem('siteuserapi', '^%$234')
                             localStorage.setItem('siteusertype', 'supervisor')
+                            localStorage.setItem('siteuseremail', email.toLowerCase())
+
+                            localStorage.setItem('emptype2', 'super')
                             window.location.pathname = 'supervisor'
 
                         }

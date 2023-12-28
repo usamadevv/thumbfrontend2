@@ -19,8 +19,14 @@ import Register from './Components/Register/Register';
 import Supervisor from './Components/Siteuser/Supervisor';
 import Generate from './Components/Register/Generate';
 import Invoice from './Components/Siteuser/Invoice';
+import * as io from 'socket.io-client'
+import { SocketProvider } from './Components/Context/SocketContext';
+import RoomPage from './Components/Home/Notes/Room';
+import LobbyScreen from './Components/Home/Notes/Lobby';
+import Apo from './Components/Home/Notes/APO';
 function App() {
   const [footer, setfooter] = useState("footer")
+  
 
 
   return (
@@ -30,9 +36,12 @@ function App() {
 
 
 <BrowserRouter>
+<SocketProvider>
         <Routes>
           <Route exact path='/' element={<Home />} />
-          <Route exact path='/user' element={<Emp />} />
+
+
+          <Route exact path='/me' element={<LobbyScreen />} />          <Route exact path='/user' element={<Emp />} />
           <Route exact path='/login' element={<Login />} />
           <Route exact path='/client' element={<Client />} />
           <Route exact path='/client-login' element={<ClientLogin />} />
@@ -41,10 +50,13 @@ function App() {
           <Route exact path='/register' element={<Register />} />
           <Route exact path='/supervisor' element={<Supervisor />} />
 
+        <Route path="/room/:roomId" element={<RoomPage />} />
+
           <Route exact path='/generate' element={<Generate />} />
           <Route exact path='/invoice/:id' element={<Invoice />} />
 
         </Routes>
+        </SocketProvider>
       </BrowserRouter>
 
 

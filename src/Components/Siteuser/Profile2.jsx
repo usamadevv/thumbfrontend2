@@ -37,7 +37,7 @@ useEffect(() => {
       id:props.user._id
      }).then(resq => {
          console.log(resq)
-         var t =Number(res.data.Client[0].weekend)+1
+         var t =1
 
          const currentDate = new Date();
          const dayOfWeek = currentDate.getDay(); // 0 (Sunday) to 6 (Saturday)
@@ -499,6 +499,7 @@ else{
 
 </div>
 <div className="notr">
+  
   <div className="vcircle tbgp">
 <TbBuildingCommunity className='tbg tbg2' />
   </div>

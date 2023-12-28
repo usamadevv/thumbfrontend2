@@ -2,15 +2,15 @@ import React, { useRef, useState } from 'react'
 import { GiEnergyArrow } from 'react-icons/gi'
 import { RiLightbulbFlashLine, RiTimerFlashFill } from 'react-icons/ri'
 import { BiTime } from 'react-icons/bi'
-import {HiArrowLeft} from 'react-icons/hi'
+import {HiArrowLeft, HiOutlineMail} from 'react-icons/hi'
 import { MdSnooze } from 'react-icons/md'
 import { AiFillCamera, AiOutlineReload } from 'react-icons/ai'
 import axios from 'axios'
 import { useEffect } from 'react'
 
 import {HiUser} from 'react-icons/hi'
-import {FaPencilAlt,FaBuilding} from 'react-icons/fa'
-import {IoClose} from 'react-icons/io5'
+import {FaPencilAlt,FaBuilding, FaPhone} from 'react-icons/fa'
+import {IoClose, IoLockClosedOutline} from 'react-icons/io5'
 
 import * as turf from '@turf/turf'
 import ReactPaginate from 'react-paginate';
@@ -30,6 +30,8 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import * as file from 'file-saver'
 import Mapview from './Mapview'
+import Mapview2 from './Mapview2'
+import { BsBuilding } from 'react-icons/bs'
 const Siteemp = ({props}) => {
     const [clientidd, setclientidd] = useState('')
     function setclientx(val){
@@ -347,7 +349,7 @@ const [kshow, setkshow] = useState(false)
 
 function setmapxs(){
     setmapx('mapx3')
-    setinpex('inpex')
+    setinpex('inpex inpexnew')
    
     setsteps(3)
 
@@ -760,7 +762,7 @@ setlatlang(val.langlat)
 
     const [arr, setarr] = useState([])
 
-    const [inpex, setinpex] = useState('inpex')
+    const [inpex, setinpex] = useState('inpex inpexnew')
     const [mapx, setmapx] = useState('mapx')
 
     const map2=useRef(null)
@@ -1095,15 +1097,24 @@ setlatlang(val.langlat)
     function showtravel(){
       
 for(let i=0;i<currone.travel.length;i++){
+if(currone.travel[i].coords.length>1){
+  // Calculate the total distance along the LineString
+  const line = turf.lineString(currone.travel[i].coords);
+  const lineDistance = turf.lineDistance(line, { units: 'miles' });
+  const updatedItems = currone;
+  updatedItems.travel[i].dist=lineDistance
 
-     // Calculate the total distance along the LineString
-     const line = turf.lineString(currone.travel[i].coords);
-     const lineDistance = turf.lineDistance(line, { units: 'miles' });
-     const updatedItems = currone;
-     updatedItems.travel[i].dist=lineDistance
+  // Update the state with the updated array
+  setcurrone(updatedItems);
+}
+else{
+    const updatedItems = currone;
+    updatedItems.travel[i].dist=0.00
+  
+    // Update the state with the updated array
+    setcurrone(updatedItems);
+}
    
-     // Update the state with the updated array
-     setcurrone(updatedItems);
 }
 settrvl(true)
 
@@ -1248,7 +1259,7 @@ settrvl2(true)
                         </div>
                     </div>
                     <div className={adduser}>
-                        <div className="subadduser hadduser">
+                        <div className="subadduser jubadduser hadduser">
 
                 <IoClose className='iov' onClick={e=>setadduserx('adduser2')} />
                             {/*      <div className="inputname">
@@ -1264,85 +1275,74 @@ settrvl2(true)
 
                             {usertype === 'user' &&
                                 <>
-                                  <div className="prcs">
-                <div className="circ1">
-                    <div className="subcirc">
-
-                    </div>
+                                  <div className="prcs prcs2">
+                <div className="circ1x">
+                  <div className="cbge">
+                    1
+                  </div>
+<h1>User Details</h1>
+               
                 </div>
-                {steps>=1?
-                <div className="bare">
-
-                </div>:
-                
-                <div className="bare2 grbare">
-
-                </div>}
+               
                 {steps>=1
                 ?
             
-                <div className="circ1">
-                    <div className="subcirc">
-
-                    </div>
+                <div className="circ1x">
+                 <div className="cbge">
+                    2
+                  </div>
+<h1>Company Details</h1>
+             
                 </div>:
                 
-                <div className="circ1 grcirc">
-                    <div className="subcirc grcirc">
-
-                    </div>
+                <div className="grcirc1x">
+                     <div className="cbge">
+                    2
+                  </div>
+                    <h1>Company Details</h1>
                 </div>}
-                {steps>=2?
-                <div className="bare">
-
-                </div>:
                 
-                <div className="bare2 grbare">
-
-                </div>}
 
                 {steps>=2
                 ?
             
-                <div className="circ1">
-                    <div className="subcirc">
-
-                    </div>
+                <div className="circ1x">
+                     <div className="cbge">
+                    3
+                  </div>
+<h1>Address</h1>
                 </div>:
                 
-                <div className="circ1 grcirc">
-                    <div className="subcirc grcirc">
-
-                    </div>
+                <div className="grcirc1x">
+             <div className="cbge">
+                    3
+                  </div>
+<h1>Address</h1>
                 </div>}
-                {steps>=3?
-                <div className="bare">
-
-                </div>:
-                
-                <div className="bare2 grbare">
-
-                </div>}
-
+               
                 {steps>=3
                 ?
             
-                <div className="circ1">
-                    <div className="subcirc">
-
-                    </div>
+                <div className="circ1x">
+                   <div className="cbge">
+                    4
+                  </div>
+<h1>Taxes</h1>
+                
                 </div>:
                 
-                <div className="circ1 grcirc">
-                    <div className="subcirc grcirc">
-
-                    </div>
+                <div className="grcirc1x ">
+               <div className="cbge">
+                    4
+                  </div>
+                    <h1>Taxes</h1>
+            
                 </div>}
               </div>
                                    {steps===0?
                                    <> 
-                                   <h6>Personal info</h6>
-                                   <div className="inpex">
+                                
+                                   <div className="inpex inpexnew">
                                    <h1>Name</h1>
                                    <input value={name} onBlur={e => generateid()} onChange={e => setname(e.target.value)} type="text" />
                                    {checkinfo&&steps===0&&!name&&
@@ -1351,12 +1351,12 @@ settrvl2(true)
                                  }
                                </div>
 
-                               <div className="inpex">
+                               <div className="inpex inpexnew">
                                    <h1>Id no.</h1>
                                    <input value={idno} type="text" />
 
                                </div>
-                               <div className="inpex">
+                               <div className="inpex inpexnew">
                                    <h1>Email</h1>
                                    <input value={email} type="text" onChange={e => setemail(e.target.value)} />
                                  {checkinfo&&steps===0&&!email&&
@@ -1365,7 +1365,7 @@ settrvl2(true)
                                  }
 
                                </div>
-                               <div className="inpex">
+                               <div className="inpex inpexnew">
                                    <h1>Password</h1>
                                    <input value={password} type="text" onChange={e => setpassword(e.target.value)} />
                                    {checkinfo&&steps===0&&!password&&
@@ -1374,9 +1374,8 @@ settrvl2(true)
                                  }
                                </div></>:steps===1?
                                <> 
-                               <h6>Company & Payrate
-                               </h6>
-                                <div className="inpex">
+                         
+                                <div className="inpex inpexnew">
                                <h1>Company</h1>
 
 
@@ -1410,7 +1409,7 @@ settrvl2(true)
 
 
                            </div>
-                           <div className="inpexs2 inpex">
+                           <div className="inpexs22 inpex inpexnew">
                                <h1>Skill</h1>
 
                                <select className='select2' name="cars" id="cars" value={skill} onChange={e => setskill(e.target.value)}>
@@ -1427,7 +1426,7 @@ settrvl2(true)
 
 
 
-                           </div> <div className="inpex inpexs">
+                           </div> <div className="inpex inpexnew inpexs">
                                <h1>Status</h1>
 
                                <select  className='select2' name="cars" id="cars" value={status} onChange={e => setstatus(e.target.value)}>
@@ -1438,7 +1437,7 @@ settrvl2(true)
 
 
                            </div>
-                           <div className="inpexs2 inpex">
+                           <div className="inpexs222 inpex inpexnew">
                                <h1>Pay rate (per/hr)</h1>
                                <input value={pr} type="number" onChange={e => setpr(e.target.value)} />
                                {checkinfo&&steps===1&&!pr&&
@@ -1447,11 +1446,11 @@ settrvl2(true)
                                  }
                            </div>
 
-                           <div className="inpexs2 inpex">
+                           <div className="inpexs222 inpex inpexnew">
                                <h1>OT Pay rate (per/hr)</h1>
                                <input value={pr && parseFloat(pr) + parseFloat(pr) / 2} type="number" onChange={e => setotpr(e.target.value)} />
         
-                           </div>     <div className="inpexs2 inpex">
+                           </div>     <div className="inpexs222 inpexnew inpex">
                                <h1>Custom Pay rate</h1>
                                <input  type="number"  onChange={e=>setcpr(e.target.value)} value={cpr} />
         
@@ -1461,7 +1460,7 @@ settrvl2(true)
                            
                            :steps===2?
                                <>  
-                               <h6>Address</h6>
+                            
                                  <div className={inpex}>
                                <h1>Address</h1>
                                <input value={address} type="text" onChange={e => setaddress(e.target.value)} />
@@ -1490,7 +1489,7 @@ settrvl2(true)
                            
                            </>
                            :<>
-                           <h6>Taxes</h6>
+                   
                            <div className="inpex">
                                         <h1>W - 9 s:  </h1>
                                         <div className={taxes} onClick={e => turnon()}>
@@ -1678,11 +1677,11 @@ settrvl2(true)
 
 
                                 <h2 style={{ paddingLeft: '5px' }}>Staff</h2>
-                                <h1>Address</h1>
+                       
 
                                 <h6>Skill</h6>
 
-                                <h6>Company</h6>
+                                <h6 style={{width:250}} >Company</h6>
                                 <h6>Phone</h6>
 
 
@@ -1705,11 +1704,10 @@ settrvl2(true)
                                             <h2 style={{ marginLeft: '5px' }}>{val.name}</h2>
 
                                         }
-                                        <h1> {val.address}</h1>
-
+                                  
                                         <h6 ><div className="tinvoice">{val.skill}</div></h6>
 
-                                        <h6>{val.client}</h6>
+                                        <h6 style={{width:250}} >{val.client}</h6>
                                         <h6>{val.phone}</h6>
                                     
 
@@ -1734,11 +1732,10 @@ settrvl2(true)
                                             <h2 style={{ marginLeft: '5px' }}>{val.name}</h2>
 
                                         }
-                                        <h1> {val.address}</h1>
-
+                                     
                                         <h6 ><div className="tinvoice">{val.skill}</div></h6>
 
-                                        <h6>{val.client}</h6>
+                                        <h6 style={{width:250}} >{val.client}</h6>
                                         <h6>{val.phone}</h6>
 
 
@@ -1763,11 +1760,10 @@ settrvl2(true)
                                             <h2 style={{ marginLeft: '5px' }}>{val.name}</h2>
 
                                         }
-                                        <h1> {val.address}</h1>
-
+                                    
                                         <h6 ><div className="tinvoice">{val.skill}</div></h6>
 
-                                        <h6>{val.client}</h6>
+                                        <h6 style={{width:250}} >{val.client}</h6>
                                         <h6>{val.phone}</h6>
                                      
                                     </div>
@@ -1830,7 +1826,7 @@ settrvl2(true)
         </div>
         <h1>User info</h1>
    
-        <div className="divx">
+        <div className="divx divcf">
        <div className="bcircle">
      <div className="iconcha">
      <AiFillCamera className='iconchai' />
@@ -1849,10 +1845,14 @@ settrvl2(true)
         }
 
         </div>
-        <p>{currone.name}</p>
-        <p className='skl'>{currone.skill}</p>
-        <p className='sklo' onClick={e=>showtravel()}>Travel logs</p>
+    <div className="divxinfo">
+    <p>{currone.name}</p>
+        <p className='sklx'>{currone.skill}</p>
+
+       <p className='sklo' onClick={e=>showtravel()}>Travel logs</p>
+    </div>
        </div>
+    
        <div className="divx2">
         <div className="prt prt2">
 <h1>{currone.payrate} $</h1>
@@ -1867,26 +1867,53 @@ settrvl2(true)
 <p>OT Pay rate</p>
         </div>
        </div>
+       <div className="cinfo cinfocol"  >
+     <div className="mdl2">
+     <BsBuilding className='mdl' />
+     </div>
        <div className="cinfo">
-        <h1>
-            <MdLocationOn className='mdl' />Company </h1>
+       <h1>
+    Company </h1>
         <p>{currone.client}</p>
        </div>
+    
+       </div>
+       <div className="cinfo cinfocol"  >
+     <div className="mdl2">
+     <FaPhone className='mdl' />
+     </div>
        <div className="cinfo">
-        <h1>
-            <MdLocationOn className='mdl' />Phone</h1>
+       <h1>
+    Phone </h1>
         <p>{currone.phone}</p>
        </div>
+    
+       </div>
+    
+       <div className="cinfo cinfocol"  >
+     <div className="mdl2">
+     <HiOutlineMail className='mdl' />
+     </div>
        <div className="cinfo">
-        <h1>
-            <MdLocationOn className='mdl' />Email </h1>
+       <h1>
+    Email </h1>
         <p>{currone.email}</p>
        </div>
+    
+       </div>
+     
+       <div className="cinfo cinfocol"  >
+     <div className="mdl2">
+     <IoLockClosedOutline className='mdl' />
+     </div>
        <div className="cinfo">
-        <h1>
-            <MdLocationOn className='mdl' />Password </h1>
+       <h1>
+    Password </h1>
         <p>{currone.password}</p>
        </div>
+    
+       </div>
+    
        <div className="badge">
         {currone.status}
        </div>

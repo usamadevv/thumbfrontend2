@@ -55,6 +55,9 @@ const mapContainer = useRef(null);
 mapboxgl.accessToken = 'pk.eyJ1IjoidXNhbWE3ODZhIiwiYSI6ImNsZXZwbDV5ZTF0M3Ezc3Axdmhmb2Z3bmwifQ.b3u24ezWs8--UJphBNY1rA'
 
 function importthis(val) {
+    console.log(val)
+    setinvoiced(val)
+    
     setdivfile(val._id)
    for(var i=0;i<2;i++){
     setpreparedata([]);
@@ -1290,6 +1293,8 @@ function exports3() {
 const [totalall, settotalall] = useState(0)
 const [markupcuee, setmarkupcuee] = useState(0)
 const [multiple, setmultiple] = useState(false)
+const [invoiced, setinvoiced] = useState(null)
+
 function exports2() {
 
     var tx = []
@@ -2452,8 +2457,10 @@ function opm() {
     const [selected, setselected] = useState('')
     const [weekends, setweekends] = useState([])
     const [showfiles, setshowfiles] = useState(false)
+    const [comp, setcomp] = useState(null)
     function setselectedx(val)
     {
+        setcomp(val)
         setshowfiles(false)
         setselected(val._id)
         setfiles(val.invoicedata)
@@ -2483,16 +2490,16 @@ setweekends(distinctWeekNumbers)
                             <h1 className='invoiceh'>{compnay}<p className='invoicep' >Invoice</p></h1>
                             <div className="spanl">
                                 <h3>
-                                    Date: <p>{indate}</p>
+                                    Date: <p>{invoiced.date}</p>
                                 </h3>
                                 <h3>
-                                    Invoice #: <p>{inno}</p>
+                                    Invoice #: <p>{invoiced.no}</p>
                                 </h3>
                                 <h3>
                                     Consumer ID: <p>01238979</p>
                                 </h3>
                                 <h3>
-                                    Due Date: <p>{indue}</p>
+                                    Due Date: <p>{invoiced.due}</p>
                                 </h3>
 
                             </div>
@@ -2506,9 +2513,9 @@ setweekends(distinctWeekNumbers)
 {!multiple&&<>
 
 
-    <h2>Project # {innum}</h2>
+    <h2>{comp.username}</h2>
                                     <h2>
-                                        Project Name: {inname}
+                                    {comp.address}
                                     </h2></>
 
 }
@@ -2595,7 +2602,9 @@ setweekends(distinctWeekNumbers)
                                                 </h6>
                                                 <h6>$ {val["OT RTE"]}</h6>
 
-                                                <h6>$ {val["TOTAL"]}</h6>
+                                                <h6 style={{width:100,
+                                                justifyContent:'flex-end'
+                                                }} >$ {val["TOTAL"]}</h6>
 
                                             </div> :
                                             <div key={index} className="tavbody tavbo">
@@ -2630,7 +2639,10 @@ setweekends(distinctWeekNumbers)
                                                     {val["OT HRS"]}
                                                 </h6>
                                                 <h6>$ {val["OT RTE"]}</h6>
-                                                <h6>$ {val["TOTAL"]}</h6>
+                                                <h6 style={{width:100
+                                                ,
+                                                justifyContent:'flex-end'
+                                                }} >$ {val["TOTAL"]}</h6>
 
                                             </div>
 
@@ -2731,7 +2743,7 @@ setweekends(distinctWeekNumbers)
    <h1>{val.weekno}</h1>
 </div>
 <span>
-        Updated by: de.perexx@gmail.com 
+        Updated by: {val.by&&val.by} on {val.created&&val.created}
      </span>
 </div>: <div className='divfilenew' onClick={e=>importthis(val)}>
         
@@ -2741,7 +2753,7 @@ setweekends(distinctWeekNumbers)
         <h1>{val.weekno}</h1>
      </div>
      <span>
-        Updated by: de.perexx@gmail.com 
+     Updated by: {val.by&&val.by} on {val.created&&val.created}
      </span>
     </div>
    }   </>

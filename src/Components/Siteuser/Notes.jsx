@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { BiUserCircle } from 'react-icons/bi'
 import axios from 'axios'
 import 'react-calendar/dist/Calendar.css';
@@ -8,7 +8,63 @@ import { BiTime } from 'react-icons/bi'
 import { MdSnooze } from 'react-icons/md'
 import { tz } from '../apis';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSocket } from '../Context/SocketContext';
 const Notes = ({props}) => {
+
+    const [emailw, setEmailw] = useState("");
+    const [room, setRoom] = useState( new Date().getTime().toString())
+    const socket = useSocket();
+    const navigate = useNavigate();
+    const handleSubmitForm = useCallback(
+      (ee) => {
+
+        localStorage.setItem('remotecaller',ee)
+      
+        socket.emit("room:join", { email:ee, room,sender:emailw });
+
+      },
+      [emailw, room, socket]
+    );
+  const [sender2, setsender2] = useState('')
+const [calling, setcalling] = useState(false)
+    const handleJoinRoom = useCallback(
+
+      (data) => {
+        const { email, room,sender } = data;
+        setsender2(sender)
+        console.log(data)
+    
+        console.log(localStorage.getItem('siteuseremail'))
+
+        if(data.email===localStorage.getItem('siteuseremail')){
+           setcalling(true)
+           setRoom(room)
+
+
+        }
+        else{
+
+            navigate(`/room/${room}`);
+        }
+
+      },
+      [navigate]
+    );
+  
+  
+    useEffect(() => {
+       
+      socket.on("room:join", handleJoinRoom);
+
+      socket.on("room:callto", handleJoinRoom);
+      return () => {
+        socket.off("room:join", handleJoinRoom);
+      };
+    }, [socket, handleJoinRoom]);
+  
+
+
     
 const [adduser, setadduser] = useState('adduser2')
 const [value, onChange] = useState(new Date());

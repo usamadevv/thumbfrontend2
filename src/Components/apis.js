@@ -1,1 +1,1 @@
-export var tz='http://13.59.30.246:4001/api'
+export var tz='https://thumbffice.com/api'

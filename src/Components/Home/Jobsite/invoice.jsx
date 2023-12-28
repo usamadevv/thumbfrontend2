@@ -573,6 +573,8 @@ console.log(rees)
                         perdiemapplied: applyperdiemx,
 
                         filename: inname + '-' + incname + '-' + new Date().toLocaleDateString('en-US'),
+                        by:datax.name,
+                        created:new Date().toLocaleDateString('en-US'),
 
                         data: ts
 
@@ -597,6 +599,8 @@ console.log(rees)
                         weekno: currentWeekNumber,
                         year: currentYear,
                         filename: inname + '-' + incname + '-' + new Date().toLocaleDateString('en-US'),
+                        by:datax.name,
+                        created:new Date().toLocaleDateString('en-US'),
 
 
 
@@ -1944,8 +1948,25 @@ console.log(rees)
 
     }
 
-
+const [datax, setdatax] = useState(null)
     useEffect(() => {
+
+
+        if(localStorage.getItem('userid')&&localStorage.getItem('userid').length>0){
+            if(localStorage.getItem('emptype')==='admin'){
+            
+                axios.post(`${tz}/admin/login2`,
+                {
+                    email:localStorage.getItem('username')
+                }).then(res=>
+                    {
+                        console.log(res
+                            )
+                            setdatax(res.data.Admin)
+                    })
+                
+            }
+        }
         axios.get(`${tz}/siteuser/active`).then(res => {
             console.log(res)
             setempdata(res.data.Siteuserd)
@@ -2982,13 +3003,14 @@ setl(1)
                     {
                         clients && clients.map(val2 => (
                             val2._id === currid &&
-                            val2.invoicedata.map(val => (
-                                <>
-                                    <div className="rowval">
+                            val2.invoicedata .slice()
+                            .reverse().map((val,index) => (
+                            <>
+                                    <div className="rowval" key={index}>
                                         <FaFileImage className='fami' />
                                         <div className="midone">
                                             <h1>{val.filename}</h1>
-                                            <p>{val.reporttype}</p>
+                                            <p>Saved by {val.by?val.by:'Admin'} on {val.created&&val.created}</p>
                                         </div>
                                         <button onClick={e => importthis(val)} >Import</button>
                                     </div>

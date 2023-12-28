@@ -1,5 +1,5 @@
-import React from 'react'
-import { FaRegBell } from 'react-icons/fa'
+import React, { useCallback } from 'react'
+import { FaFileAlt, FaPhone, FaRegBell } from 'react-icons/fa'
 import { BiLogOutCircle } from 'react-icons/bi'
 import './Siteuser.css'
 import { BsCreditCard2FrontFill } from 'react-icons/bs'
@@ -58,9 +58,66 @@ import Reports from './Reports'
 import Empnotes from '../Home/Notes/Empnotes'
 import Supernotes from '../Home/Notes/Supernotes'
 import SwipeableButton from './Button'
+import { VscNote } from 'react-icons/vsc'
+import Supleave from './Supleave'
+import { useSocket } from '../Context/SocketContext'
+import { useNavigate } from 'react-router-dom'
 
 const Supervisor = () => {
+    const [datax, setdatax] = useState()
+    const [emailw, setEmailw] = useState("");
+    const [room, setRoom] = useState( new Date().getTime().toString())
+    const socket = useSocket();
+    const navigate = useNavigate();
+    const handleSubmitForm = useCallback(
+      (ee) => {
+
+        localStorage.setItem('remotecaller',ee)
+      
+        socket.emit("room:join", { email:ee, room,sender:emailw });
+
+      },
+      [emailw, room, socket]
+    );
+  const [sender2, setsender2] = useState('')
+const [calling, setcalling] = useState(false)
+    const handleJoinRoom = useCallback(
+
+      (data) => {
+        const { email, room,sender } = data;
+        setsender2(sender)
+        console.log(data)
     
+        console.log(localStorage.getItem('siteuseremail'))
+
+        if(data.email===localStorage.getItem('siteuseremail')){
+           setcalling(true)
+           setRoom(room)
+
+
+        }
+        else{
+
+            navigate(`/room/${room}`);
+        }
+
+      },
+      [navigate]
+    );
+  
+  
+    useEffect(() => {
+       
+      socket.on("room:join", handleJoinRoom);
+
+      socket.on("room:callto", handleJoinRoom);
+      return () => {
+        socket.off("room:join", handleJoinRoom);
+      };
+    }, [socket, handleJoinRoom]);
+  
+
+
   const [value, value2] = useState(new Date());
 
   function onxhange(e){
@@ -242,6 +299,7 @@ const [changep, setchangep] = useState('Change Profile')
     const [siteall, setsiteall] = useState()
     const [chkintime, setchkintime] = useState('')
 const [allactive, setallactive] = useState()
+const [noti, setnoti] = useState([])
 const [allprojects, setallprojects] = useState()
     useEffect(() => {
 
@@ -260,6 +318,11 @@ setallactive(res1.data.Siteuserd)
                 console.log(res1)
                 setuser(res1.data.Supervisor[0])
 
+                axios.get(`${tz}/noti/getall`).then((res2w)=>{
+
+                    setnoti(res2w.data.Not)
+                    
+                    })
                 axios.get(`${tz}/jobsite/getall`).then(res2 => {
 setallprojects(res2.data.Jobsite)
                 })
@@ -848,7 +911,16 @@ function setdisplay(val){
     const [display2, setdisplay2] = useState(false)
     return (
         <>    
-        
+          {calling&&<div className='calloo' >
+
+<p>{sender2&&sender2} is Calling...   </p>
+<div className="niu" onClick={e=>handleSubmitForm(sender2)}>
+    <FaPhone className='po' />
+
+</div>
+</div>
+
+}
         {openp&&
         <div className="profio">
                <div className="profilepage maxsizing">
@@ -2222,6 +2294,11 @@ Projects
                     Notes
                     <div className="nut nutx">{user&&user.contacts&&user.contacts.map(obj => obj.unseen).reduce((a, b) => a + b, 0)}</div> 
                 </h3>
+                <h3 onClick={e => seti(1929)}>
+                    <FaFileAlt className='icondash1' />
+
+                    Leaves
+                </h3>
                 <h3 onClick={e => setadduser('adduser')} className='buttson'>
                     
                 
@@ -2586,56 +2663,20 @@ showusers==='ns'?
 <div className="secondx">
 <div className="seconditem hideonmobile">
 <h1>Notifications</h1>
-<div className="notr">
+{noti&&noti.map(val=>(
+  <div className="notr">
   <div className="vcircle">
-<TbBuildingCommunity className='tbg' />
+<VscNote className='tbg' />
   </div>
   <div className="textr">
-    <h1>Ebel Checked in at jobsite ABC</h1>
-    <p>12/09/2022</p>
+    <h1>{val.message}</h1>
+    <p>{val.time}</p>
   </div>
 
 </div>
-<div className="notr">
-  <div className="vcircle tbgp">
-<TbBuildingCommunity className='tbg tbg2' />
-  </div>
-  <div className="textr">
-    <h1>Ebel Checked in at jobsite ABC</h1>
-    <p>12/09/2022</p>
-  </div>
+))
 
-</div>
-<div className="notr">
-  <div className="vcircle">
-<TbBuildingCommunity className='tbg' />
-  </div>
-  <div className="textr">
-    <h1>Ebel Checked in at jobsite ABC</h1>
-    <p>12/09/2022</p>
-  </div>
-
-</div>
-<div className="notr">
-  <div className="vcircle">
-<TbBuildingCommunity className='tbg' />
-  </div>
-  <div className="textr">
-    <h1>Ebel Checked in at jobsite ABC</h1>
-    <p>12/09/2022</p>
-  </div>
-
-</div>
-<div className="notr">
-  <div className="vcircle tbgp">
-<TbBuildingCommunity className='tbg tbg2' />
-  </div>
-  <div className="textr">
-    <h1>Ebel Checked in at jobsite ABC</h1>
-    <p>12/09/2022</p>
-  </div>
-
-</div>
+}
       </div>
       <div className="seconditem hideonmobile scxx ">
 <h1>Ongoing Tasks</h1>
@@ -2924,6 +2965,13 @@ showusers==='ns'?
                     <Attendence props={{
                         user: user,
                         date: datec
+
+                    }} />
+
+                }   
+                 {i === 1929 &&
+                    <Supleave props={{
+                        user: user,
 
                     }} />
 

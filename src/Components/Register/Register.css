@@ -9,8 +9,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+   
     flex-direction: column;
 
+}
+.nbw{
+    width: 30%;
 }
 .generatemain{
     min-height: 100vh;
@@ -360,6 +364,25 @@ justify-content: space-between;
 .hiout{
     font-size: 19px;
 color: gray;
+}
+input::-webkit-contacts-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+  }
+.crinpp>div>input{
+    width: 90%;
+}
+.crinpp{
+    width: 100%;
+    display: flex;
+    align-items: center;
+justify-content: space-between;
+}
+.crinpp>.crin{
+    width: 32%!important;
 }
 .crin{
     border: 1px solid #CCCCCC;

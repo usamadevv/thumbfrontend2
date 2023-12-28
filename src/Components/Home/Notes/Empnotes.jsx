@@ -1,19 +1,73 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { BiUserCircle } from 'react-icons/bi'
 import axios from 'axios'
 import 'react-calendar/dist/Calendar.css';
 import { GiEnergyArrow } from 'react-icons/gi'
 import { RiLightbulbFlashLine, RiTimerFlashFill } from 'react-icons/ri'
 import { BiTime } from 'react-icons/bi'
-import { MdSnooze } from 'react-icons/md'
+import { MdKeyboardBackspace, MdSnooze } from 'react-icons/md'
 import { tz } from '../../apis';
 
 import prof from '../../../images/prof.png'
 import msgic from '../../../images/msg.png'
 import { useEffect } from 'react';
 import {RiSendPlaneFill} from 'react-icons/ri'
+import { useNavigate } from 'react-router-dom';
+import { useSocket } from '../../Context/SocketContext';
+import { FaPhone } from 'react-icons/fa';
 const Empnotes = ({props}) => {
+    const [emailw, setEmailw] = useState("");
+    const [room, setRoom] = useState( new Date().getTime().toString())
+    const socket = useSocket();
+    const navigate = useNavigate();
+    const handleSubmitForm = useCallback(
+      (ee) => {
+
+        localStorage.setItem('remotecaller',ee)
+      
+        socket.emit("room:join", { email:ee, room,sender:props.user.email });
+
+      },
+      [emailw, room, socket]
+    );
+  const [sender2, setsender2] = useState('')
+const [calling, setcalling] = useState(false)
+    const handleJoinRoom = useCallback(
+
+      (data) => {
+        const { email, room,sender } = data;
+        setsender2(sender)
+        console.log(data)
     
+        console.log(localStorage.getItem('siteuseremail'))
+
+        if(data.email===localStorage.getItem('siteuseremail')){
+           setcalling(true)
+           setRoom(room)
+
+
+        }
+        else{
+
+            navigate(`/room/${room}`);
+        }
+
+      },
+      [navigate]
+    );
+  
+  
+    useEffect(() => {
+       
+      socket.on("room:join", handleJoinRoom);
+
+      socket.on("room:callto", handleJoinRoom);
+      return () => {
+        socket.off("room:join", handleJoinRoom);
+      };
+    }, [socket, handleJoinRoom]);
+  
+
 const [adduser, setadduser] = useState('adduser2')
 const [value, onChange] = useState(new Date());
 
@@ -280,6 +334,9 @@ function openthischat(val,val2){
                unseen:0
        
            }).then( resx=>{
+
+
+
               
            })
     setutype(val2)
@@ -451,7 +508,7 @@ function setrecieverfor(val){
     setreciever(b[0])
 
 }
-const [lsection, setlsection] = useState('leftsectionp leftsection')
+const [lsection, setlsection] = useState('leftsection')
 function addtask2() {
     setmem(tsk=>[...tsk,reciever])
 
@@ -477,8 +534,6 @@ function addtask2() {
             <div className={lsection}>
                 <div className="fixedsearch">
                     <h4>Notes  
-
-<button className='mobilebtn mobilebtn2' onClick={e=>setlsection('leftsectionp') }>Back</button>
 
                     </h4>
                     <div className="searchbar">
@@ -649,10 +704,24 @@ function addtask2() {
             </div>
             <div className="rightsection">
                 <div className="headermsg">
+                <MdKeyboardBackspace className='mdc' onClick={e=>setlsection('leftsection')} />
+             {
+                activeid&&activeid.imgurl&&
 
+        <img className='profmsg ' src={activeid.imgurl} alt="" />
+             }
                     <h1>{activeid&&activeid.name}</h1>
-                    <button className='mobilebtn' onClick={e=>setlsection('leftsection')}>Users</button>
+                    <button className='mobilebtn' onClick={e=>setlsection('leftsection')}>Back</button>
+                    <FaPhone  onClick={e=>handleSubmitForm(activeid.email)} style={{
+                        position:'absolute',
+                        top:25,
+                        
+                        right:10,
+                        cursor:'pointer',
+                        color:'rgb(93, 105, 212)',
+                        fontSize:20
 
+                    }} />
                 </div>
                 <div className="messagesall" ref={messageEl}>
                     {messages&&messages.length>0?messages.map(val=>(

@@ -1,5 +1,5 @@
-import React from 'react'
-import { FaRegBell } from 'react-icons/fa'
+import React, { useCallback } from 'react'
+import { FaPhone, FaRegBell } from 'react-icons/fa'
 import { BiLogOutCircle } from 'react-icons/bi'
 import './Siteuser.css'
 import { BsCreditCard2FrontFill } from 'react-icons/bs'
@@ -53,8 +53,65 @@ import Profile2 from './Profile2'
 import Empnotes from '../Home/Notes/Empnotes'
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Tasks from './Tasks'
+import { useSocket } from '../Context/SocketContext'
+import { useNavigate } from 'react-router-dom'
 
 const Siteuser = () => {
+
+
+    const [datax, setdatax] = useState()
+    const [emailw, setEmailw] = useState("");
+    const [room, setRoom] = useState( new Date().getTime().toString())
+    const socket = useSocket();
+    const navigate = useNavigate();
+    const handleSubmitForm = useCallback(
+      (ee) => {
+
+        localStorage.setItem('remotecaller',ee)
+      
+        socket.emit("room:join", { email:ee, room,sender:emailw });
+
+      },
+      [emailw, room, socket]
+    );
+  const [sender2, setsender2] = useState('')
+const [calling, setcalling] = useState(false)
+    const handleJoinRoom = useCallback(
+
+      (data) => {
+        const { email, room,sender } = data;
+        setsender2(sender)
+        console.log(data)
+    
+        console.log(localStorage.getItem('siteuseremail'))
+
+        if(data.email===localStorage.getItem('siteuseremail')){
+           setcalling(true)
+           setRoom(room)
+
+
+        }
+        else{
+
+            navigate(`/room/${room}`);
+        }
+
+      },
+      [navigate]
+    );
+  
+  
+    useEffect(() => {
+       
+      socket.on("room:join", handleJoinRoom);
+
+      socket.on("room:callto", handleJoinRoom);
+      return () => {
+        socket.off("room:join", handleJoinRoom);
+      };
+    }, [socket, handleJoinRoom]);
+  
+
 const [latlang, setlatlang] = useState()
     mapboxgl.accessToken='pk.eyJ1IjoidXNhbWE3ODZhIiwiYSI6ImNsZXZwbDV5ZTF0M3Ezc3Axdmhmb2Z3bmwifQ.b3u24ezWs8--UJphBNY1rA'
 
@@ -552,7 +609,18 @@ function openhistory(val){
 }
 
     return (
-        <>       {show&&
+        <>    
+         {calling&&<div className='calloo' >
+
+<p>{sender2&&sender2} is Calling...   </p>
+<div className="niu" onClick={e=>handleSubmitForm(sender2)}>
+    <FaPhone className='po' />
+
+</div>
+</div>
+
+}
+           {show&&
             <div className='dashsite'>
         
                 

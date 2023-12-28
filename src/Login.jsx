@@ -52,6 +52,8 @@ else{
                 localStorage.setItem('userid',res.data.Admin._id)
                 localStorage.setItem('username',res.data.Admin.email)
                 localStorage.setItem('emptype','admin')
+
+                localStorage.setItem('emptype2','admin')
                 window.location.pathname=''
              }
              else{

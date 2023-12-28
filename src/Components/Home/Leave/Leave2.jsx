@@ -46,12 +46,23 @@ function submit() {
     
 }
 const [userd, setuserd] = useState()
+const [usert, setusert] = useState()
 
 useEffect(() => {
     axios.get(`${tz}/leave/getall`).then(res=>{
         console.log(res)
         setuserd(res.data.Leave)
     }).catch(err=>console.log(err))
+    axios.post(`${tz}/admin/login2`,
+    {
+        email:localStorage.getItem('username')
+    }).then(res=>
+        {
+            console.log(res
+                )
+                setusert(res.data.Admin)
+        })
+    
 
   return () => {
     
@@ -92,7 +103,10 @@ var data=[
 function approve(val,val1) {
     axios.post(`${tz}/leave/updatestatus`,{
         status:val1,
-        id:val
+        id:val,
+        user:usert.name
+
+
     }).then( res=>{
         console.log(res)
         
@@ -136,7 +150,7 @@ function addtask2() {
                     <textarea onChange={e=>setleave(e.target.value)} />
 
                 </div>
-                <div className="inputname">
+                <div className="inputname xin">
                     <h1>Leave Date</h1>
                     <input onChange={e=>setdate(e.target.value)}  type="text" />
 
@@ -327,6 +341,8 @@ userd&&userd.map(val=>(
                     <h3>Status</h3>
                     <h2>Action</h2>
                     <h2></h2>
+                    <h2>Remarks</h2>
+                    <h2></h2>
 
 
                 </div>
@@ -350,6 +366,7 @@ userd&&userd.map(val=>(
                        <h2><button onClick={e=>approve(val._id,'Approved')} className='lbtn'>Approve</button></h2>
                        <h2><button onClick={e=>approve(val._id,'Declined')} className='lbtn lbtn2'>Decline</button></h2>
 
+                       <h2>{val.remarks?val.remarks:'none'}</h2>
                 </div>
                     </>
                 ))

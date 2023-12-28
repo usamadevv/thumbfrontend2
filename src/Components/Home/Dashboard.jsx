@@ -35,6 +35,7 @@ import a10 from '../../images/123/a10.png'
 import {BiStats} from 'react-icons/bi'
 import { tz } from '../apis';
 import { useState } from 'react';
+import { VscNote } from 'react-icons/vsc';
 const Dashboard = () => {
   
 
@@ -82,7 +83,7 @@ const Dashboard = () => {
   const [presentp, setpresentp] = useState(0)
   const [leavep, setleavep] = useState(0)
   const [today, settoday] = useState()
-  
+  const [noti, setnoti] = useState([])
   var datax=[
     '80%',
     '80%',   '90%',   '60%',   '80%',   '50%',   '80%',   '80%',   '80%',
@@ -106,6 +107,13 @@ var r=t.split(', ')
 
 var percemp=0;
 var latepp=0
+
+
+axios.get(`${tz}/noti/getall`).then((res2)=>{
+
+setnoti(res2.data.Not)
+
+})
 axios.get(`${tz}/user/getall`).then((res2)=>{
   
   axios.post(`${tz}/att/findcatt`,{
@@ -258,56 +266,23 @@ console.log(latep)
       </div>
       <div className="seconditem">
 <h1>Notifications</h1>
-<div className="notr">
+{noti&&noti.map(val=>(
+  <div className="notr">
   <div className="vcircle">
-<TbBuildingCommunity className='tbg' />
+<VscNote className='tbg' />
   </div>
   <div className="textr">
-    <h1>Ebel Checked in at jobsite ABC</h1>
-    <p>12/09/2022</p>
+    <h1>{val.message}</h1>
+    <p>{val.time}</p>
   </div>
 
 </div>
-<div className="notr">
-  <div className="vcircle tbgp">
-<TbBuildingCommunity className='tbg tbg2' />
-  </div>
-  <div className="textr">
-    <h1>Ebel Checked in at jobsite ABC</h1>
-    <p>12/09/2022</p>
-  </div>
+))
 
-</div>
-<div className="notr">
-  <div className="vcircle">
-<TbBuildingCommunity className='tbg' />
-  </div>
-  <div className="textr">
-    <h1>Ebel Checked in at jobsite ABC</h1>
-    <p>12/09/2022</p>
-  </div>
+}
 
-</div>
-<div className="notr">
-  <div className="vcircle">
-<TbBuildingCommunity className='tbg' />
-  </div>
-  <div className="textr">
-    <h1>Ebel Checked in at jobsite ABC</h1>
-    <p>12/09/2022</p>
-  </div>
 
-</div>
-<div className="notr">
-  <div className="vcircle tbgp">
-<TbBuildingCommunity className='tbg tbg2' />
-  </div>
-  <div className="textr">
-    <h1>Ebel Checked in at jobsite ABC</h1>
-    <p>12/09/2022</p>
-  </div>
 
-</div>
       </div>
       <div className="firstitem firstitemx">
         <div className="tope toper">

@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useCallback} from 'react'
 import "./Home.css"
 import { MdOutlineDashboard } from 'react-icons/md'
 import { CgMediaLive } from 'react-icons/cg'
@@ -9,7 +9,7 @@ import { FiCamera } from 'react-icons/fi'
 import { BsClockHistory } from 'react-icons/bs'
 import {AiOutlineSearch} from 'react-icons/ai'
 import {BsFillBellFill} from 'react-icons/bs'
-import { FaUserAlt } from 'react-icons/fa'
+import { FaPhone, FaUserAlt } from 'react-icons/fa'
 import {BiChevronRight} from 'react-icons/bi'
 import { VscNote } from 'react-icons/vsc'
 import { BiFileBlank } from 'react-icons/bi'
@@ -48,8 +48,66 @@ import Menu from './Employeetype/Menu'
 import Invoice from './Jobsite/invoice'
 import Files from './Jobsite/Files'
 import Formdat from './Formdata'
+import { useSocket } from '../Context/SocketContext'
+import { useNavigate } from 'react-router-dom'
 const Home = () => {
     const [datax, setdatax] = useState()
+    const [emailw, setEmailw] = useState("");
+    const [room, setRoom] = useState( new Date().getTime().toString())
+    const socket = useSocket();
+    const navigate = useNavigate();
+    const handleSubmitForm = useCallback(
+      (ee) => {
+
+        localStorage.setItem('remotecaller',ee)
+      
+        socket.emit("room:join", { email:ee, room,sender:emailw });
+
+      },
+      [emailw, room, socket]
+    );
+  const [sender2, setsender2] = useState('')
+const [calling, setcalling] = useState(false)
+    const handleJoinRoom = useCallback(
+
+      (data) => {
+        const { email, room,sender } = data;
+        setsender2(sender)
+        console.log(data)
+    
+        console.log(localStorage.getItem('username'))
+
+        if(data.email===localStorage.getItem('username')){
+           setcalling(true)
+           setRoom(room)
+
+
+        }
+        else{
+
+            navigate(`/room/${room}`);
+        }
+
+      },
+      [navigate]
+    );
+  
+  
+    useEffect(() => {
+       
+      socket.on("room:join", handleJoinRoom);
+
+      socket.on("room:callto", handleJoinRoom);
+      return () => {
+        socket.off("room:join", handleJoinRoom);
+      };
+    }, [socket, handleJoinRoom]);
+  
+
+
+
+
+
 useEffect(() => {
 
 
@@ -118,6 +176,16 @@ function logout(){
     <>
     {datax&&
         <div className="dashboard">
+        {calling&&<div className='calloo' >
+
+<p>{sender2&&sender2} is Calling...   </p>
+<div className="niu" onClick={e=>handleSubmitForm(sender2)}>
+    <FaPhone className='po' />
+
+</div>
+</div>
+
+}
         <div className={left}>
           {left==='left'?
             <h1 onClick={e=>setleft('left smallleft')}>Monitor</h1>:

@@ -198,6 +198,9 @@ width: 100vw;
     /* box-shadow: 1px 1px 5px rgba(0,0,0,0.3); */
     cursor: pointer;
   }
+  .xin>input{
+    width: 180px!important;
+  }
   .rsbcSliderText{
     position: absolute;
     top:0;
@@ -2249,6 +2252,10 @@ width: 30%;
 }
 .grcircle>div>.imgh{
     margin-left: 0px!important;
+}
+.noys{
+    margin-left: -80px;
+    margin-top: -80px;
 }
 .left>h3{
     display: flex;

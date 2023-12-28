@@ -1,18 +1,75 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { BiUserCircle } from 'react-icons/bi'
 import axios from 'axios'
 import 'react-calendar/dist/Calendar.css';
 import { GiEnergyArrow } from 'react-icons/gi'
 import { RiLightbulbFlashLine, RiTimerFlashFill } from 'react-icons/ri'
 import { BiTime } from 'react-icons/bi'
-import { MdSnooze } from 'react-icons/md'
+import { MdKeyboard, MdKeyboardBackspace, MdSnooze } from 'react-icons/md'
 import { tz } from '../../apis';
 import { useEffect } from 'react';
 
 import prof from '../../../images/prof.png'
 import msgic from '../../../images/msg.png'
 import {RiSendPlaneFill} from 'react-icons/ri'
+import { useNavigate } from 'react-router-dom';
+import { useSocket } from '../../Context/SocketContext';
+import { FaPhone } from 'react-icons/fa';
 const Notes2 = () => {
+
+    const [emailw, setEmailw] = useState("");
+    const [room, setRoom] = useState( new Date().getTime().toString())
+    const socket = useSocket();
+    const navigate = useNavigate();
+    const handleSubmitForm = useCallback(
+      (ee) => {
+
+        localStorage.setItem('remotecaller',ee)
+      
+        socket.emit("room:join", { email:ee, room,sender:emailw });
+
+      },
+      [emailw, room, socket]
+    );
+  const [sender2, setsender2] = useState('')
+const [calling, setcalling] = useState(false)
+    const handleJoinRoom = useCallback(
+
+      (data) => {
+        const { email, room,sender } = data;
+        setsender2(sender)
+        console.log(data)
+    
+        console.log(localStorage.getItem('username'))
+
+        if(data.email===localStorage.getItem('username')){
+           setcalling(true)
+           setRoom(room)
+
+
+        }
+        else{
+
+            navigate(`/room/${room}`);
+        }
+
+      },
+      [navigate]
+    );
+  
+  
+    useEffect(() => {
+       
+      socket.on("room:join", handleJoinRoom);
+
+      socket.on("room:callto", handleJoinRoom);
+      return () => {
+        socket.off("room:join", handleJoinRoom);
+      };
+    }, [socket, handleJoinRoom]);
+  
+
+
     
 const [adduser, setadduser] = useState('adduser2')
 const [value, onChange] = useState(new Date());
@@ -32,7 +89,7 @@ const [leave, setleave] = useState('')
 
 const [senderids, setsenderids] = useState(localStorage.getItem('userid'))
 const [sender, setsender] = useState(localStorage.getItem('username'))
-const [reciever, setreciever] = useState('')
+const [reciever, setreciever] = useState('') 
 const [seen, setseen] = useState('false')
 const [note, setnote] = useState('')
 const [time, settime] = useState('02:23')
@@ -76,8 +133,10 @@ useEffect(() => {
             _id:localStorage.getItem('userid')
     
         }).then(res=>{
+            
             console.log(res)
             setaddedusers(res.data.Admin)
+            setEmailw(res.data.Admin.email)
             axios.get(`${tz}/super/getall`).then(resxx=>{
                 console.log(resxx)
             
@@ -413,7 +472,7 @@ function setrecieverfor(val){
 
 }
 
-const [lsection, setlsection] = useState('leftsectionp leftsection')
+const [lsection, setlsection] = useState('leftsection')
 function addtask2() {
     setmem(tsk=>[...tsk,reciever])
 
@@ -440,7 +499,6 @@ function addtask2() {
                 <div className="fixedsearch">
                     <h4>Notes  
 
-                    <button className='mobilebtn mobilebtn2' onClick={e=>setlsection('leftsectionp') }>Back</button>
 
 
                     </h4>
@@ -568,9 +626,34 @@ function addtask2() {
             </div>
             <div className="rightsection">
                 <div className="headermsg">
-                    <h1>{activeid&&activeid.name}</h1>
+                    <MdKeyboardBackspace className='mdc' onClick={e=>setlsection('leftsection')} />
+             {
+                activeid&&activeid.imgurl&&
 
-                    <button className='mobilebtn' onClick={e=>setlsection('leftsection')}>Users</button>
+        <img className='profmsg ' src={activeid.imgurl} alt="" />
+             }
+                    <h1>{activeid&&activeid.name}</h1>
+                   
+{calling&&<div className='calloo' >
+
+    <p>{sender2&&sender2} is Calling...   </p>
+    <div className="niu" onClick={e=>handleSubmitForm(sender2)}>
+        <FaPhone className='po' />
+
+    </div>
+</div>
+
+}
+                    <FaPhone  onClick={e=>handleSubmitForm(activeid.email)} style={{
+                        position:'absolute',
+                        top:25,
+                        right:10,
+                        cursor:'pointer',
+                        color:'rgb(93, 105, 212)',
+                        fontSize:20
+
+                    }} />
+
                 </div>
                 <div className="messagesall" ref={messageEl}>
                     {messages&&messages.length>0?messages.map(val=>(
