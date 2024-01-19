@@ -36,10 +36,76 @@ import date from 'date-and-time';
 
 const Sitepresence = () => {
 
+    function generateTimeArray(start, end) {
+        const result = [];
+        const startTime = new Date(`2000-01-01T${start}`);
+        const endTime = new Date(`2000-01-01T${end}`);
+    
+        while (startTime < endTime) {
+            result.push(formatTime(startTime));
+            startTime.setMinutes(startTime.getMinutes() + 60);
+        }
+    
+        return result;
+    }
+    
+    function formatTime(date) {
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const ampm = hours < 12 ? 'AM' : 'PM';
+        const formattedHours = (hours % 12 === 0 ? 12 : hours % 12).toString().padStart(2, '0');
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+        return `${hours}:${minutes} ${ampm}`;
+    }
+    function calculateInterval(startTime, endTime) {
+        const start = new Date(`2000-01-01T${startTime}`);
+        const end = new Date(`2000-01-01T${endTime}`);
+        const intervalInMilliseconds = end - start;
+        const intervalInMinutes = intervalInMilliseconds / (1000 * 60); // Convert milliseconds to minutes
+        return intervalInMinutes;
+      }
+      
+
+    const [currtaskforinterval, setcurrtaskforinterval] = useState({})
+    const [timeinterval, settimeinterval] = useState([])
+    
+   function intrvaltasks(val,date){
+
+     // sExample usage
+     var foundobj=val.objects.find(obj => obj.date ===date) || {}
+     const startTime = ( val.objects.find(obj => obj.date ===date) || {}).time;
+     const endTime = ( val.objects.find(obj => obj.date ===date) || {}).chkouttime;
+     
+     const timeArray = generateTimeArray(`${startTime.split(':')[0]}:${startTime.split(':')[1]}`,
+     `${endTime.split(':')[0]}:${endTime.split(':')[1]}`);
+     console.log(timeArray);
+
+     const updatedTasks = foundobj.tasks.map(({ start, end,...rest }) => ({
+        start,
+        mins:Number(start.split(':')[1]),
+        end,
+        interval: calculateInterval(start, end),
+        ...rest
+      }));
+
+foundobj.tasks=updatedTasks
+     setcurrtaskforinterval(foundobj)
+     console.log(foundobj)
+
+
+     settimeinterval(timeArray)
+   }
+    
+
 const [openp, setopenp] = useState(false)
 const [showcalender, setshowcalender] = useState(false)
 const [prodata, setprodata] = useState()
-
+const [boxfixed, setboxfixed] = useState(false)
+const [fromcalendar, setfromcalendar] = useState(false)
+const [tocalendar, settocalendar] = useState(false)
+const [activetype, setactivetype] = useState('weekly')
+const [from, setfrom] = useState('')
+const [to, setto] = useState('')
 function viewprof(val){
     axios.post(`${tz}/siteuser/find`,{
         Siteuserd_id:val,
@@ -51,6 +117,12 @@ function viewprof(val){
     })
 
 }
+function setactivetypes(val){
+    settimeinterval([])
+    setclk([])
+    setactivetype(val)
+}
+const [activebtn, setactivebtn] = useState('0')
     const [notibox, setnotibox] = useState('notibox2')
     const componentRef = useRef();
     const [att, setatt] = useState()
@@ -62,6 +134,7 @@ function viewprof(val){
   const [value, value2] = useState(new Date());
 
   function onChange(e){
+    
 
 
     var ustime=e.toLocaleString("en-US", {hour12:false})
@@ -71,6 +144,37 @@ function viewprof(val){
     setdatep(yt[0])
     mopenthis(activesite,yt[0])
   }
+  function onChangexd(e){
+
+
+    var ustime=e.toLocaleString("en-US", {hour12:false})
+    console.log(ustime)
+    setfromcalendar(false)
+    var yt=ustime.split(', ')
+    setfrom(yt[0])
+    settocalendar(true)
+  }
+  function onChangexd2(e){
+
+
+    var ustime=e.toLocaleString("en-US", {hour12:false})
+    console.log(ustime)
+    settocalendar(false)
+    var yt=ustime.split(', ')
+    setto(yt[0])
+    mopenthis(activesite,yt[0])
+  }
+  function onChangeweekly(e){
+
+
+    var ustime=e.toLocaleString("en-US", {hour12:false})
+    console.log(ustime)
+    settocalendar(false)
+    var yt=ustime.split(', ')
+    setfrom(yt[0])
+    mopenthisweekly(activesite,yt[0])
+  }
+
 
     useEffect(() => {
       
@@ -111,16 +215,99 @@ function viewprof(val){
     const [chkou, setchkou] = useState(0)
     
 const [filter, setfilter] = useState('sitename')
+
+const [selectedjobsites, setselectedjobsites] = useState([])
 const [searchval, setsearchval] = useState('')
 function openthis(val){
+
+    setselectedjobsites(selectedjobsites=>[...selectedjobsites,val])
+    setprojects( projects.filter((item) => item !== val))
     setactivesite(val)
-    seto(1)
     setchkou(0)
 setpending2([])
     axios.post(`${tz}/siteatt/findbydateandproject`,{
         date:datep,
         id:val._id
     }).then(rex => {
+
+      
+        setboxfixed(false)
+
+
+    })
+
+}
+const [datearr, setdatearr] = useState([])
+function mopenthisweekly(val,bn){
+    settimeinterval([])
+    setdatearr([])
+    const currentDate = new Date(bn); // Replace with your existing date
+const newDate = new Date(currentDate);
+
+newDate.setDate(currentDate.getDate() + 8);
+
+// Function to format the date as mm/dd/yyyy
+const formatDate = (date) => {
+  const mm = String(date.getMonth() + 1).padStart(2, ''); // January is 0!
+  const dd = String(date.getDate()).padStart(2, '');
+  const yyyy = date.getFullYear();
+  return `${mm}/${dd}/${yyyy}`;
+};
+const getDayName = (date) => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[date.getDay()];
+  };
+for (let i = 0; i < 7; i++) {
+    const newDate = new Date(currentDate);
+    newDate.setDate(currentDate.getDate() + i);
+  const dayName = getDayName(newDate);
+    setdatearr(datearr=>[...datearr,{date:formatDate(newDate),name:dayName}])
+  }
+
+  
+
+
+    setactivesite(val)
+setchkou(0)
+setpending2([])
+    axios.post(`${tz}/siteatt/fromto`,{
+        from:bn,
+        to:formatDate(newDate),
+        selectedjobsites:selectedjobsites,
+    }).then(rex => {
+console.log(rex)
+
+setfromcalendar(false)
+
+// Create a map to organize objects by date
+const classifiedByDate = new Map();
+
+// Iterate through the array and classify by date
+rex.data.Siteatt.forEach((obj) => {
+  const { userid, workinghours, ...rest } = obj;
+  if (!classifiedByDate.has(userid)) {
+    classifiedByDate.set(userid, { total: 0, objects: [{ ...rest, workinghours }] });
+  } else {
+    classifiedByDate.get(userid).objects.push({ ...rest, workinghours });
+  }
+
+  // Calculate total working hours
+  if (workinghours && workinghours !== '-') {
+    const [hours, minutes] = workinghours.split(':').map(Number);
+    classifiedByDate.get(userid).total += hours * 60 + minutes;
+  }
+});
+
+// Convert the map to an array for easy usage and format the result
+const resultArray = Array.from(classifiedByDate, ([userid, { total, objects }]) => ({
+  userid,
+  total: total > 0 ? `${Math.floor(total / 60)}:${total % 60}` : '-',
+  objects,
+}));
+
+console.log(resultArray);
+setclk(resultArray)
+
 
         val.user.forEach(ele => {
             var y=0
@@ -139,7 +326,6 @@ setpending2([])
             });
         });
 
-        setclk(rex.data.Siteatt)
         rex.data.Siteatt.forEach(element => {
             if(element.chkouttime!=='-'){
                 setchkou(chkou=>chkou+1)
@@ -151,16 +337,39 @@ setpending2([])
     })
 
 }
-
 function mopenthis(val,bn){
     setactivesite(val)
-    seto(1)
-    setchkou(0)
+setchkou(0)
 setpending2([])
-    axios.post(`${tz}/siteatt/findbydateandproject`,{
-        date:bn,
-        id:val._id
+    axios.post(`${tz}/siteatt/fromto`,{
+        from:from,
+        to:bn,
+        selectedjobsites:selectedjobsites,
     }).then(rex => {
+console.log(rex)
+
+// Create a map to organize objects by date
+const classifiedByDate = new Map();
+
+// Iterate through the array and classify by date
+rex.data.Siteatt.forEach((obj) => {
+  const { date, ...rest } = obj;
+  if (!classifiedByDate.has(date)) {
+    classifiedByDate.set(date, [rest]);
+  } else {
+    classifiedByDate.get(date).push(rest);
+  }
+});
+
+// Convert the map to an array for easy usage
+const resultArray = Array.from(classifiedByDate, ([date, objects]) => ({
+  date,
+  objects,
+}));
+
+console.log(resultArray);
+
+setclk(resultArray)
 
         val.user.forEach(ele => {
             var y=0
@@ -179,7 +388,6 @@ setpending2([])
             });
         });
 
-        setclk(rex.data.Siteatt)
         rex.data.Siteatt.forEach(element => {
             if(element.chkouttime!=='-'){
                 setchkou(chkou=>chkou+1)
@@ -219,98 +427,39 @@ const [i, seti] = useState(0)
         </div>
 
         }
-        <div className="temphead tempheadr">
+        <div className="tempe" style={{
+ height:10           
+        }}>
 
         </div>
-             <div className="clienthead varyheight2 fixedheader ">
-                    
-                    <h6  className="searchengine"><h4> Jobsite Attendence</h4>
-                    
-                  
-                        {o!==1&&
-                        <>
-                            <input onChange={e=>setsearchval(e.target.value)}  type="text" placeholder='Search here...' />
+         
 
-<select className='apply'  name="cars" id="cars" onChange={e=>setfilter(e.target.value)}>
-<option >Filters</option>
-<option value="sitename">Jobsite</option>
-<option value="clientname">Company</option>
-</select>
-                        </>
+{activetype==='daily'&&
 
-                        }
-                   
-                </h6>
-                  
-                    
-             {o===1?
-                    <button className='backj' onClick={e=>seto(0)}>Back</button>
-                    :
-                    <div className="sd2"></div>
+<div className='clientpro clienttro' style={{
+backgroundColor:'transparent'
 
-             }
-             
-                </div>
-
-{o===0&&
-
-<div className='clientpro clienttro'>
-<h1>Jobsites</h1>
+}}>
 
 
-<div className="tablerow">
-<div className="subtable">
-<div className="headertable clop ">
-<h1 style={{width:"200px"}}>Sitename</h1>
-<h2 style={{width:"200px"}}>Client Name</h2>
+<div className="attfilt">
+<button
+className='light'
+onClick={e=>boxfixed?setboxfixed(false):setboxfixed(true)}
+    >+ Project
 
-
-</div>
-{searchval.length>0&&filter==='sitename'&&projects&&projects.map(val=>(
-val.sitename.toLowerCase().search(searchval.toLowerCase())>=0&&  
-<>
-<div className="headertable" >
-<h1 style={{width:"200px"}}>{val.sitename}</h1>
-<h2 style={{width:"250px"}}> <div className="tinvoice">
-{val.clientname}</div> </h2>
-
-<h5 className='h5'><button onClick={e=>openthis(val)} className='manx man'>View Presence</button></h5>
-
-
-
-</div>
-</>
-))
-
-}
-
-{searchval.length>0&&filter==='clientname'&&projects&&projects.map(val=>(
-val.clientname.toLowerCase().search(searchval.toLowerCase())>=0&&  
-<>
-<div className="headertable" >
-<h1 style={{width:"200px"}}>{val.sitename}</h1>
-<h2 style={{width:"250px"}}> <div className="tinvoice">
-{val.clientname}</div> </h2>
-
-<h5 className='h5'><button onClick={e=>openthis(val)} className='manx man'>View Presence</button></h5>
-
-
-
-</div>
-</>
-))
-
-}
+{
+    boxfixed&&<div className="boxfixed" >
+    <input type="text" onChange={e=>setsearchval(e.target.value)} placeholder='Search project' />
 {searchval.length===0&&projects&&projects.map(val=>(
- 
 <>
-<div className="headertable" >
-<h1 style={{width:"200px"}}>{val.sitename}</h1>
-<h2 style={{width:"250px"}}> <div className="tinvoice">
-{val.clientname}</div> </h2>
-
-<h5 className='h5'><button onClick={e=>openthis(val)} className='manx man'>View Presence</button></h5>
-
+<div className="headertablenewx" onClick={e=>openthis(val)} >
+    <div className="rond">
+        {val.sitename.charAt(0)}
+    </div>
+<h1 style={{width:"100%"}}>
+    
+    {val.sitename}</h1>
 
 
 </div>
@@ -319,12 +468,522 @@ val.clientname.toLowerCase().search(searchval.toLowerCase())>=0&&
 
 }
 </div>
+}
+
+    </button>
+    <p>Date range:</p>
+    <div className="boxfrom"
+    onClick={e=>setfromcalendar(true)}
+    >
+        {fromcalendar&&
+              <Calendar onChange={onChangexd} 
+              value={value} />
+        }
+       {from?from:'Start date'}
+    </div>
+    <p>To:</p>
+    <div className="boxfrom" onClick={e=>settocalendar(true)}>
+    {tocalendar&&
+              <Calendar onChange={onChangexd2} 
+              value={value} />
+        }
+      {to?to:'End date'}
+    </div>
+    <div className="activc"
+    style={{
+position:'absolute',
+right:20,
+
+
+    }}
+    >
+        <button onClick={e=>setactivetypes('daily')} className={activetype==='daily'?'onthis':'onother'}>Daily</button>
+
+        <button className={activetype==='weekly'?'onthis':'onother'} onClick={e=>setactivetypes('weekly')}>Weekly</button>
+    </div>
 </div>
+<div className="attfilt"
+style={{
+    marginTop:20,
+justifyContent:'flex-start'
+
+}}
+>
+{selectedjobsites&&selectedjobsites.map(val=>(
+    <button
+    style={{
+
+        width:'max-content',
+        paddingLeft:10,
+
+        paddingRight:10,
+    }}
+    >{val.sitename}
+</button>
+))}
+
+<div className="a">
+    
+</div>
+</div>
+{clk&&clk.map((val3,index)=>(
+    <div className="tablerow">
+<div className="datebar">
+{val3.date}
+
+<div className="stasbtn">
+    <div className={activebtn===`0`?'stas1':'stas'} onClick={e=>setactivebtn(`0`)}>
+        Clocked in
+
+    </div>
+    <div className={activebtn===`1`?'stas1':'stas'} onClick={e=>setactivebtn(`1`)}>
+        Clocked out
+    </div>
+    <div className={activebtn===`2`?'stas1':'stas'} onClick={e=>setactivebtn(`2`)}>
+        Leave
+    </div>
+   
+</div>
+</div>
+<div className="frstrow">
+<h1>User</h1>
+<h2>Clock in</h2>
+<h2>Clock out</h2>
+<h2>Total hours</h2>
+<h2>Status</h2>
+</div>
+
+{activebtn===`0`&& val3.objects&&val3.objects.map(val=>(
+selectedjobsites.some(obj => obj._id === val.projectid)&&
+<div className="otherrow">
+
+<h1>
+    <div className="rond" style={{
+        maxWidth:30,}
+    }>
+        {val.username.charAt(0)}
+    </div>
+    {val.username}  <div className="jsite">
+        <div className="nupoint">
+            
+        </div>
+        {val.projectname}
+    </div></h1>
+<h2>{val.time}</h2>
+<h2>{val.chkouttime}</h2>
+<h2>{val.workinghours}</h2>
+<h2>Status</h2>
+
+</div>
+))
+
+}
+{activebtn===`1`&& val3.objects&&val3.objects.map(val=>(
+
+selectedjobsites.some(obj => obj._id === val.projectid)&&
+val.chkouttime!=='-'&&
+<div className="otherrow">
+
+<h1>
+    <div className="rond" style={{
+        maxWidth:30,}
+    }>
+        {val.username.charAt(0)}
+    </div>
+    {val.username}
+    <div className="jsite">
+        <div className="nupoint">
+
+        </div>
+        {val.projectname}
+    </div>
+    </h1>
+<h2>{val.time}</h2>
+<h2>{val.chkouttime}</h2>
+<h2>{val.workinghours}</h2>
+<h2>Status</h2>
+
+</div>
+))
+
+}
+{activebtn===`3`&& pending2&&pending2.map(val=>(
+val.chkouttime!=='-'&&
+<div className="otherrow">
+
+<h1>
+    <div className="rond" style={{
+        maxWidth:30,}
+    }>
+        {val.name.charAt(0)}
+    </div>
+    {val.name}
+    
+    </h1>
+<h2></h2>
+<h2></h2>
+<h2></h2>
+<h2></h2>
+
+</div>
+))
+
+}
+</div>
+))
+
+}
 
 
 </div>
 
 }
+{activetype==='weekly'
+&&
+<div className='clientpro clienttro' style={{
+backgroundColor:'transparent'
+
+}}>
+
+
+<div className="attfilt"
+
+>
+
+    <>
+    <button
+ className='light'
+    onClick={e=>boxfixed?setboxfixed(false):setboxfixed(true)}
+    >+ Project
+
+{
+    boxfixed&&<div className="boxfixed" >
+    <input type="text" onChange={e=>setsearchval(e.target.value)} placeholder='Search project' />
+{searchval.length===0&&projects&&projects.map(val=>(
+<>
+<div className="headertablenewx" onClick={e=>openthis(val)} >
+    <div className="rond">
+        {val.sitename.charAt(0)}
+    </div>
+<h1 style={{width:"100%"}}>
+    
+    {val.sitename}</h1>
+
+
+</div>
+</>
+))
+
+}
+</div>
+}
+
+    </button>
+
+   
+    <p>Start date:</p>
+    <div className="boxfrom"
+    style={{
+width:'max-content',
+paddingLeft:15,
+paddingRight:15
+    }}
+    onClick={e=>setfromcalendar(true)}
+    >
+        {fromcalendar&&
+              <Calendar onChange={onChangeweekly} 
+              value={value} />
+        }
+     {datearr.length>0?`${datearr[0].date} - ${datearr[6].date}`:'Select Date'}
+    </div>
+        
+    </>
+    <div className="activc"
+    style={{
+position:'absolute',
+right:20,
+
+
+    }}
+    >
+        <button onClick={e=>setactivetypes('daily')} className={activetype==='daily'?'onthis':'onother'}>Daily</button>
+
+        <button className={activetype==='weekly'?'onthis':'onother'} onClick={e=>setactivetypes('weekly')}>Weekly</button>
+    </div>
+  
+</div>
+<div className="attfilt"
+style={{
+    marginTop:20,
+justifyContent:'flex-start'
+
+}}
+>
+{selectedjobsites&&selectedjobsites.map(val=>(
+    <button
+    style={{
+
+        width:'max-content',
+        paddingLeft:10,
+
+        paddingRight:10,
+    }}
+    >{val.sitename}
+</button>
+))}
+
+<div className="a">
+    
+</div>
+</div>
+
+{timeinterval.length==0&& datearr&&
+<div className="tablerow">
+  
+    <div className="frstrow frstrowx">
+        <h1>User</h1>
+        {
+            datearr.map(val=>(
+                <h2
+                className='bogp'
+                >
+                
+                {val.name.substring(0,3)}
+                <div className="bog">
+                {val.date.split('/')[1]}
+                </div>
+                </h2>
+            ))
+        }
+        <h2
+                className='bogp'
+                >
+                
+              Total hours
+                </h2>
+    </div>
+
+    {clk&&clk.map((val,index)=>(
+        <div className="otherrow otherrow2">
+            <h1
+            className='bogc'
+            style={{
+color:'grey',
+fontSize:14,                
+            }}
+            >
+                <div className="rond">
+                {val.objects[0].username.charAt(0)}
+                </div>
+                
+                {val.objects[0].username}</h1>
+            {
+                 datearr.map(val33=>(
+                   
+                        
+                        val.objects.some(obj => obj.date === val33.date)&&
+                       ( val.objects.find(obj => obj.date === val33.date) || {}).workinghours!=='-'
+                        ?
+                        <>
+                        <h2
+                        onClick={e=>intrvaltasks(val,val33.date)}
+                        className='bogc'
+                        style={{
+    cursor:'pointer',
+                            display:'flex',
+                            alignItems:'center',
+                            justifyContent:'center'
+                        }}
+                        >
+                            {
+                        `${(val.objects.find(obj => obj.date === val33.date) || {}).workinghours.split(':')[0]} h  ${(val.objects.find(obj => obj.date === val33.date) || {}).workinghours.split(':')[1]} m`}
+                        </h2>
+                        
+                        </>:
+                   
+                        <h2
+           
+                    className='bogc'
+                    style={{
+cursor:'pointer',
+                        display:'flex',
+                        alignItems:'center',
+                        justifyContent:'center'
+                    }}
+                    >     -
+                        </h2>
+                    
+                    
+                 
+                
+                ))
+
+            }
+             <h2
+                    className='bogc'
+                    style={{
+
+                        display:'flex',
+                        alignItems:'center',
+                        justifyContent:'center'
+                    }}
+                    >
+
+<button className='bgc'>{val.total}</button>
+
+                    </h2>
+        </div>
+    ))
+
+    }
+
+</div>
+
+
+}
+
+
+{
+    timeinterval.length>0&&
+    <div className="tablerow">
+  
+    <div style={{
+paddingLeft:20
+,
+position:'relative'
+    }} className="frstrow frstrowx"
+
+    >
+        <h2>Time</h2>
+       <h2 style={{
+        marginLeft:40,
+        display:'flex',
+
+       }}>Task  
+        <div className="jsite">
+        <div className="nupoint">
+            
+        </div>
+        {currtaskforinterval&&currtaskforinterval.projectname}
+    </div>
+    
+    </h2>
+      
+
+       <button
+       className='sitehrs'
+       style={{
+ position:'absolute',
+ right:20,
+
+       }}
+       >
+Hours:  {currtaskforinterval&&currtaskforinterval.workinghours.split(':')[0]} hours {currtaskforinterval&&currtaskforinterval.workinghours.split(':')[1]} mins
+       </button>
+      
+    </div>
+    <div className="flxx"
+    style={{
+
+        display:'flex'
+    }}
+    >
+    <div style={{
+
+display:'flex',
+flexDirection:'column'
+}} className="collt">
+    {timeinterval&&timeinterval.map((val,index)=>(
+      
+           <h1  style={{
+            width:100,
+fontSize:14,
+height:60,
+
+
+           }}>{val}</h1>
+    
+    ))
+
+    }
+        </div>
+        <div className="colrt">
+        {timeinterval&&timeinterval.map((val,index)=>(
+      
+      <h1  style={{
+
+fontSize:14,
+height:60,
+position:'relative'
+
+      }}>
+      <div className={index%2===0?'fi':'fi2'}      style={{
+position:'absolute',
+marginTop: ( currtaskforinterval.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).mins-Number(val.split(':')[1].split(' ')[0]),
+height: ( currtaskforinterval.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).interval
+      
+      }}
+      >
+      {currtaskforinterval.tasks.some(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0])))&&
+
+      <>
+      
+      
+              <div className='fr'>
+             { (   ( currtaskforinterval.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).task
+        )     }
+                    <p>
+            Task
+        </p>
+              </div>  
+              <div className='fr'>
+             { (   ( currtaskforinterval.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).start
+        )     }
+                  <p>
+                    Start Time
+                  </p>
+              </div>  
+              <div className='fr'>
+             { (   ( currtaskforinterval.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).end
+        )     }
+                     <p>
+            End Time
+        </p>
+              </div>  
+              <div className='fr'>
+             { (   parseInt(( currtaskforinterval.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).interval/60) 
+        )     } hr { (   parseInt(( currtaskforinterval.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).interval%60) 
+        )     } mins
+        <p>
+            Total Time
+        </p>
+                  
+              </div>  
+              </>
+
+
+                    }
+
+      </div>
+    </h1>
+
+))
+
+}
+        </div>
+    </div>
+
+</div>
+}
+
+
+</div>
+
+
+
+}
+
+
 {
     o===1&&
     <>

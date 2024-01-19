@@ -14,6 +14,8 @@ import prof from '../../../images/prof.png'
 import { BsClockFill } from 'react-icons/bs'
 import { IoClose } from 'react-icons/io5'
 import { FaFileImage } from 'react-icons/fa'
+import Slider from '@mui/material/Slider';
+
 
 import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -98,13 +100,54 @@ const Jobsite = () => {
         settaskdesc('')
         settaskname('')
     }
-
+    var createGeoJSONCircle = function(center, radiusInKm, points) {
+        console.log(center)
+        if(!points) points = 64;
+    
+        var coords = {
+            latitude: center[1],
+            longitude: center[0]
+        };
+    
+        var km = radiusInKm;
+    
+        var ret = [];
+        var distanceX = km/(111.320*Math.cos(coords.latitude*Math.PI/180));
+        var distanceY = km/110.574;
+    
+        var theta, x, y;
+        for(var i=0; i<points; i++) {
+            theta = (i/points)*(2*Math.PI);
+            x = distanceX*Math.cos(theta);
+            y = distanceY*Math.sin(theta);
+    
+            ret.push([coords.longitude+x, coords.latitude+y]);
+        }
+        ret.push(ret[0]);
+    
+        return {
+            "type": "geojson",
+            "data": {
+                "type": "FeatureCollection",
+                "features": [{
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [ret]
+                    }
+                }]
+            }
+        };
+    };
     const mapContainer3 = useRef(null);
     const map3 = useRef(null);
-    const [lng3, setLng3] = useState(-70.9);
-    const [lat3, setLat3] = useState(42.35);
-    const [zoom3, setZoom3] = useState(9);
+const [radius, setradius] = useState(0)
+function setradiuss(val){
+setradius(val)
+    map.current.getSource("polygon").setData(createGeoJSONCircle([chklatlang.lng, chklatlang.lat], val/1000).data) 
 
+   
+}
     var marker3 = useRef()
     const map2 = useRef(null)
 
@@ -154,18 +197,30 @@ const Jobsite = () => {
                 setlatlang(JSON.stringify({ lng: e.result.center[0], lat: e.result.center[1] }))
 
                 setchklatlang({ lng: e.result.center[0], lat: e.result.center[1] })
+                map.current.addSource("polygon", createGeoJSONCircle([e.result.center[0], e.result.center[1] ], 0.5));
 
+                map.current.addLayer({
+                    "id": "polygon",
+                    "type": "fill",
+                    "source": "polygon",
+                    "layout": {},
+                    "paint": {
+                        "fill-color": "blue",
+                        "fill-opacity": 0.3
+                    }
+                });
             });
-
+          
             map.current.on('click', function (e) {
+         
                 var coordinates = e.lngLat;
                 if (marker.current) marker.current.remove()
                 marker.current = new mapboxgl.Marker()
                     .setLngLat(coordinates)
                     .addTo(map.current)
                 setlatlang(JSON.stringify(coordinates))
-
                 setchklatlang(coordinates)
+                
 
             });
 
@@ -1883,6 +1938,7 @@ const Jobsite = () => {
                 user: userdata2,
                 no: pno,
                 task: tasks,
+                radius:radius,
                 address: address,
                 weekend: weekend,
                 latlang: JSON.stringify(chklatlang),
@@ -1921,6 +1977,7 @@ const Jobsite = () => {
                 weekend:weekend,
                 user: userdata2,
                 no: pno,
+                radius:radius,
                 address: address,
                 perdiemamnt: perdiemamnt,
                 onperdiemamnt: onperdiemamnt,
@@ -3164,89 +3221,74 @@ setcurrone(null)
 
                         }
                         {j === 0 &&
-                            <div className="subadduser hadduser hdauser ">
+                            <div className="subadduser hadduser hdauser "style={{paddingTop:70}} >
 
                                 <IoClose className='iov' onClick={e => setadduserx('adduser2')} />
-                                <> <div className="prcs" >
-                                    <div className="circ1">
-                                        <div className="subcirc">
+                                <> 
+                                <div className="prcs prcs2">
+                <div className="circ1x">
+                  <div className="cbge">
+                    1
+                  </div>
+<h1>Project info</h1>
+               
+                </div>
+               
+                {steps>=1
+                ?
+            
+                <div className="circ1x">
+                 <div className="cbge">
+                    2
+                  </div>
+<h1>Project Address</h1>
+             
+                </div>:
+                
+                <div className="grcirc1x">
+                     <div className="cbge">
+                    2
+                  </div>
+                    <h1>Project Address</h1>
+                </div>}
+                
 
-                                        </div>
-                                    </div>
-                                    {steps >= 1 ?
-                                        <div className="bare">
-
-                                        </div> :
-
-                                        <div className="bare grbare">
-
-                                        </div>}
-                                    {steps >= 1
-                                        ?
-
-                                        <div className="circ1">
-                                            <div className="subcirc">
-
-                                            </div>
-                                        </div> :
-
-                                        <div className="circ1 grcirc">
-                                            <div className="subcirc grcirc">
-
-                                            </div>
-                                        </div>}
-                                    {steps >= 2 ?
-                                        <div className="bare">
-
-                                        </div> :
-
-                                        <div className="bare grbare">
-
-                                        </div>}
-
-                                    {steps >= 2
-                                        ?
-
-                                        <div className="circ1">
-                                            <div className="subcirc">
-
-                                            </div>
-                                        </div> :
-
-                                        <div className="circ1 grcirc">
-                                            <div className="subcirc grcirc">
-
-                                            </div>
-                                        </div>
-
-                                    }
-                                    {steps >= 3 ?
-                                        <div className="bare">
-
-                                        </div> :
-
-                                        <div className="bare grbare">
-
-                                        </div>}
-
-                                    {steps >= 3
-                                        ?
-
-                                        <div className="circ1">
-                                            <div className="subcirc">
-
-                                            </div>
-                                        </div> :
-
-                                        <div className="circ1 grcirc">
-                                            <div className="subcirc grcirc">
-
-                                            </div>
-                                        </div>
-
-                                    }
-
-                                </div>
+                {steps>=2
+                ?
+            
+                <div className="circ1x">
+                     <div className="cbge">
+                    3
+                  </div>
+<h1>Add task</h1>
+                </div>:
+                
+                <div className="grcirc1x">
+             <div className="cbge">
+                    3
+                  </div>
+<h1>Add task</h1>
+                </div>}
+               
+                {steps>=3
+                ?
+            
+                <div className="circ1x">
+                   <div className="cbge">
+                    4
+                  </div>
+<h1>Perdiem</h1>
+                
+                </div>:
+                
+                <div className="grcirc1x ">
+               <div className="cbge">
+                    4
+                  </div>
+                    <h1>Taxes</h1>
+            
+                </div>}
+              </div>
 
                                     {steps === 0 ?
                                         <>
@@ -3297,8 +3339,31 @@ setcurrone(null)
 
 
                                                 <div className={mapx} ref={mapContainer}></div>
+{
+    mapx==='map'&&
+    <div
+    style={{
+width:'20%',
+display:'flex',
+flexDirection:'column',
 
+    }}
+    >
 
+    <p
+    style={{
+
+marginLeft:10
+
+    }}
+    >Radius:</p>
+    <Slider style={{
+        width:'100%',
+
+marginLeft:10
+    }} defaultValue={100} max={500}  onChange={e=>setradiuss(e.target.value)} aria-label="Default" valueLabelDisplay="auto" />
+    </div>
+}
                                                 <>
                                                     <div className={inpex}>
                                                         <h1>Address</h1>

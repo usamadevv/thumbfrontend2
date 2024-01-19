@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { GiEnergyArrow } from 'react-icons/gi'
 import { RiLightbulbFlashLine, RiTimerFlashFill } from 'react-icons/ri'
-import { BiTime } from 'react-icons/bi'
+import { BiMailSend, BiTime } from 'react-icons/bi'
 import { MdSnooze } from 'react-icons/md'
 import { AiOutlineReload } from 'react-icons/ai'
 import axios from 'axios'
@@ -11,8 +11,8 @@ import { HiArrowLeft } from 'react-icons/hi'
 
 import prof from '../../../images/prof.png'
 
-import { BsClockFill } from 'react-icons/bs'
-
+import { BsBuilding, BsClockFill } from 'react-icons/bs'
+import image4 from '../../../images/image4.png'
 
 import Calendar from 'react-calendar'
 
@@ -3978,10 +3978,10 @@ setl(1)
                             <div className='sssw' style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
 
 
-                                <div className="subadduser subadduserx2">
+                                <div className="subadduser subadduserx2 roundrad">
 
                                     <>
-                                        <div className="inputname">
+                                        <div className="inputname roundbord">
                                             <h1>Company </h1> 
                                             <div className="inputnamel">
                                                 <p onClick={e=>setboxprojectsx('boxprojects')} style={{cursor:'pointer' }}>
@@ -4015,7 +4015,7 @@ comval?clients && clients.map(val => (
                                             </div>
 
                                         </div>
-                                        <div className="inputname">
+                                        <div className="inputname roundbord">
                                             <h1>Project name</h1>
                                             <div className="inputnamel">
                                                 <p onClick={e=>setboxprojects('boxprojects')} style={{cursor:'pointer' }}>{ind.split(" ").filter(Boolean).length>=1?`${ind.split(" ").filter(Boolean).length} projects selected`:'Select Project'}</p>
@@ -4058,12 +4058,12 @@ comval?clients && clients.map(val => (
 </select>*/}
                                         </div>
 
-                                        <div className="inputname">
+                                        <div className="inputname roundbord">
                                             <h1>Invoice #</h1>
                                             <input type="text"    onChange={setinnox} value={inno} />
                                         </div>
 
-                                        <div className="inputname inuex">
+                                        <div className="inputname inuex roundbord">
                                             <h1>Date</h1>
                                               
                                             {showcalender ?
@@ -4078,22 +4078,22 @@ comval?clients && clients.map(val => (
 
                                         </div>
 
-                                        <div className="inputname">
+                                        <div className="inputname roundbord">
                                             <h1>Project no:</h1>
                                             <input type="text" onChange={e => setinnum(e.target.value)} value={innum} />
 
                                         </div>
-                                        <div className="inputname">
+                                        <div className="inputname roundbord">
                                             <h1>Address:</h1>
                                             <input type="text" onChange={e => setinadd(e.target.value)} value={inadd} />
 
-                                        </div> <div className="inputname">
+                                        </div> <div className="inputname roundbord">
                                             <h1>Due date:</h1>
                                             <input type="text" onChange={e => setindue(e.target.value)} value={indue} />
 
 
                                         </div>
-                                        <div className="inputname inuex">
+                                        <div className="inputname inuex roundbord">
                                             <h1>Weekend</h1>
                                               
                                             {showcalenderx ?
@@ -4107,7 +4107,7 @@ comval?clients && clients.map(val => (
     }
 
                                         </div>
-                                    <div className="w100">
+                                    <div className="w100 w1002">
                                     <button className='btn1' onClick={e=>backtop()}>Generate</button>
 
                                     </div>
@@ -4122,12 +4122,37 @@ comval?clients && clients.map(val => (
                                 <div className="subadduser subadduserx2 subadduserx3">
 
                                     <>
+                                   
+                                    <div className="logopart">
+                                        <img src={image4} alt="" />
                                         <h1>{compnay}</h1>
-                                        <h1>{add}</h1>
-                                        <h1>{zpi}</h1>
-                                        <h1>{mail}</h1>
-                                        <h3 onClick={e => opm()}>Edit Company</h3>
+                                    </div>
+                                    <div className="cinfo cinfocol"  >
+     <div className="mdl2">
+     <BsBuilding className='mdl' />
+     </div>
+       <div className="cinfo">
+       <h1>
+    {add} {zpi}</h1>
+ 
 
+       </div>
+    
+       </div>
+       <div className="cinfo cinfocol"  >
+     <div className="mdl2">
+     <BiMailSend className='mdl' />
+     </div>
+       <div className="cinfo">
+     <h1>{mail}</h1>
+ 
+
+       </div>
+    
+       </div>       
+                                      
+                                       
+                                    
 
 
 
@@ -4151,7 +4176,7 @@ comval?clients && clients.map(val => (
 <div className="subadduser " style={{width:'70%'}}>
 
 <>
-    <div className="inputname" style={{width:'30%'}}>
+    <div className="inputname roundbord" style={{width:'30%'}}>
         <h1>Company </h1>  
         <div className="inputnamel">
                                                 <p onClick={e=>setboxprojectsx('boxprojects')} style={{cursor:'pointer' }}>
@@ -4184,7 +4209,7 @@ comval?clients && clients.map(val => (
                                                 </div>
                                             </div>
     </div>
-    <div className="inputname" style={{width:'30%'}}>
+    <div className="inputname roundbord" style={{width:'30%'}}>
         <h1>Project name</h1>
         <div className="inputnamel">
             <p onClick={e=>setboxprojects('boxprojects')} style={{cursor:'pointer' }}>{ind.split(" ").filter(Boolean).length>=1?`${ind.split(" ").filter(Boolean).length} projects selected`:'Select Project'}</p>

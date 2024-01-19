@@ -9,18 +9,7 @@ const [i, seti] = useState(0)
 
   return (
     <>
-    {i===1&&
-        <Userdata />
-
-        }
-        {i===2&&
-        <Siteemp />
-
-        }  {i===4&&
-          <Siteemp2 />
-  
-          }
-    {i===0&&
+       {i===0&&
 <div className="empt">
     
         <>
@@ -50,6 +39,18 @@ const [i, seti] = useState(0)
         
         
             </div> }
+    {i===1&&
+        <Userdata />
+
+        }
+        {i===2&&
+        <Siteemp />
+
+        }  {i===4&&
+          <Siteemp2 />
+  
+          }
+ 
     </>
 
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react'
-import { BiUserCircle } from 'react-icons/bi'
+import { BiSearch, BiUserCircle } from 'react-icons/bi'
 import axios from 'axios'
 import 'react-calendar/dist/Calendar.css';
 import { GiEnergyArrow } from 'react-icons/gi'
@@ -17,6 +17,7 @@ import { useSocket } from '../../Context/SocketContext';
 import { FaPhone } from 'react-icons/fa';
 const Notes2 = () => {
 
+    const currentDatee = new Date();
     const [emailw, setEmailw] = useState("");
     const [room, setRoom] = useState( new Date().getTime().toString())
     const socket = useSocket();
@@ -119,8 +120,14 @@ const [addedusers, setaddedusers] = useState()
 const [userd2, setuserd2] = useState()
 const [data2, setdata2] = useState()
 const [sitestaff, setsitestaff] = useState()
+const [timede, settimede] = useState('')
+const [found, setfound] = useState(false)
 useEffect(() => {
+    var datec=new Date()
 
+    var ustime=datec.toLocaleString("en-US", {hour12:false,timeZone: "America/New_York"})
+settimede(ustime.split(',')[0])
+    
     axios.get(`${tz}/note/getall`).then(res=>{
         console.log(res)
         setuserd(res.data.Notes)
@@ -481,7 +488,7 @@ function addtask2() {
     return (
         <>
         
-        <div className="usersdata fullwidth">
+        <div className="usersdatax fullwidthx">
 
           {  /*<div className="topusersdata fixedheader">
                 <BiUserCircle className='usio' />
@@ -497,19 +504,22 @@ function addtask2() {
           <div className="messagesection hideshonmovil">
             <div  className={lsection}>
                 <div className="fixedsearch">
-                    <h4>Notes  
+                    <div className='boxmsgg'>
+                        <p>Messages</p>
+<h4>People, Supervisors etc</h4>
 
 
 
-                    </h4>
-                    <div className="searchbar">
-                        <input type="text" onChange={e=>setsearchval(e.target.value)} placeholder='Search...' />
                     </div>
-                    <div className="fltbtns">
-                        <button style={{background:activeflt==='super'?'#5D69D4':'white',color:activeflt==='super'?'white':'grey'}} onClick={e=>setactiveflt('super')}>Supervisors
+                    <div className="searchbar">
+                     <BiSearch className='sear' />
+                        <input type="text" onChange={e=>setsearchval(e.target.value)} placeholder='Search users' />
+                    </div>
+                    <div className="fltbtnsx">
+                        <h3 style={{color:activeflt==='super'?'#5D69D4':'grey'}} onClick={e=>setactiveflt('super')}>Supervisors
               
-                        </button>
-                        <button style={{background:activeflt==='user'?'#5D69D4':'white',color:activeflt==='user'?'white':'grey'}} onClick={e=>setactiveflt('user')}>Users</button>
+                        </h3>
+                        <h3 style={{color:activeflt==='user'?'#5D69D4':'grey'}} onClick={e=>setactiveflt('user')}>Users</h3>
 
                     </div>
 
@@ -526,6 +536,14 @@ function addtask2() {
                     </div>
              <div className="colcard">
              <h1>{val.name} </h1>
+             <h3
+                 className='nutp'
+                 >{new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()?'Today':
+                 new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()-1?'Yesterday':
+                 `${
+                    new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getMonth()+1}/${
+                 new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()}`}</h3>
+             
                         <h1>
                         <div className="roli">
                         User
@@ -540,11 +558,21 @@ function addtask2() {
                 adduser!=='adduser'&&userd2&&userd2.map(val=>(
                     addedusers&&addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id)&& 
                     <div className={`cardmsg ${activeid&&activeid.name===val.name&&'msgback'}`} onClick={e=>openthischat(val,'super')}>
+   
+   <h3
+                 className='nutp'
+                 >{new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()?'Today':
+                 new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()-1?'Yesterday':
+                 `${
+                    new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getMonth()+1}/${
+                 new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()}`}</h3>
+               
    {addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).unseen>0&&<div className="nut">
    { addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).unseen}
    
    </div>
    } 
+   
                             {val&&!val.imgurl?
         
         <img src={prof} alt="" className='profmsg' />:
@@ -553,13 +581,14 @@ function addtask2() {
 
         }
                  <div className="colcard">
-                 <h1>{val.name} </h1>
+                <h1>{val.name} </h1>
                        <h1>
                        <div className="roli">
                             Supervisor
                             </div>
 
                        </h1>
+
                  </div>
                     </div>
                 ))
@@ -583,7 +612,14 @@ function addtask2() {
              <div className="colcard">
              <h1>{val.name} </h1>
                         <h1>
-
+                        <h3
+                 className='nutp'
+                 >{new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()?'Today':
+                 new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()-1?'Yesterday':
+                 `${
+                    new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getMonth()+1}/${
+                 new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()}`}</h3>
+             
                         <div className="roli">
                         User
                         </div>
@@ -598,6 +634,15 @@ function addtask2() {
                   
                  addedusers&&addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id)&& 
                  <div className={`cardmsg ${activeid&&activeid.name===val.name&&'msgback'}`} onClick={e=>openthischat(val,'user')}>
+
+<h3
+                 className='nutp'
+                 >{new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()?'Today':
+                 new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()-1?'Yesterday':
+                 `${
+                    new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getMonth()+1}/${
+                 new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()}`}</h3>
+             
 {addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).unseen>0&&<div className="nut">
 { addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).unseen}
 
@@ -613,6 +658,7 @@ function addtask2() {
         }
                  <div className="colcard">
                  <h1>{val.name} </h1>
+            
 <h1><div className="roli">
                             User
                             </div></h1>
@@ -628,11 +674,16 @@ function addtask2() {
                 <div className="headermsg">
                     <MdKeyboardBackspace className='mdc' onClick={e=>setlsection('leftsection')} />
              {
-                activeid&&activeid.imgurl&&
+                activeid&&activeid.imgurl?
 
-        <img className='profmsg ' src={activeid.imgurl} alt="" />
+        <img className='profmsg ' src={activeid.imgurl} alt="" />:
+        <img src={prof} alt="" className='profmsg' />
              }
-                    <h1>{activeid&&activeid.name}</h1>
+                  <div className="sttus">
+                  <h1>{activeid&&activeid.name}</h1>
+                  <h6>Offline
+                  </h6>
+                  </div>
                    
 {calling&&<div className='calloo' >
 
@@ -658,15 +709,26 @@ function addtask2() {
                 <div className="messagesall" ref={messageEl}>
                     {messages&&messages.length>0?messages.map(val=>(
 
+
                         val.senderid===senderids?
+
+                        <>
+                           
+
                         <div className="msgboxs">
                             <h1>{val.note}</h1>
                             <h3> <p>{val.date}</p> <p>{val.time}</p></h3>
                         </div>
-                        :<div className="msgbox">
+                        </>
+                        :
+                        
+                        <>
+                  
+                        <div className="msgbox">
                         <h1>{val.note}</h1>
                         <h3> <p>{val.date}</p> <p>{val.time}</p></h3>
                     </div>
+                    </>
 
                     ))
 :<>
@@ -690,6 +752,9 @@ function addtask2() {
                 </div>
 
 
+            </div>
+            <div className="thirdsection">
+                
             </div>
           </div>
         </div></>

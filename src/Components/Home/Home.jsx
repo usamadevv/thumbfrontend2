@@ -324,7 +324,9 @@ function logout(){
               {i===16?
             <h1>
               Company
-            </h1> :
+            </h1> :i===2?
+         <h1>Timesheets</h1>   :
+
             <></> 
             }
             </div>

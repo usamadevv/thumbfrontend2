@@ -5,10 +5,8 @@ import { useSocket } from "../../Context/SocketContext";
 const LobbyScreen = () => {
   const [email, setEmail] = useState("");
   const [room, setRoom] = useState("");
-
   const socket = useSocket();
   const navigate = useNavigate();
-
   const handleSubmitForm = useCallback(
     (e) => {
       e.preventDefault();

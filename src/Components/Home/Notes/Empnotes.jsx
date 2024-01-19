@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react'
-import { BiUserCircle } from 'react-icons/bi'
+import { BiSearch, BiUserCircle } from 'react-icons/bi'
 import axios from 'axios'
 import 'react-calendar/dist/Calendar.css';
 import { GiEnergyArrow } from 'react-icons/gi'
@@ -517,7 +517,7 @@ function addtask2() {
     return (
         <>
         
-        <div className="usersdata fullwidth">
+        <div className="usersdatax fullwidthx">
 
           {  /*<div className="topusersdata fixedheader">
                 <BiUserCircle className='usio' />
@@ -532,21 +532,31 @@ function addtask2() {
 }
           <div className="messagesection hideshonmovil">
             <div className={lsection}>
-                <div className="fixedsearch">
-                    <h4>Notes  
+            <div className="fixedsearch">
+                    <div className='boxmsgg'>
+                        <p>Messages</p>
+<h4>People, Supervisors etc</h4>
 
-                    </h4>
-                    <div className="searchbar">
-                        <input type="text" onChange={e=>setsearchval(e.target.value)} placeholder='Search...' />
+
+
                     </div>
-                    <div className="fltbtns">
-                        <button style={{background:activeflt==='admin'?'#5D69D4':'white',color:activeflt==='admin'?'white':'grey'}} onClick={e=>setactiveflt('admin')}>Admin</button>
-                        <button style={{background:activeflt==='super'?'#5D69D4':'white',color:activeflt==='super'?'white':'grey'}} onClick={e=>setactiveflt('super')}>Supervisors</button>
-                        <button style={{background:activeflt==='user'?'#5D69D4':'white',color:activeflt==='user'?'white':'grey'}} onClick={e=>setactiveflt('user')}>Users</button>
+                    <div className="searchbar">
+                     <BiSearch className='sear' />
+                        <input type="text" onChange={e=>setsearchval(e.target.value)} placeholder='Search users' />
+                    </div>
+                    <div className="fltbtnsx">
+                    <h3 style={{color:activeflt==='admin'?'#5D69D4':'grey'}} onClick={e=>setactiveflt('admin')}>Admin
+              
+              </h3>
+                        <h3 style={{color:activeflt==='super'?'#5D69D4':'grey'}} onClick={e=>setactiveflt('super')}>Supervisors
+              
+                        </h3>
+                        <h3 style={{color:activeflt==='user'?'#5D69D4':'grey'}} onClick={e=>setactiveflt('user')}>Users</h3>
 
                     </div>
 
                 </div>
+              
                 {activeflt==='super'
                 && <>{
                   
