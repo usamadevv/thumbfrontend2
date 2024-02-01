@@ -3114,6 +3114,27 @@ border-left: 5px solid #0ba488;
 .colrt{
     margin-top: 20px;
 }
+.statseo{
+
+}
+.mapintire{
+    width: 75%;
+    height: 100vh;
+}
+.statseo{
+    height: 100%;
+    box-sizing:content-box;
+}
+
+.statseoactive{
+    height: 100%;
+    color: #4852A8!important;
+  
+
+    
+    border-bottom: 2px solid #4852A8!important;
+
+}
 .collt>h1{
     margin-bottom: 4px;
 }

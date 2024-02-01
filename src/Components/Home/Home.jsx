@@ -50,6 +50,7 @@ import Files from './Jobsite/Files'
 import Formdat from './Formdata'
 import { useSocket } from '../Context/SocketContext'
 import { useNavigate } from 'react-router-dom'
+import Siteview from './Jobsite/Siteview'
 const Home = () => {
     const [datax, setdatax] = useState()
     const [emailw, setEmailw] = useState("");
@@ -228,6 +229,11 @@ function logout(){
           <p className={`${grp1} ${i===2&&'activemenu'}`} onClick={e => setis(2)}><TbDeviceDesktopAnalytics className='iconj' /> <p>Attendance</p></p>
            
           }
+            {datax.presence==='Allowed'&&
+          
+          <p className={`${grp1} ${i===2&&'activemenu'}`} onClick={e => setis(87)}><TbDeviceDesktopAnalytics className='iconj' /> <p>Live view</p></p>
+           
+          }
            {datax.company==='Allowed'&&
           <p className={`${grp2} ${i===16&&'activemenu'}`} onClick={e => setis(61)} > <FaFileInvoiceDollar className='iconj' /> <p>Invoicing</p></p>
 
@@ -358,7 +364,12 @@ function logout(){
             {i === 4 &&
                 <Prod />
 
-            }{
+            }
+             {i === 87 &&
+                <Siteview />
+
+            }
+            {
                 i === 5 &&
                 <Emp />
             }

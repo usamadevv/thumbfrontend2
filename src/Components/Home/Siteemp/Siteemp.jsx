@@ -67,6 +67,10 @@ const Siteemp = ({props}) => {
 
     const [taxes4, settaxes4] = useState('taxes')
     const [circle4, setcircle4] = useState('circle')
+
+
+    const [taxes5, settaxes5] = useState('taxes')
+    const [circle5, setcircle5] = useState('circle')
     const [is, setis] = useState(0)
 
     var marker=useRef(null)
@@ -154,7 +158,13 @@ const Siteemp = ({props}) => {
     };
     const [superemail, setsuperemail] = useState('')
     const [superpass, setsuperpass] = useState('')
-    const [email, setemail] = useState('')
+    const [supermode, setsupermode] = useState('true')
+
+    const [superallow, setsuperallow] = useState('true')
+
+
+    const [supersite, setsupersite] = useState('')  
+      const [email, setemail] = useState('')
     function req() {
 
 
@@ -169,10 +179,13 @@ const Siteemp = ({props}) => {
                 jobn: jobn,
                 phone: phone,
                 address: address,
+                supermode:supermode,
+                superallow:superallow,
+                supersite:supersite,
                 itin: itin,
                 status: status,
                 client: client,
-cpr:cpr,
+                cpr:cpr,
                 clientid:clientidd,
                 _id: idb,
                 idno: idno,
@@ -213,6 +226,12 @@ setlatlang('')
                     settaxas('')
                     setemail('')
                     setpassword('')
+                    setsupermode('false')
+
+                    setsuperallow('false')
+
+                    setsupersite('')
+
                 })
             })
         }
@@ -232,6 +251,9 @@ setlatlang('')
                 status: status,
                 langlat:latlang,
                 clientid:clientidd,
+                supermode:supermode,
+                superallow:superallow,
+                supersite:supersite,
                 client: client,
                 idno: idno,
                 email:email&&email.toLowerCase(),
@@ -345,6 +367,8 @@ alert('User already exist')
 
     }
 const [is4, setis4] = useState(0)
+
+const [is5, setis5] = useState(0)
 const [kshow, setkshow] = useState(false)
 
 function setmapxs(){
@@ -369,6 +393,23 @@ setamountd(0)
             setcircle4('circle')
             settaxes4('taxes')
             setis4(0)
+        }
+
+    }
+    function turnon5() {
+        if (is5 === 0) {
+setsupermode('true')
+            setcircle5('circle2')
+            settaxes5('taxes2')
+
+            setis5(1)
+        }
+        else {
+
+            setsupermode('false')
+            setcircle5('circle')
+            settaxes5('taxes')
+            setis5(0)
         }
 
     }
@@ -661,6 +702,23 @@ setlatlang(val.langlat)
                         setcircle4('circle')
                         settaxes4('taxes')
                         setis4(0)
+                    }
+                    if (val.supermode&&val.supermode==='true') {
+                      setsupersite(val.supersite)
+                      setsupermode('true')
+
+                        setcircle5('circle2')
+                        settaxes5('taxes2')
+                        setis5(1)
+                    }
+                    else {
+                        setsupermode('false')
+
+                        setamountd(0)
+
+                        setcircle5('circle')
+                        settaxes5('taxes')
+                        setis5(0)
                     }
 
                 }
@@ -1521,6 +1579,26 @@ settrvl2(true)
 
                                       }
                                     </div>
+                                    <div className="inpex">
+                                        <h1>Supervisor access:  </h1>
+                                        <div className={taxes5} onClick={e => turnon5()}>
+                                            <div className={circle5}>
+
+                                            </div>
+                                        </div>
+                                      {taxes5==='taxes2'&&
+       <select className='select2' name="cars" id="cars"value={supersite}  onChange={e => setsupersite(e.target.value)}>
+
+       {
+           sites && sites.map(val => (
+            clientidd===val.clientid&&
+            <option value={val._id}>{val.sitename}</option>
+           ))
+       }
+   </select>
+                                      }
+                                    </div>
+
                            </>
                                    }
                                 

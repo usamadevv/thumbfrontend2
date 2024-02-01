@@ -38,6 +38,7 @@ import { useState } from 'react';
 import { VscNote } from 'react-icons/vsc';
 const Dashboard = () => {
   
+  const [steps, setsteps] = useState(0)
 
   const [data, setdata] = useState( [
     { name: "Group A", value: 30, fill: "#0C75F0"},
@@ -90,6 +91,21 @@ const Dashboard = () => {
     '50%',   '80%',   '80%',   '80%',
 
   ]
+  const datax2 = [
+    { name: 'Jan', clockedin: 1234 },
+    { name: 'Feb', clockedin: 5678 },
+    { name: 'Mar', clockedin: 8901 },
+    { name: 'Apr', clockedin: 4321 },
+    { name: 'May', clockedin: 9876 },
+    { name: 'Jun', clockedin: 5432 },
+    { name: 'Jul', clockedin: 1098 },
+    { name: 'Aug', clockedin: 7654 },
+    { name: 'Sep', clockedin: 3210 },
+    { name: 'Oct', clockedin: 6789 },
+  ];
+  
+  
+
   useEffect(() => {
     
   let options = {
@@ -175,24 +191,30 @@ console.log(latep)
         <div className="tope">
           <h1>Attendance</h1>
           <div className="statseo">
-<button>Daily</button>
-<button>Weekly</button>
-<button>Yearly</button>
+<button onClick={e=>setsteps(0)} className={steps===0?'statseoactive':''} >Daily</button>
+<button onClick={e=>setsteps(1)}  className={steps===1?'statseoactive':''} >Weekly</button>
           </div>
         </div>
 
 <div className="stats2">
-<div className="barse">
-  {datax.map(val=>(
-    <div className="barl">
-      <div className="subbar" style={{height:val}}>
-<p>13<br/>May</p>
-      </div>
-    </div>
-  ))}
-</div>
-<div className="lkj">
-              <PieChart width={800} height={400} >
+<AreaChart width={730} height={350} data={datax2}
+  margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+  <defs>
+    <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="10%" stopColor="#8884d8" stopOpacity={0.3}/>
+      <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+    </linearGradient>
+  </defs>
+  <XAxis dataKey="name" axisLine={{ stroke: '#e7e7e7' }} tick={{ fill: 'gray',fontSize:12, }}  />
+  <YAxis dataKey="clockedin" axisLine={{ stroke: '#e7e7e7' }} tick={{ fill: 'gray',fontSize:12, }}  />
+  <CartesianGrid stroke='#e7e7e7' strokeDasharray="3 3" />
+  <Tooltip />
+  <Area type="monotone" dataKey="clockedin" strokeWidth={2} stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
+</AreaChart>
+<div className="lkjs">
+          {
+            /**
+             *  <PieChart width={800} height={400} >
 
                 <Pie
                   data={data}
@@ -207,8 +229,8 @@ console.log(latep)
                   {/* {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))} */}
-                </Pie>
-                {/* <Pie
+                {/* </Pie>
+                <Pie
           data={data}
           cx={420}
           cy={200}
@@ -224,8 +246,10 @@ console.log(latep)
           {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
-        </Pie> */}
-              </PieChart>
+        </Pie> */}{/*
+              </PieChart>**/}
+            
+           
             </div>
             <div className="substats">
               <div className="topsubstats">
@@ -264,7 +288,11 @@ console.log(latep)
 </div>
 
       </div>
-      <div className="seconditem">
+      <div className="seconditem" style={{
+
+        overflow:'scroll',
+        marginBottom:90,
+      }} >
 <h1>Notifications</h1>
 {noti&&noti.map(val=>(
   <div className="notr">
@@ -405,6 +433,11 @@ console.log(latep)
 
       </div>
     </div>
+    
+
+
+
+
     </div>
   )
 }
