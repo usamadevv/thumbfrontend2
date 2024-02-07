@@ -13,6 +13,7 @@ import { FaPhone, FaUserAlt } from 'react-icons/fa'
 import {BiChevronRight} from 'react-icons/bi'
 import { VscNote } from 'react-icons/vsc'
 import { BiFileBlank } from 'react-icons/bi'
+import lefta from '../../images/left.svg'
 import {FaFileInvoiceDollar} from 'react-icons/fa'
 
 import {BiSolidFolderOpen} from 'react-icons/bi'
@@ -42,6 +43,55 @@ import ChPresence from './ChPresence/ChPresence'
 import Admin from './Admin/Admin'
 import { tz } from '../apis'
 import axios from 'axios'
+
+import lko from '../../images/lko2.png'
+
+
+import home from '../../images/home.png'
+import home2 from '../../images/hom2.png'
+
+
+import comp from '../../images/comp.svg'
+import comp2 from '../../images/comp2.png'
+
+
+import live from '../../images/live.png'
+import live2 from '../../images/live2.svg'
+
+
+import doc from '../../images/doc.svg'
+import doc2 from '../../images/doc2.svg'
+
+
+import user from '../../images/user.svg'
+import user2 from '../../images/user2.svg'
+
+
+import prod from '../../images/prod.svg'
+import prod2 from '../../images/prod2.svg'
+
+import leave from '../../images/leave.svg'
+import leave2 from '../../images/leave2.svg'
+
+
+
+import gps from '../../images/gps.svg'
+import gps2 from '../../images/gps2.svg'
+import att from '../../images/att.svg'
+import att2 from '../../images/att2.svg'
+
+
+import chat from '../../images/chat.svg'
+import chat2 from '../../images/chat2.svg'
+
+
+import invoice from '../../images/invoice.svg'
+import invoice2 from '../../images/invoice2.svg'
+import bus from '../../images/bus.svg'
+
+import beel from '../../images/beel.png'
+
+import beel2 from '../../images/beel2.png'
 import Notes2 from './Notes/Notes2'
 import Chclient from './Client/Chclient'
 import Menu from './Employeetype/Menu'
@@ -51,6 +101,27 @@ import Formdat from './Formdata'
 import { useSocket } from '../Context/SocketContext'
 import { useNavigate } from 'react-router-dom'
 import Siteview from './Jobsite/Siteview'
+const Sector = ({ radius, startAngle, endAngle, fillColor }) => {
+  // Convert angles to radians
+  const startRadians = (startAngle * Math.PI) / 180;
+  const endRadians = (endAngle * Math.PI) / 180;
+
+  // Calculate coordinates for the sector path
+  const x1 = radius * Math.cos(startRadians);
+  const y1 = radius * Math.sin(startRadians);
+  const x2 = radius * Math.cos(endRadians);
+  const y2 = radius * Math.sin(endRadians);
+
+  // Create the path string for the sector
+  const largeArcFlag = endAngle - startAngle <= 180 ? 0 : 1; // Determine if we need a large arc flag
+  const pathData = `M 0 0 L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
+
+  return (
+    <svg width={radius * 2} height={radius * 2} viewBox={`-${radius} -${radius} ${radius * 2} ${radius * 2}`}>
+      <path d={pathData} fill={fillColor} />
+    </svg>
+  );
+};
 const Home = () => {
     const [datax, setdatax] = useState()
     const [emailw, setEmailw] = useState("");
@@ -189,22 +260,46 @@ function logout(){
 }
         <div className={left}>
           {left==='left'?
-            <h1 onClick={e=>setleft('left smallleft')}>Monitor</h1>:
+            <h1 onClick={e=>setleft('left smallleft')}>
+<img src={lko} onClick={e=>setleft('left smallleft')} className='lkologo' alt="" />
+
+<div className="leftar">
+  <img src={lefta} alt="" />
+</div>
+
+            </h1>:
             <div className="rnd" onClick={e=>setleft('left')}>
               <BiChevronRight className='rgt' />
             </div>
 
           }
             <h5 className='manax'>Management & HR</h5>
-            <p className={`${grp1} ${i===0&&'activemenu'}`} onClick={e => setis(0)} > <MdOutlineDashboard className='iconj' /> <p>Dashboard</p></p>
+            <p className={`${grp1} ${i===0&&'activemenu'}`} onClick={e => setis(0)} >
+              {i===0?              
+           <img src={home} className='iconj'  alt="" />:
+           <img src={home2} className='iconj' alt="" />
+            }
+               
+                <p>Dashboard</p></p>
 
           {datax.stream==='Allowed'&&
-            <p className={`${grp1} ${i===1&&'activemenu'}`} onClick={e => setis(1)}> <CgMediaLive className='iconj' /> <p>Live Stream</p></p>
+            <p className={`${grp1} ${i===1&&'activemenu'}`} onClick={e => setis(1)}>
+               {i===1?              
+           <img src={live2} className='iconj'  alt="" />:
+           <img src={live} className='iconj' alt="" />
+            }<p>Live Stream</p></p>
           
 
           }
  {datax.company==='Allowed'&&
-            <p className={`${grp2} ${i===16&&'activemenu'}`} onClick={e => setis(16)} > <FaUserAlt className='iconj' /> <p>Company</p></p>
+            <p className={`${grp2} ${i===16&&'activemenu'}`} onClick={e => setis(16)} >
+              
+              {i===16?              
+           <img src={comp} className='iconj'  alt="" />:
+           <img src={comp2} className='iconj' alt="" />
+            }
+               
+               <p>Company</p></p>
 
           }  
   {datax.site==='Allowed'&&
@@ -214,19 +309,32 @@ function logout(){
 
 {datax.staff==='Allowed'&&
           
-          <p className={`${grp1} ${i===5&&'activemenu'}`} onClick={e => setis(5)} > <FaUserAlt className='iconj' /> <p>Manage Users</p></p>
+          <p className={`${grp1} ${i===5&&'activemenu'}`} onClick={e => setis(5)} >
+            
+            {i===5?              
+           <img src={user2} className='iconj'  alt="" />:
+           <img src={user} className='iconj' alt="" />
+            } <p>Manage Users</p></p>
              
           }
 
  
 {datax.productivity==='Allowed'&&
           
-          <p className={`${grp1} ${i===4&&'activemenu'}`} onClick={e => setis(4)}> <AiTwotoneSecurityScan className='iconj' /> <p>Productivity</p></p>
+          <p className={`${grp1} ${i===4&&'activemenu'}`} onClick={e => setis(4)}> 
+ {i===4?              
+           <img src={prod} className='iconj'  alt="" />:
+           <img src={prod2} className='iconj' alt="" />
+            }<p>Productivity</p></p>
             
           }
             {datax.presence==='Allowed'&&
           
-          <p className={`${grp1} ${i===2&&'activemenu'}`} onClick={e => setis(2)}><TbDeviceDesktopAnalytics className='iconj' /> <p>Attendance</p></p>
+          <p className={`${grp1} ${i===2&&'activemenu'}`} onClick={e => setis(2)}>
+            {i===2?              
+           <img src={att} className='iconj'  alt="" />:
+           <img src={att2} className='iconj' alt="" />
+            } <p>Attendance</p></p>
            
           }
             {datax.presence==='Allowed'&&
@@ -235,7 +343,11 @@ function logout(){
            
           }
            {datax.company==='Allowed'&&
-          <p className={`${grp2} ${i===16&&'activemenu'}`} onClick={e => setis(61)} > <FaFileInvoiceDollar className='iconj' /> <p>Invoicing</p></p>
+          <p className={`${grp2} ${i===61&&'activemenu'}`} onClick={e => setis(61)} > 
+        {i===61?              
+           <img src={invoice} className='iconj'  alt="" />:
+           <img src={invoice2} className='iconj' alt="" />
+            } <p>Invoicing</p></p>
 
         }
 
@@ -244,7 +356,11 @@ function logout(){
 
             <p className={`${grp2} ${i===0&&'activemenu'} gri`} onClick={e => shf()} > <MdOutlineArrowBackIosNew className='iconj' /> <p>Staff</p></p>
           
-            <p className={`${grp3} ${i===9&&'activemenu'}`}  onClick={e => setis(32)}> <BiFileBlank className='iconj' /><p>Forms</p></p>
+            <p className={`${grp3} ${i===9&&'activemenu'}`}  onClick={e => setis(32)}> 
+            {i===32?              
+           <img src={doc} className='iconj'  alt="" />:
+           <img src={doc2} className='iconj' alt="" />
+            }<p>Forms</p></p>
 
 <h5 className='mana'> Workspace</h5>
     {datax.snaps==='Allowed'&&
@@ -266,17 +382,29 @@ function logout(){
             <p className={`${grp3} ${i===0&&'activemenu'} gri`}  onClick={e => shsecond()} > <MdOutlineArrowBackIosNew className='iconj' /> <p>Staff</p></p>
           
 {datax.gps==='Allowed'&&
-             <p className={`${grp3} ${i===9&&'activemenu'}`}  onClick={e => setis(9)}> <BiFileBlank className='iconj' /><p>GPS Location</p></p>
+             <p className={`${grp3} ${i===9&&'activemenu'}`}  onClick={e => setis(9)}>
+            {i===9?              
+           <img src={gps} className='iconj'  alt="" />:
+           <img src={gps2} className='iconj' alt="" />
+            }<p>GPS Location</p></p>
 
            
           }
     {datax.leave==='Allowed'&&
-            <p className={`${grp3} ${i===11&&'activemenu'}`} onClick={e => setis(11)}><AiOutlineMenuFold className='iconj' /><p>Leave</p></p>
+            <p className={`${grp3} ${i===11&&'activemenu'}`} onClick={e => setis(11)}>
+           {i===11?              
+           <img src={leave} className='iconj'  alt="" />:
+           <img src={leave2} className='iconj' alt="" />
+            }<p>Leave</p></p>
            
           }
 
           
-          <p className={`${grp3} ${i===12&&'activemenu'}`} onClick={e => setis(12)}> <BiFileBlank className='iconj' /><p>Notes</p> <div className="nut nutx">{datax.contacts&&datax.contacts.map(obj => obj.unseen).reduce((a, b) => a + b, 0)}</div> </p>
+          <p className={`${grp3} ${i===12&&'activemenu'}`} onClick={e => setis(12)}> 
+          {i===12?              
+           <img src={chat} className='iconj'  alt="" />:
+           <img src={chat2} className='iconj' alt="" />
+            }<p>Notes</p> <div className="nut nutx">{datax.contacts&&datax.contacts.map(obj => obj.unseen).reduce((a, b) => a + b, 0)}</div> </p>
          
           <h5 className='mana'> General</h5>
           {datax.reports==='Allowed'&&
@@ -326,19 +454,43 @@ function logout(){
         </div>
         <div className={right}>
           <div className="rheader">
+
             <div className="h1">
               {i===16?
-            <h1>
+          <>
+            <h1 className='headering'>
               Company
-            </h1> :i===2?
-         <h1>Timesheets</h1>   :
+            </h1> 
+             <p className='headeringpara' >
+             Companies are basically registered clients
+           </p></>
+            :
+               i===0?
+               <>
+               <h1 className='headering' >
+                  Dashboard
+                </h1>
+                <p className='headeringpara' >
+                  Let's overview important updates
+                </p>
+               </>
+                :
+            i===2?
+         <h1 className='headering'>Timesheets</h1>   :
 
             <></> 
             }
             </div>
+           
 
+<div className="menucentr">
+  <input type="text" placeholder='Search features..' />
+
+</div>
 <div className="menuend">
- 
+
+ <img src={beel2} className='iconbeel' alt="" />
+ <img src={beel} className='iconbeel' alt="" />
   <div className="grcircle">
 
   </div>

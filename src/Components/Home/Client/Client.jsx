@@ -16,6 +16,9 @@ import {MdLocationOn} from 'react-icons/md'
 import { useEffect } from 'react';
 import { tz } from '../../apis';
 import {FaPencilAlt} from 'react-icons/fa'
+import ana  from '../../../images/ana.svg'
+
+import inv  from '../../../images/inv.svg'
 
 const Client = () => {
     
@@ -1108,6 +1111,59 @@ const [state, setstate] = useState('')
 
                 </div>
             </div>}
+
+            <div className="newst nbst">
+<div className="w74">
+
+    <div className="w74card">
+        
+ <div className="iconinv">
+ <img src={ana} alt="" />
+ </div>
+
+ <div className="iconpara">
+    <p>Companies</p>
+    <h1>91</h1>
+ </div>
+    </div>
+    <div className="w74card">
+        
+        <div className="iconinv">
+        <img src={inv} alt="" />
+        </div>
+       
+        <div className="iconpara">
+           <p>Pending Invoices</p>
+           <h1>1</h1>
+        </div>
+           </div>
+
+    <div className="w74card">
+        
+        <div className="iconinv">
+        <img src={ana} alt="" />
+        </div>
+       
+        <div className="iconpara">
+           <p>Total invoices</p>
+           <h1>$910</h1>
+        </div>
+           </div>
+           <div className="w74card">
+               
+               <div className="iconinv">
+               <img src={inv} alt="" />
+               </div>
+              
+               <div className="iconpara">
+                  <p>Companies</p>
+                  <h1>91</h1>
+               </div>
+                  </div>
+
+</div>
+
+            </div>
 {invoice===0&&
 
 <div className="newst">

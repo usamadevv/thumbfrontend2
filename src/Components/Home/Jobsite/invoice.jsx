@@ -11,6 +11,10 @@ import { HiArrowLeft } from 'react-icons/hi'
 
 import prof from '../../../images/prof.png'
 
+import pdf from '../../../images/pdf.svg'
+
+import email from '../../../images/email.svg'
+
 import { BsBuilding, BsClockFill } from 'react-icons/bs'
 import image4 from '../../../images/image4.png'
 
@@ -2770,1403 +2774,1411 @@ setl(1)
     }
     return (
 
-        <>
 
-            <div className={aduserl}>
-                <div className="mainpage1" >
-                    <ReactToPrint
+    <>
+    {aduserl==='adduser'?
+     <div className={`${aduserl} nobg`}>
+     <div className="mainpage1" >
+         <ReactToPrint
 
-                        trigger={() => <button className='ss33'>Export To pdf!</button>}
-                        content={() => componentRef.current}
-                    />
-                    <button className='ss333' onClick={e => setaduserl('adduser2')}>Cancel</button>
+             trigger={() => <button className='exportbtn'>
+                <img src={pdf} className='pdficon' alt="" />
+                Export To pdf!</button>}
+             content={() => componentRef.current}
+         />
 
-                    <button className='ss3333' onClick={e => setaduserl2('adduser2')}>Send Email!</button>
-                    <div className="mainpage" ref={componentRef}>
+         <button className='exportbtn3' onClick={e => setaduserl2('adduser2')}>
+      
+         <img src={email} className='pdficon' alt="" />
+            Send Email!</button>
+            <button className='exportbtn2' onClick={e => setaduserl('adduser2')}>Cancel</button>
+
+         <div className="mainpage" ref={componentRef}>
 
 
 
-                        <div className="mainpage" >
+             <div className="mainpage" >
 
-                            <h1 className='invoiceh'>{compnay}<p className='invoicep' >Invoice</p></h1>
-                            <div className="spanl">
-                                <h3>
-                                    Date: <p>{indate}</p>
-                                </h3>
-                                <h3>
-                                    Invoice #: <p>{inno}</p>
-                                </h3>
-                                <h3>
-                                    Consumer ID: <p>01238979</p>
-                                </h3>
-                                <h3>
-                                    Due Date: <p>{indue}</p>
-                                </h3>
+                 <h1 className='invoiceh'>{compnay}<p className='invoicep' >Invoice</p></h1>
+                 <div className="spanl">
+                     <h3>
+                         Date: <p>{indate}</p>
+                     </h3>
+                     <h3>
+                         Invoice #: <p>{inno}</p>
+                     </h3>
+                    
+                     <h3>
+                         Due Date: <p>{indue}</p>
+                     </h3>
 
-                            </div>
-                            <div className="billto">
-                                <div className="bill1">
-                                    <h3>
-                                        Bill To:
-                                    </h3>
-                                    <h2>{incname?incname:currcompany}</h2>
-                                    <h2>{inadd}</h2>
+                 </div>
+                 <div className="billto">
+                     <div className="bill1">
+                         <h3>
+                             Bill To:
+                         </h3>
+                         <h2>{incname?incname:currcompany}</h2>
+                         <h2>{inadd}</h2>
 {!multiple&&innum&&<>
 
 
-    <h2>Project # {innum}</h2>
-                                    <h2>
-                                        Project Name: {inname}
-                                    </h2></>
+<h2>Project # {innum}</h2>
+                         <h2>
+                             Project Name: {inname}
+                         </h2></>
 
 }
 
-                                </div>
-                                <div className="bill1">
-                                    <h3>
-                                        Company:
-                                    </h3>
-                                    <h2>{add}</h2>
-                                    <h2>{zpi}</h2>
-                                    <h2>919-381-0394</h2>
-                                    <h2>www.cfi-solutions.com</h2>
+                     </div>
+                     <div className="bill1">
+                         <h3>
+                             Company:
+                         </h3>
+                         <h2>{add}</h2>
+                         <h2>{zpi}</h2>
+                         <h2>919-381-0394</h2>
+                         <h2>www.cfi-solutions.com</h2>
 
 
-                                </div>
-                            </div>
-                            <div className="tavle">
-                                <div className="tavhead">
-                                    <h6 style={{ width: '100px' }}>
-                                        WEEKEND
-                                    </h6>
-                                    <h6 style={{ width: '100px' }}>
-                                        NAME
-                                    </h6>
-                                    <h6 style={{ width: '100px' }}>
-                                        SKILL
-                                    </h6>
+                     </div>
+                 </div>
+                 <div className="tavle">
+                     <div className="tavhead">
+                         <h6 style={{ width: '100px' }}>
+                             WEEKEND
+                         </h6>
+                         <h6 style={{ width: '100px' }}>
+                             NAME
+                         </h6>
+                         <h6 style={{ width: '100px' }}>
+                             SKILL
+                         </h6>
 
-                                    {applyperdiemx &&
-                                        <>
-                                            <h6 style={{ width: '100px' }}>DAYS</h6>
-                                            <h6 style={{ width: '100px' }}>P.D</h6>
-                                        </>
-                                    }
-                                    <h6>
-                                        REG HRS
-                                    </h6>
-                                    <h6>REG BILL RTE</h6>
-                                    <h6>
-                                        OT HRS
-                                    </h6>
-                                    <h6>OT BILL RTE</h6>
-                                    <h6>TOTAL</h6>
-
-
-
-
-                                </div>
-
-                                {txp && txp.map((val, index) => (
-                                   (val["REG HRS"]>0||val["OT HRS"]>0) && <>
-                                        {index % 2 === 0 ?
-                                            <div className="tavbody">
-                                                <h6 style={{ width: '100px' }}>
-                                                    {val["WEEKEND"]}
-                                                </h6>
-                                                <h6 style={{ width: '100px',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center' ,textAlign:'center'}}>
-                                                    {val["NAME"]}
-                                                    <br/>
-                                                  
-                                                   
-                                                </h6>
-                                                <h6 style={{ width: '100px'}}>
-                                                    {val["SKILL"]}
-                                                </h6>
-                                                {applyperdiemx &&
-                                                    <>
-
-                                                        <h6 style={{ width: '100px' }}> {val["days"]}</h6>
-                                                        <h6 style={{ width: '100px' }}>$ {val["P.D"]}</h6>
-                                                    </>
-                                                }
-                                                <h6>
-                                                   {val["REG HRS"]}
-                                                </h6>
-                                                <h6>$ {val["REG RTE"]}</h6>
-                                                <h6>
-                                                     {val["OT HRS"]}
-                                                </h6>
-                                                <h6> $ {val["OT RTE"]}</h6>
-
-                                                <h6> {Number(val["TOTAL"]).toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  })}</h6>
-
-                                            </div> :
-                                            <div className="tavbody tavbo">
-                                                <h6 style={{ width: '100px' }}>
-                                                    {val["WEEKEND"]}
-                                                </h6>
-                                                <h6 style={{ width: '100px',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center' ,textAlign:'center'}}>
-                                                    {val["NAME"]}
-                                                    <br/>
-                                                    
-                                                </h6>
-                                                <h6 style={{ width: '100px' }}>
-                                                    {val["SKILL"]}
-                                                </h6>
-
-                                                {applyperdiemx &&
-                                                    <>
-
-                                                        <h6 style={{ width: '100px' }}> {val["days"]}</h6>
-                                                        <h6 style={{ width: '100px' }}>$  {val["P.D"]}</h6>
-                                                    </>
-                                                }
-                                                <h6>
-                                                    {val["REG HRS"]}
-                                                </h6>
-                                                <h6> $ {val["REG RTE"]}</h6>
-                                                <h6>
-                                                    {val["OT HRS"]}
-                                                </h6>
-                                                <h6>$ {val["OT RTE"]}</h6>
-                                                <h6> {Number(val["TOTAL"]).toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  })}</h6>
-
-                                            </div>
-
-                                        }
-                                    </>
-                                ))
-
-                                }
-
-                                <div className="tavbody tavbodyx">
-                                    <h6 style={{ width: '100px' }}>
-
-                                    </h6>
-                                    <h6 style={{ width: '100px' }}>
-
-                                    </h6>
-                                    <h6 style={{ width: '100px' }}>
-
-                                    </h6>
-                                    <h6>
-
-                                    </h6>
-                                    <h6></h6>
-                                    <h6>
-
-                                    </h6>
-                                    <h6>Total</h6>
-                                    <h6 style={{ width: 'max-content' }}>  {parseFloat(totalall.toFixed(2)).toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  })} </h6>
-
-                                </div>
-
-                                <div className="special">
-                                    <h1>Special Notes & Instruction</h1>
-
-                                </div>
-
-
-                                <h1 className='h1h'>
-                                    Thanks for your business. Its a pleasure to work with you on your project.
-                                </h1>
-                            </div>
+                         {applyperdiemx &&
+                             <>
+                                 <h6 style={{ width: '100px' }}>DAYS</h6>
+                                 <h6 style={{ width: '100px' }}>P.D</h6>
+                             </>
+                         }
+                         <h6>
+                             REG HRS
+                         </h6>
+                         <h6>REG BILL RTE</h6>
+                         <h6>
+                             OT HRS
+                         </h6>
+                         <h6>OT BILL RTE</h6>
+                         <h6>TOTAL</h6>
 
 
 
 
+                     </div>
+
+                     {txp && txp.map((val, index) => (
+                        (val["REG HRS"]>0||val["OT HRS"]>0) && <>
+                             {index % 2 === 0 ?
+                                 <div className="tavbody">
+                                     <h6 style={{ width: '100px' }}>
+                                         {val["WEEKEND"]}
+                                     </h6>
+                                     <h6 style={{ width: '100px',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center' ,textAlign:'center'}}>
+                                         {val["NAME"]}
+                                         <br/>
+                                       
+                                        
+                                     </h6>
+                                     <h6 style={{ width: '100px'}}>
+                                         {val["SKILL"]}
+                                     </h6>
+                                     {applyperdiemx &&
+                                         <>
+
+                                             <h6 style={{ width: '100px' }}> {val["days"]}</h6>
+                                             <h6 style={{ width: '100px' }}>$ {val["P.D"]}</h6>
+                                         </>
+                                     }
+                                     <h6>
+                                        {val["REG HRS"]}
+                                     </h6>
+                                     <h6>$ {val["REG RTE"]}</h6>
+                                     <h6>
+                                          {val["OT HRS"]}
+                                     </h6>
+                                     <h6> $ {val["OT RTE"]}</h6>
+
+                                     <h6> {Number(val["TOTAL"]).toLocaleString('en-US', {
+style: 'currency',
+currency: 'USD',
+})}</h6>
+
+                                 </div> :
+                                 <div className="tavbody tavbo">
+                                     <h6 style={{ width: '100px' }}>
+                                         {val["WEEKEND"]}
+                                     </h6>
+                                     <h6 style={{ width: '100px',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center' ,textAlign:'center'}}>
+                                         {val["NAME"]}
+                                         <br/>
+                                         
+                                     </h6>
+                                     <h6 style={{ width: '100px' }}>
+                                         {val["SKILL"]}
+                                     </h6>
+
+                                     {applyperdiemx &&
+                                         <>
+
+                                             <h6 style={{ width: '100px' }}> {val["days"]}</h6>
+                                             <h6 style={{ width: '100px' }}>$  {val["P.D"]}</h6>
+                                         </>
+                                     }
+                                     <h6>
+                                         {val["REG HRS"]}
+                                     </h6>
+                                     <h6> $ {val["REG RTE"]}</h6>
+                                     <h6>
+                                         {val["OT HRS"]}
+                                     </h6>
+                                     <h6>$ {val["OT RTE"]}</h6>
+                                     <h6> {Number(val["TOTAL"]).toLocaleString('en-US', {
+style: 'currency',
+currency: 'USD',
+})}</h6>
+
+                                 </div>
+
+                             }
+                         </>
+                     ))
+
+                     }
+
+                     <div className="tavbody tavbodyx">
+                         <h6 style={{ width: '100px' }}>
+
+                         </h6>
+                         <h6 style={{ width: '100px' }}>
+
+                         </h6>
+                         <h6 style={{ width: '100px' }}>
+
+                         </h6>
+                         <h6>
+
+                         </h6>
+                         <h6></h6>
+                         <h6>
+
+                         </h6>
+                         <h6>Total</h6>
+                         <h6 style={{ width: 'max-content' }}>  {parseFloat(totalall.toFixed(2)).toLocaleString('en-US', {
+style: 'currency',
+currency: 'USD',
+})} </h6>
+
+                     </div>
+
+                     <div className="special">
+                         <h1>Special Notes & Instruction</h1>
+
+                     </div>
 
 
-                        </div>
+                     <h1 className='h1h'>
+                         Thanks for your business. Its a pleasure to work with you on your project.
+                     </h1>
+                 </div>
 
-                    </div>
 
 
 
 
-                </div>
-            </div>
+
+             </div>
+
+         </div>
+
+
+
+
+     </div>
+ </div>:
+ <>
+
+           
           
-            <div className={adduserd}>
-                <div className="longsub">
-                    <IoClose className='posif' onClick={e => setadduserd('adduser2')} />
-                    {
-                        clients && clients.map(val2 => (
-                            val2._id === currid &&
-                            val2.invoicedata .slice()
-                            .reverse().map((val,index) => (
-                            <>
-                                    <div className="rowval" key={index}>
-                                        <FaFileImage className='fami' />
-                                        <div className="midone">
-                                            <h1>{val.filename}</h1>
-                                            <p>Saved by {val.by?val.by:'Admin'} on {val.created&&val.created}</p>
-                                        </div>
-                                        <button onClick={e => importthis(val)} >Import</button>
-                                    </div>
-                                    <div className="linn"></div>
-                                </>
-                            ))
-                        ))
-                    }
+ <div className={adduserd}>
+     <div className="longsub">
+         <IoClose className='posif' onClick={e => setadduserd('adduser2')} />
+         {
+             clients && clients.map(val2 => (
+                 val2._id === currid &&
+                 val2.invoicedata .slice()
+                 .reverse().map((val,index) => (
+                 <>
+                         <div className="rowval" key={index}>
+                             <FaFileImage className='fami' />
+                             <div className="midone">
+                                 <h1>{val.filename}</h1>
+                                 <p>Saved by {val.by?val.by:'Admin'} on {val.created&&val.created}</p>
+                             </div>
+                             <button onClick={e => importthis(val)} >Import</button>
+                         </div>
+                         <div className="linn"></div>
+                     </>
+                 ))
+             ))
+         }
 
-                </div>
-            </div>
-            <div className={adduserd2}>
-                <div className="longsub">
-                    <input type="Search" placeholder='Search..' className='inkl' onChange={e=>setsearval(e.target.value)} />
-                    <IoClose className='posif' onClick={e => setadduserd2('adduser2')} />
-        
-                    {
-                        searval? empdata && empdata.map(val2 => (
-                       
-                            val2.clientid===currid&&  val2.name.toLowerCase().search(searval.toLowerCase())>=0&&<>
-                                    <div className="rowval">
-                                       <div className="imgh">
-                                        {!val2.imgurl?
-                                        <img src={prof} alt="" />:
-                                        <img src={val2.imgurl} alt="" />
+     </div>
+ </div>
+ <div className={adduserd2}>
+     <div className="longsub">
+         <input type="Search" placeholder='Search..' className='inkl' onChange={e=>setsearval(e.target.value)} />
+         <IoClose className='posif' onClick={e => setadduserd2('adduser2')} />
 
-                                        }
-                                       </div>
-                                        <div className="midone">
-                                            <h1>{val2.name}</h1>
-                                            <p>{val2.skill}</p>
-                                        </div>
-                                        <button onClick={e => importthisx(val2)} >Add</button>
-                                    </div>
-                                    <div className="linn"></div>
-                                </>
-                      
-                        )):empdata && empdata.map(val2 => (
-                            val2.clientid===currid&&
-                            <>
-                                <div className="rowval">
-                                   <div className="imgh">
-                                    {!val2.imgurl?
-                                    <img src={prof} alt="" />:
-                                    <img src={val2.imgurl} alt="" />
+         {
+             searval? empdata && empdata.map(val2 => (
+            
+                 val2.clientid===currid&&  val2.name.toLowerCase().search(searval.toLowerCase())>=0&&<>
+                         <div className="rowval">
+                            <div className="imgh">
+                             {!val2.imgurl?
+                             <img src={prof} alt="" />:
+                             <img src={val2.imgurl} alt="" />
 
-                                    }
-                                   </div>
-                                    <div className="midone">
-                                        <h1>{val2.name}</h1>
-                                        <p>{val2.skill}</p>
-                                    </div>
-                                    <button onClick={e => importthisx(val2)} >Add</button>
-                                </div>
-                                <div className="linn"></div>
-                            </>
-                  
-                    ))
-                    
-                  
-}
-                </div>
-            </div>
-
-            {tempjson &&
-
-                <div className={adduser3}>
-
-                    <div className="subadduser ">
-
-                        <>
-                            <div className="inputname">
-                                <h1>Name</h1>
-                                <input value={tempjson.Employee} onChange={e => settempjson(tempjson => ({
-                                    ...tempjson,
-
-
-                                    Employee: e.target.value
-
-                                }))} type="text" />
-
-
-
-
+                             }
                             </div>
-
-                            <div className="inputname">
-                                <h1>Working Hrs</h1>
-                                <input value={tempjson.Hrs} type="text"
-                                    onChange={e => settempjson(tempjson => ({
-                                        ...tempjson,
-
-
-                                        Hrs: e.target.value
-
-                                    }))}
-                                />
-
-                            </div>
-                            <div className="inputname">
-                                <h1>Pay rate (per/hr)</h1>
-                                <input value={tempjson.Payrate} type="text"
-                                    onChange={e => settempjson(tempjson => ({
-                                        ...tempjson,
-
-
-                                        Payrate: e.target.value
-
-                                    }))}
-                                />
-
-                            </div>
-                            <div className="inputname" >
-                                <h1>OT Hrs</h1>
-                                <input value={tempjson.Ot_Hrs} type="text"
-                                    onChange={e => settempjson(tempjson => ({
-                                        ...tempjson,
-
-
-                                        Ot_Hrs: e.target.value
-
-                                    }))}
-                                />
-
-                            </div>
-                            <div className="inputname">
-                                <h1>OT Pay rate (per/hr)</h1>
-                                <input value={tempjson.OT_Pay_rate} type="text" onChange={e => settempjson(tempjson => ({
-                                    ...tempjson,
-
-
-                                    OT_Pay_rate: e.target.value
-
-                                }))} />
-
-                            </div>
-                            <div className="inputname">
-                                <h1>Deduction</h1>
-                                <input value={tempjson.deductions} type="text" onChange={e => settempjson(tempjson => ({
-                                    ...tempjson,
-
-
-                                    deductions: e.target.value
-
-                                }))} />
-
-                            </div>
-                            <div className="inputname">
-                                <h1>Days</h1>
-                                <input value={tempjson.days} type="text" onChange={e => settempjson(tempjson => ({
-                                    ...tempjson,
-
-
-                                    days: e.target.value
-
-                                }))} />
-
-                            </div>
-                            <div className="inputname"></div>
-                            <div className="inputname">
-                                <h1>Taxes:  </h1>
-                                <div className={taxes} onClick={e => turnon()}>
-                                    <div className={circle}>
-
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div className="inputname">
-                                <h1>NC (4%):  </h1>
-                                <div className={taxes2} onClick={e => turnon2()}>
-                                    <div className={circle2}>
-
-                                    </div>
-                                </div>
-
-                            </div>
-                          {l===1&&  <div className="inputname">
-                                <h1>Apply custom payrate:  </h1>
-                              {tempjson.cprapply==='yes'?  <div className="taxes2" onClick={e => handlecpr(tempjson.cprapply)}>
-                                    <div className="circle2">
-
-                                    </div>
-                                </div>:  <div className="taxes" onClick={e => handlecpr(tempjson.cprapply)}>
-                                    <div className="circle">
-
-                                    </div>
-                                </div>
-
-                              }
-
-                            </div>
-
-                          }
-
-                            <button onClick={e => updatedata()} className='btn1'>Update</button>
-                            <button style={{ marginBottom: '30px' }} onClick={e => setadduser3('adduser2')} className='btn2'>Cancel</button>
-
-                        </>
-
-
-
-
-                    </div>
-
-
-
-
-                </div>
-
-            }
-
-            <div className={adduser2}>
-
-
-                <div className="subadduser hadduser ">
-
-                    <IoClose className='iov' onClick={e => setadduser2('adduser2')} />
-                    <>
-
-
-                        <>
-                            <h6>Perdiem & Other Expenses</h6>
-                            <div className="inpex inpexs">
-                                <h1>Perdiem ($)</h1>
-                                <input type="number" onChange={e => setperdiemamnt1(e.target.value)} value={perdiemamnt1} />
-                            </div>
-                            <div className="inpex inpexs">
-                                <h1>Minimum Distance (Mi)</h1>
-                                <input type="number" onChange={e => setperdiemmil1(e.target.value)} value={perdiemmil1} />
-                            </div>
-
-                            <div className="inpex inpexs">
-                                <h1>Overnight Perdiem ($)</h1>
-                                <input type="number" onChange={e => setonperdiemamnt1(e.target.value)} value={onperdiemamnt1} />
-                            </div>
-                            <div className="inpex inpexs">
-                                <h1>Minimum Distance (Mi)</h1>
-                                <input type="number" onChange={e => setonperdiemmil1(e.target.value)} value={onperdiemmil1} />
-                            </div>
-
-
-
-                        </>
-
-
-                        <div className="inpex2">
-
-
-                            <button onClick={e => applyperdiem('')} className='btn1'>Apply</button>
-
-                            <button onClick={e => setadduser2('adduser2')} className='btn1'>Cancel</button>
-                        </div>           <div className="inputname"></div>
-                    </>
-
-
-
-
-                </div>
-
-
-
-            </div>
-            {i === 0 &&
-                <>
-                    <div className={adduser}>
-                        {j === 1 &&
-                            <div className="subadduser subadduser2">
-
-                                <>
-                                    <div className="inputname">
-                                        <h1>Name</h1>
-
-
-                                        <input type="text" onChange={e => setnameq(e.target.value)} />
-                                    </div>
-
-                                    <div className="inputname">
-                                        <h1>Skill</h1>
-                                        <input value={skill} type="text" onChange={e => setskill(e.target.value)} />
-
-                                    </div>
-                                    <div className="inputname">
-                                        <h1>Pay rate (per/hr)</h1>
-                                        <input value={payrate} type="text" onChange={e => setpayrate(e.target.value)} />
-
-                                    </div>
-                                    <div className="inputname">
-                                        <h1>OT Pay rate (per/hr)</h1>
-                                        <input value={otpayrate} type="text" onChange={e => setotpayrate(e.target.value)} />
-
-                                    </div>
-
-                                    <div className="inputname">
-                                        <h1>Taxes:  </h1>
-                                        <div className={taxes} onClick={e => turnon()}>
-                                            <div className={circle}>
-
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div className="inputname">
-                                        <h1>NC (4%):  </h1>
-                                        <div className={taxes2} onClick={e => turnon2()}>
-                                            <div className={circle2}>
-
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div className="inputname">
-
-                                    </div>
-
-                                    <button onClick={e => adddata()} className='btn1'>Add</button>
-                                    <button onClick={e => setj(0)} className='btn2'>Back</button>
-
-                                </>
-
-
-
-
-                            </div>
-
-                        }
-                        {j === 0 &&
-                            <div className="subadduser hadduser ">
-
-                                <IoClose className='iov' onClick={e => setadduserx('adduser2')} />
-                                <> <div className="prcs" >
-                                    <div className="circ1">
-                                        <div className="subcirc">
-
-                                        </div>
-                                    </div>
-                                    {steps >= 1 ?
-                                        <div className="bare">
-
-                                        </div> :
-
-                                        <div className="bare grbare">
-
-                                        </div>}
-                                    {steps >= 1
-                                        ?
-
-                                        <div className="circ1">
-                                            <div className="subcirc">
-
-                                            </div>
-                                        </div> :
-
-                                        <div className="circ1 grcirc">
-                                            <div className="subcirc grcirc">
-
-                                            </div>
-                                        </div>}
-                                    {steps >= 2 ?
-                                        <div className="bare">
-
-                                        </div> :
-
-                                        <div className="bare grbare">
-
-                                        </div>}
-
-                                    {steps >= 2
-                                        ?
-
-                                        <div className="circ1">
-                                            <div className="subcirc">
-
-                                            </div>
-                                        </div> :
-
-                                        <div className="circ1 grcirc">
-                                            <div className="subcirc grcirc">
-
-                                            </div>
-                                        </div>
-
-                                    }
-                                    {steps >= 3 ?
-                                        <div className="bare">
-
-                                        </div> :
-
-                                        <div className="bare grbare">
-
-                                        </div>}
-
-                                    {steps >= 3
-                                        ?
-
-                                        <div className="circ1">
-                                            <div className="subcirc">
-
-                                            </div>
-                                        </div> :
-
-                                        <div className="circ1 grcirc">
-                                            <div className="subcirc grcirc">
-
-                                            </div>
-                                        </div>
-
-                                    }
-
-                                </div>
-
-                                    {steps === 0 ?
-                                        <>
-                                            <h6>General info</h6>
-                                            <div className="inpex">
-                                                <h1>Project name</h1>
-                                                <input onChange={e => setsname(e.target.value)} value={sname} type="text" />
-                                                {checkinfo && steps === 0 && !sname &&
-                                                    <h6 className='redinfo'>Project name is required</h6>
-
-                                                }
-                                            </div>
-                                            <div className="inpex">
-                                                <h1>Project no:</h1>
-                                                <input onChange={e => setpno(e.target.value)} value={pno} type="text" />
-                                                {checkinfo && steps === 0 && !pno &&
-                                                    <h6 className='redinfo'>Number is required</h6>
-
-                                                }
-                                            </div>
-                                            <div className="inpex">
-                                                <h1>Company</h1>
-
-                                                <select className='select2' name="cars" id="cars" onChange={e => allemps(e.target.value)}>
-
-                                                    {!cname && <option >Choose Company</option>
-
-                                                    }
-                                                    {
-                                                        clients && clients.map(val => (
-                                                            <option value={val.username + 'eiuka' + val.markup + 'eiuka' + val._id + 'eiuka' + val.address}>{val.username}</option>
-                                                        ))
-                                                    }
-                                                </select>
-                                                {checkinfo && steps === 0 && !cname &&
-                                                    <h6 className='redinfo'> Select company</h6>
-
-                                                }
-                                            </div>
-
-                                        </> :
-                                        steps === 1 ?
-                                            <>
-
-
-
-                                                <div className={mapx} ref={mapContainer}></div>
-
-
-                                                <>
-                                                    <div className={inpex}>
-                                                        <h1>Address</h1>
-                                                        <input onChange={e => setaddress(e.target.value)} value={address} type="text" />
-                                                        {checkinfo && steps === 1 && !chklatlang &&
-                                                            <h6 className='redinfo'>Map location is required</h6>
-
-                                                        }
-                                                    </div>
-                                                    <div className={inpex}>
-                                                        <button onClick={e => ddd()}>Choose from map</button>
-                                                    </div>
-                                                </>
-
-
-
-                                            </>
-                                            :
-
-                                            steps === 2 ?
-                                                <>
-                                                    <h6>Tasks</h6>
-                                                    <div className="alltasks">
-                                                        {tasks && tasks.map(val => (
-                                                            <p>{val.name} <VscChromeClose onClick={e => settasks(tasks.filter(item => item.name !== val.name))} className='sff' /></p>
-                                                        ))}
-                                                    </div>
-
-                                                    <div className="inpex">
-
-                                                        <input onChange={e => settaskname(e.target.value)} value={taskname} type="text" placeholder='Task' />
-
-                                                    </div>
-                                                    <div className="inpex" style={{ marginTop: '-10px' }}>
-                                                        <input onChange={e => settaskdesc(e.target.value)} value={taskdesc} type="text" placeholder='Description' />
-
-                                                    </div>
-                                                    <div className="inpex">
-                                                        <button className='intbtn' onClick={e => addtask()}>+ task</button>
-                                                    </div>
-
-
-                                                </> : steps === 3 ?
-                                                    <>
-                                                        <h6>Perdiem & Other Expenses</h6>
-                                                        <div className="inpex inpexs">
-                                                            <h1>Perdiem ($)</h1>
-                                                            <input type="number" onChange={e => setperdiemamnt(e.target.value)} value={perdiemamnt} />
-                                                        </div>
-                                                        <div className="inpex inpexs">
-                                                            <h1>Minimum Distance (Mi)</h1>
-                                                            <input type="number" onChange={e => setperdiemmil(e.target.value)} value={perdiemmil} />
-                                                        </div>
-
-                                                        <div className="inpex inpexs">
-                                                            <h1>Overnight Perdiem ($)</h1>
-                                                            <input type="number" onChange={e => setonperdiemamnt(e.target.value)} value={onperdiemamnt} />
-                                                        </div>
-                                                        <div className="inpex inpexs">
-                                                            <h1>Minimum Distance (Mi)</h1>
-                                                            <input type="number" onChange={e => setonperdiemmil(e.target.value)} value={onperdiemmil} />
-                                                        </div>
-
-                                                        <div className="inpex inpexs">
-                                                            <h1>Other Expenses ($)</h1>
-                                                            <input type="number" />
-                                                        </div>
-
-                                                    </> :
-
-                                                    <div className="tablerow trow">
-                                                        <div className="subtable">
-                                                            <div className="headertable clop">
-                                                                <h2 style={{ width: '50px', paddingLeft: '10px' }}>Action</h2>
-                                                                <h1>Employee</h1>
-
-                                                                <h6>Skill</h6>
-                                                                <h4>Pay rate</h4>
-                                                                <h5>OT Pay rate</h5>
-
-                                                                <h5>Distance</h5>
-
-                                                                <h2 style={{ width: '80px' }}>
-
-                                                                    Perdiem
-                                                                </h2>
-                                                                <h2 style={{ width: '100px' }}>
-
-                                                                    O.N Perdiem
-                                                                </h2>
-
-                                                                <h2 style={{ width: '80px' }}>
-
-                                                                    Food</h2>
-
-
-
-                                                                <h3>Taxes</h3>
-                                                                <h5>NC(%)</h5>
-
-
-                                                            </div>
-                                                            {userdata && userdata.map((val, index) => (
-                                                                <>
-                                                                    <div className="headertable">
-                                                                        <h2 style={{ width: '50px', paddingLeft: '10px' }}>
-                                                                            <AiFillDelete onClick={e => skipthis2(index)} /></h2>
-                                                                        <h1><img src='' alt="" className='valimg' /> {val.name}</h1>
-
-                                                                        <h6>{val.skill}</h6>
-
-                                                                        <h3>{val.payrate}</h3>
-                                                                        <h4>{val.otpayrate}</h4>
-
-                                                                        <h4>{parseInt(val.distance)} Miles</h4>
-                                                                        <h2 style={{ width: '80px' }}>
-                                                                            {val.perdiem}
-                                                                        </h2>
-                                                                        <h2 style={{ width: '100px' }}>
-                                                                            {val.onperdiem}
-                                                                        </h2>
-
-
-
-
-                                                                        <h2 style={{ width: '80px' }}>
-
-                                                                            {val.food === 'No' ?
-                                                                                <div className="taxes" onClick={e => turn3(val.food, index)}>
-                                                                                    <div className="circle">
-
-                                                                                    </div>
-                                                                                </div> :
-                                                                                <h4 className="taxes2" onClick={e => turn3(val.food, index)}>
-                                                                                    {<div className="circle2">
-
-                                                                                    </div>}
-                                                                                </h4>
-
-                                                                            }
-                                                                        </h2>
-
-                                                                        <h5>{val.taxes}</h5>
-                                                                        {
-                                                                            val.nc !== 'no' ?
-
-                                                                                <h5>{val.nc}%</h5>
-                                                                                :
-
-                                                                                <h5>NO</h5>
-                                                                        }
-
-
-                                                                    </div>
-                                                                </>
-                                                            ))
-
-                                                            }
-                                                        </div>
-                                                    </div>
-                                    }
-
-
-                                    {
-                                        steps === 4 && <div className="inputname">
-                                            <button onClick={e => setj(1)} className='pluadd'>+ Add Employee</button>
-
-                                        </div>
-                                    }
-
-                                    <div className="inpex2">
-
-                                        {mapx === 'mapx' || mapx === 'mapx3' ?
-                                            <>
-
-                                                <button className='btg' onClick={e => steps > 0 ? setsteps(steps => steps - 1) : ""}><HiArrowLeft className='btgp' /> Back</button>
-                                                <button onClick={e => steps < 4 ? setstex() : req()} className='btn1'>{steps < 4 ? "Next" : "Finish"}</button>
-                                            </>
-                                            :
-
-
-                                            <button onClick={e => setmapxs('mapx3')} className='btn1'>{steps < 4 ? "Save" : "Done"}</button>
-
-                                        }
-                                    </div>           <div className="inputname"></div>
-                                </>
-
-
-
-
-                            </div>
-
-                        }
-
-                    </div>
-                </>
-
-            }
-            <div className="sitemap">
-                {mx === 0 &&
-                    <>
-                        <div className="newst nbst" style={{ marginTop: '20px' }}>
-                            <div className="newst1 " style={{ position: 'relative' }}>
-
-                         
-                                {
-                                    kshow &&
-                                    <IoClose className='iov hideondesk iov2' onClick={e => setkshow(false)} />
-
-                                }
-                            </div>
-
-                            {!kshow && <div className="newsts nospacebw  hideondesk">
-                                {
-                                    searchval.length === 0 ?
-
-                                        data && data.map(val => (
-                                            <>{
-
-
-                                                <div onClick={e => setcurronex(val)} className="cardl jobcardl">
-                                                    <div className="topl">
-                                                        <p>Jobsite</p>
-
-                                                        <button style={{ color: 'rgb(3, 143, 9', background: '#DBFFF8' }}>{val.clientname}</button>
-
-
-                                                    </div>
-                                                    <h3>{val.sitename}</h3>
-
-                                                    <h1>No. Of Users: {val.user && val.user.length}</h1>
-                                                    <h1>{val.user && val.address}</h1>
-                                                </div>
-
-
-                                            }
-                                            </>
-                                        )) :
-
-                                        data && data.map(val => (
-                                            <>{
-
-
-                                                val.sitename && val.sitename.toLowerCase().search(searchval.toLowerCase()) >= 0 &&
-                                                <div onClick={e => setcurronex(val)} className="cardl jobcardl">
-                                                    <div className="topl">
-                                                        <p>Jobsite</p>
-
-                                                        <button style={{ color: 'rgb(3, 143, 9', background: '#DBFFF8' }}>{val.clientname}</button>
-
-
-                                                    </div>
-                                                    <h3>{val.sitename}</h3>
-
-                                                    <h1>No. Of Users: {val.user && val.user.length}</h1>
-                                                    <h1>{val.user && val.address}</h1>
-                                                </div>
-
-
-                                            }
-                                            </>
-                                        ))
-
-                                }
-                            </div>
-
-                            }
-                            <div className="newst2">
-
-                                {
-                                    k === 0 &&
-                                    <>
-
-                                        <button className='hideonmobile' onClick={e => preparesheet(0)}>Export to excel</button>
-                                        <button className='hideonmobile' onClick={e => preparesheet(1)}>Enter Hours</button>
-                                        <button className='addemp3 hideonmobile ' onClick={e => preparesheet(2)}> Invoice</button>
-
-                                    </>
-
-                                }
-                                {
-                                    k === 1 &&
-
-                                    <>
-                                   {
-                                    l===2?
-
-                                   <button onClick={e => backtop1(1)}>Payroll</button>:
-
-                                   <button onClick={e => backtop2(2)}>Invoice</button>
-                                   }
-                                        <button onClick={e => save()}>Save</button>
-
-                                        <button onClick={e => setadduserd('adduser')}>Import</button>
-                                      
-                                        <button className='addemp' onClick={e => l === 0 ? exports() : l === 1 ? exports3() : exports2()}>{l===2?'Invoice':'Export'}</button>
-                                        {/*l === 0 &&
-
-                                            <button className='addemp2 addemp' onClick={e => updateaccount()}>Update Account</button>
-
-                                */}
-                                        {l === 2 &&
-                                            <>
-
-                                                {/*  <button className='addemp2 addemp' onClick={e => postclient()}>Update Account</button>*/}
-                                            </>
-                                        }
-                                    </>
-                                }
-
-                            </div>
+                             <div className="midone">
+                                 <h1>{val2.name}</h1>
+                                 <p>{val2.skill}</p>
+                             </div>
+                             <button onClick={e => importthisx(val2)} >Add</button>
+                         </div>
+                         <div className="linn"></div>
+                     </>
+           
+             )):empdata && empdata.map(val2 => (
+                 val2.clientid===currid&&
+                 <>
+                     <div className="rowval">
+                        <div className="imgh">
+                         {!val2.imgurl?
+                         <img src={prof} alt="" />:
+                         <img src={val2.imgurl} alt="" />
+
+                         }
                         </div>
+                         <div className="midone">
+                             <h1>{val2.name}</h1>
+                             <p>{val2.skill}</p>
+                         </div>
+                         <button onClick={e => importthisx(val2)} >Add</button>
+                     </div>
+                     <div className="linn"></div>
+                 </>
+       
+         ))
+         
+       
+}
+     </div>
+ </div>
+
+ {tempjson &&
+
+     <div className={adduser3}>
+
+         <div className="subadduser ">
+
+             <>
+                 <div className="inputname">
+                     <h1>Name</h1>
+                     <input value={tempjson.Employee} onChange={e => settempjson(tempjson => ({
+                         ...tempjson,
 
 
-                        {k === 0 &&
-                            <>
-                                <div className="newst">
-                                    <div className="tablerow hideonmobile tablef" id='tablerow'>
-                                        <div className="subtable">
-                                            <div className="headertable clop">
-                                                <h2 className='sxx'> Select</h2>
-                                                <h1>Project</h1>
+                         Employee: e.target.value
 
-                                                <h6>Company</h6>
-                                                <h3>Total Employees</h3>
-                                                <h3>Status</h3>
-
-
-                                            </div>
-                                            {searchval.length > 0 && filter === 'jobsite' && data && data.map((val, index) => (
-                                                val.sitename.toLowerCase().search(searchval.toLowerCase()) >= 0 &&
-                                                <>
-                                                    <div className="headertable" onClick={e => selectthis(val)} >
-                                                        <h2 className='sxx'> <input onClick={e => addindex(index,val)} type="checkbox" checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false} /> </h2>
-                                                        <h1>{val.sitename}</h1>
-
-                                                        <h6>{val.clientname}</h6>
-                                                        <h3>{val.user.length}</h3>
-                                                        <h4>{val.status}</h4>
-
-
-
-
-
-                                                    </div>
-                                                </>
-                                            ))
-
-                                            }
-                                            {searchval.length > 0 && filter === 'company' && currentItems && currentItems.map((val, index) => (
-                                                val.clientname.toLowerCase().search(searchval.toLowerCase()) >= 0 &&
-                                                <>
-                                                    <div className="headertable" onClick={e => selectthis(val)} >
-                                                        <h2 className='sxx'> <input onClick={e => addindex(index,val)} type="checkbox" checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false} /> </h2>
-                                                        <h1>{val.sitename}</h1>
-
-                                                        <h6>{val.clientname}</h6>
-                                                        <h3>{val.user.length}</h3>
-                                                        <h4>{val.status}</h4>
+                     }))} type="text" />
 
 
 
 
+                 </div>
 
-                                                    </div>
-                                                </>
-                                            ))
-
-                                            }
-                                            {searchval.length === 0 && currentItems && currentItems.map((val, index) => (
-
-                                                <>
-                                                    <div className="headertable" onClick={e => selectthis(val)} >
-                                                        <h2 className='sxx'> <input onClick={e => addindex(index,val)} type="checkbox" checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false} /> </h2>
-                                                        <h1>{val.sitename}</h1>
-
-                                                        <h6>{val.clientname}</h6>
-                                                        <h3>{val.user.length}</h3>
-                                                        <h4>{val.status}</h4>
+                 <div className="inputname">
+                     <h1>Working Hrs</h1>
+                     <input value={tempjson.Hrs} type="text"
+                         onChange={e => settempjson(tempjson => ({
+                             ...tempjson,
 
 
+                             Hrs: e.target.value
+
+                         }))}
+                     />
+
+                 </div>
+                 <div className="inputname">
+                     <h1>Pay rate (per/hr)</h1>
+                     <input value={tempjson.Payrate} type="text"
+                         onChange={e => settempjson(tempjson => ({
+                             ...tempjson,
+
+
+                             Payrate: e.target.value
+
+                         }))}
+                     />
+
+                 </div>
+                 <div className="inputname" >
+                     <h1>OT Hrs</h1>
+                     <input value={tempjson.Ot_Hrs} type="text"
+                         onChange={e => settempjson(tempjson => ({
+                             ...tempjson,
+
+
+                             Ot_Hrs: e.target.value
+
+                         }))}
+                     />
+
+                 </div>
+                 <div className="inputname">
+                     <h1>OT Pay rate (per/hr)</h1>
+                     <input value={tempjson.OT_Pay_rate} type="text" onChange={e => settempjson(tempjson => ({
+                         ...tempjson,
+
+
+                         OT_Pay_rate: e.target.value
+
+                     }))} />
+
+                 </div>
+                 <div className="inputname">
+                     <h1>Deduction</h1>
+                     <input value={tempjson.deductions} type="text" onChange={e => settempjson(tempjson => ({
+                         ...tempjson,
+
+
+                         deductions: e.target.value
+
+                     }))} />
+
+                 </div>
+                 <div className="inputname">
+                     <h1>Days</h1>
+                     <input value={tempjson.days} type="text" onChange={e => settempjson(tempjson => ({
+                         ...tempjson,
+
+
+                         days: e.target.value
+
+                     }))} />
+
+                 </div>
+                 <div className="inputname"></div>
+                 <div className="inputname">
+                     <h1>Taxes:  </h1>
+                     <div className={taxes} onClick={e => turnon()}>
+                         <div className={circle}>
+
+                         </div>
+                     </div>
+
+                 </div>
+                 <div className="inputname">
+                     <h1>NC (4%):  </h1>
+                     <div className={taxes2} onClick={e => turnon2()}>
+                         <div className={circle2}>
+
+                         </div>
+                     </div>
+
+                 </div>
+               {l===1&&  <div className="inputname">
+                     <h1>Apply custom payrate:  </h1>
+                   {tempjson.cprapply==='yes'?  <div className="taxes2" onClick={e => handlecpr(tempjson.cprapply)}>
+                         <div className="circle2">
+
+                         </div>
+                     </div>:  <div className="taxes" onClick={e => handlecpr(tempjson.cprapply)}>
+                         <div className="circle">
+
+                         </div>
+                     </div>
+
+                   }
+
+                 </div>
+
+               }
+
+                 <button onClick={e => updatedata()} className='btn1'>Update</button>
+                 <button style={{ marginBottom: '30px' }} onClick={e => setadduser3('adduser2')} className='btn2'>Cancel</button>
+
+             </>
 
 
 
-                                                    </div>
-                                                </>
-                                            ))
 
-                                            }
+         </div>
 
-                                        </div>
-                                        <ReactPaginate
-                                            breakLabel="..."
-                                            nextLabel="next >"
-                                            onPageChange={handlePageClick}
-                                            pageRangeDisplayed={5}
-                                            pageCount={pageCount}
-                                            previousLabel="< previous"
-                                            renderOnZeroPageCount={null}
-                                        />
-                                    </div>
 
-                                    <div className="comdet hideonmobile">
-                                        {currone ?
-                                            <>
-                                                <h1> Project</h1>
-                                                <div className="penh" onClick={e => updateuser()
-                                                }>
-                                                    <FaPencilAlt className='fadd' />
 
-                                                </div>
-                                                <div className="divx">
-                                                    <div className="bcircle">
-                                                        <FaBuilding className='fabv' />
 
-                                                    </div>
-                                                    <p>{currone.sitename}</p>
-                                                </div>
-                                                <div className="divx2">
-                                                    <div className="prt prt2">
-                                                        <h1>{currone.user.length} </h1>
-                                                        <p>Users</p>
-                                                    </div>
-                                                    <div className="prt">
-                                                        <h1>9</h1>
-                                                        <p>Clocked inn</p>
-                                                    </div>
-                                                </div>
-                                                <div className="cinfo">
-                                                    <h1>
-                                                        <MdLocationOn className='mdl' />Company  </h1>
-                                                    <p>{currone.clientname}</p>
-                                                </div>
-                                                <div className="cinfo">
-                                                    <h1>
-                                                        <MdLocationOn className='mdl' />Site address</h1>
-                                                    <p>{currone.address}</p>
-                                                </div>
+     </div>
 
-                                                <div className="badge">{currone.status}</div>
-                                            </>
-                                            :
-                                            <div className="divx">
+ }
 
-                                                <p>Select Company to view</p>
-                                            </div>}
+ <div className={adduser2}>
 
-                                    </div>
 
-                                    {kshow && <div className="comdet">
-                                        {currone ?
-                                            <>
-                                                <h1> Project</h1>
+     <div className="subadduser hadduser ">
 
-                                                <div className="divx">
-                                                    <div className="bcircle">
-                                                        <FaBuilding className='fabv' />
+         <IoClose className='iov' onClick={e => setadduser2('adduser2')} />
+         <>
 
-                                                    </div>
-                                                    <p>{currone.sitename}</p>
-                                                </div>
-                                                <div className="divx2">
-                                                    <div className="prt prt2">
-                                                        <h1>{currone.user.length} </h1>
-                                                        <p>Users</p>
-                                                    </div>
-                                                    <div className="prt">
-                                                        <h1>9</h1>
-                                                        <p>Clocked inn</p>
-                                                    </div>
-                                                </div>
-                                                <div className="cinfo">
-                                                    <h1>
-                                                        <MdLocationOn className='mdl' />Company  </h1>
-                                                    <p>{currone.clientname}</p>
-                                                </div>
-                                                <div className="cinfo">
-                                                    <h1>
-                                                        <MdLocationOn className='mdl' />Site address</h1>
-                                                    <p>{currone.address}</p>
-                                                </div>
 
-                                                <div className="badge">{currone.status}</div>
-                                            </>
-                                            :
-                                            <div className="divx">
+             <>
+                 <h6>Perdiem & Other Expenses</h6>
+                 <div className="inpex inpexs">
+                     <h1>Perdiem ($)</h1>
+                     <input type="number" onChange={e => setperdiemamnt1(e.target.value)} value={perdiemamnt1} />
+                 </div>
+                 <div className="inpex inpexs">
+                     <h1>Minimum Distance (Mi)</h1>
+                     <input type="number" onChange={e => setperdiemmil1(e.target.value)} value={perdiemmil1} />
+                 </div>
 
-                                                <p>Select Company to view</p>
-                                            </div>}
+                 <div className="inpex inpexs">
+                     <h1>Overnight Perdiem ($)</h1>
+                     <input type="number" onChange={e => setonperdiemamnt1(e.target.value)} value={onperdiemamnt1} />
+                 </div>
+                 <div className="inpex inpexs">
+                     <h1>Minimum Distance (Mi)</h1>
+                     <input type="number" onChange={e => setonperdiemmil1(e.target.value)} value={onperdiemmil1} />
+                 </div>
 
-                                    </div>
 
-                                    }
-                                </div>
 
-                                <div className="newst hideondesk">
-                                    <div className="comdetxx" ref={mapContainer3}></div>
-                                </div>
-                                <div className="newst hideonmobile">
-                                    <div className="comdetxx" ref={mapContainer2}></div>
-                                </div>
-                            </>
+             </>
 
+
+             <div className="inpex2">
+
+
+                 <button onClick={e => applyperdiem('')} className='btn1'>Apply</button>
+
+                 <button onClick={e => setadduser2('adduser2')} className='btn1'>Cancel</button>
+             </div>           <div className="inputname"></div>
+         </>
+
+
+
+
+     </div>
+
+
+
+ </div>
+ {i === 0 &&
+     <>
+         <div className={adduser}>
+             {j === 1 &&
+                 <div className="subadduser subadduser2">
+
+                     <>
+                         <div className="inputname">
+                             <h1>Name</h1>
+
+
+                             <input type="text" onChange={e => setnameq(e.target.value)} />
+                         </div>
+
+                         <div className="inputname">
+                             <h1>Skill</h1>
+                             <input value={skill} type="text" onChange={e => setskill(e.target.value)} />
+
+                         </div>
+                         <div className="inputname">
+                             <h1>Pay rate (per/hr)</h1>
+                             <input value={payrate} type="text" onChange={e => setpayrate(e.target.value)} />
+
+                         </div>
+                         <div className="inputname">
+                             <h1>OT Pay rate (per/hr)</h1>
+                             <input value={otpayrate} type="text" onChange={e => setotpayrate(e.target.value)} />
+
+                         </div>
+
+                         <div className="inputname">
+                             <h1>Taxes:  </h1>
+                             <div className={taxes} onClick={e => turnon()}>
+                                 <div className={circle}>
+
+                                 </div>
+                             </div>
+
+                         </div>
+                         <div className="inputname">
+                             <h1>NC (4%):  </h1>
+                             <div className={taxes2} onClick={e => turnon2()}>
+                                 <div className={circle2}>
+
+                                 </div>
+                             </div>
+
+                         </div>
+                         <div className="inputname">
+
+                         </div>
+
+                         <button onClick={e => adddata()} className='btn1'>Add</button>
+                         <button onClick={e => setj(0)} className='btn2'>Back</button>
+
+                     </>
+
+
+
+
+                 </div>
+
+             }
+             {j === 0 &&
+                 <div className="subadduser hadduser ">
+
+                     <IoClose className='iov' onClick={e => setadduserx('adduser2')} />
+                     <> <div className="prcs" >
+                         <div className="circ1">
+                             <div className="subcirc">
+
+                             </div>
+                         </div>
+                         {steps >= 1 ?
+                             <div className="bare">
+
+                             </div> :
+
+                             <div className="bare grbare">
+
+                             </div>}
+                         {steps >= 1
+                             ?
+
+                             <div className="circ1">
+                                 <div className="subcirc">
+
+                                 </div>
+                             </div> :
+
+                             <div className="circ1 grcirc">
+                                 <div className="subcirc grcirc">
+
+                                 </div>
+                             </div>}
+                         {steps >= 2 ?
+                             <div className="bare">
+
+                             </div> :
+
+                             <div className="bare grbare">
+
+                             </div>}
+
+                         {steps >= 2
+                             ?
+
+                             <div className="circ1">
+                                 <div className="subcirc">
+
+                                 </div>
+                             </div> :
+
+                             <div className="circ1 grcirc">
+                                 <div className="subcirc grcirc">
+
+                                 </div>
+                             </div>
+
+                         }
+                         {steps >= 3 ?
+                             <div className="bare">
+
+                             </div> :
+
+                             <div className="bare grbare">
+
+                             </div>}
+
+                         {steps >= 3
+                             ?
+
+                             <div className="circ1">
+                                 <div className="subcirc">
+
+                                 </div>
+                             </div> :
+
+                             <div className="circ1 grcirc">
+                                 <div className="subcirc grcirc">
+
+                                 </div>
+                             </div>
+
+                         }
+
+                     </div>
+
+                         {steps === 0 ?
+                             <>
+                                 <h6>General info</h6>
+                                 <div className="inpex">
+                                     <h1>Project name</h1>
+                                     <input onChange={e => setsname(e.target.value)} value={sname} type="text" />
+                                     {checkinfo && steps === 0 && !sname &&
+                                         <h6 className='redinfo'>Project name is required</h6>
+
+                                     }
+                                 </div>
+                                 <div className="inpex">
+                                     <h1>Project no:</h1>
+                                     <input onChange={e => setpno(e.target.value)} value={pno} type="text" />
+                                     {checkinfo && steps === 0 && !pno &&
+                                         <h6 className='redinfo'>Number is required</h6>
+
+                                     }
+                                 </div>
+                                 <div className="inpex">
+                                     <h1>Company</h1>
+
+                                     <select className='select2' name="cars" id="cars" onChange={e => allemps(e.target.value)}>
+
+                                         {!cname && <option >Choose Company</option>
+
+                                         }
+                                         {
+                                             clients && clients.map(val => (
+                                                 <option value={val.username + 'eiuka' + val.markup + 'eiuka' + val._id + 'eiuka' + val.address}>{val.username}</option>
+                                             ))
+                                         }
+                                     </select>
+                                     {checkinfo && steps === 0 && !cname &&
+                                         <h6 className='redinfo'> Select company</h6>
+
+                                     }
+                                 </div>
+
+                             </> :
+                             steps === 1 ?
+                                 <>
+
+
+
+                                     <div className={mapx} ref={mapContainer}></div>
+
+
+                                     <>
+                                         <div className={inpex}>
+                                             <h1>Address</h1>
+                                             <input onChange={e => setaddress(e.target.value)} value={address} type="text" />
+                                             {checkinfo && steps === 1 && !chklatlang &&
+                                                 <h6 className='redinfo'>Map location is required</h6>
+
+                                             }
+                                         </div>
+                                         <div className={inpex}>
+                                             <button onClick={e => ddd()}>Choose from map</button>
+                                         </div>
+                                     </>
+
+
+
+                                 </>
+                                 :
+
+                                 steps === 2 ?
+                                     <>
+                                         <h6>Tasks</h6>
+                                         <div className="alltasks">
+                                             {tasks && tasks.map(val => (
+                                                 <p>{val.name} <VscChromeClose onClick={e => settasks(tasks.filter(item => item.name !== val.name))} className='sff' /></p>
+                                             ))}
+                                         </div>
+
+                                         <div className="inpex">
+
+                                             <input onChange={e => settaskname(e.target.value)} value={taskname} type="text" placeholder='Task' />
+
+                                         </div>
+                                         <div className="inpex" style={{ marginTop: '-10px' }}>
+                                             <input onChange={e => settaskdesc(e.target.value)} value={taskdesc} type="text" placeholder='Description' />
+
+                                         </div>
+                                         <div className="inpex">
+                                             <button className='intbtn' onClick={e => addtask()}>+ task</button>
+                                         </div>
+
+
+                                     </> : steps === 3 ?
+                                         <>
+                                             <h6>Perdiem & Other Expenses</h6>
+                                             <div className="inpex inpexs">
+                                                 <h1>Perdiem ($)</h1>
+                                                 <input type="number" onChange={e => setperdiemamnt(e.target.value)} value={perdiemamnt} />
+                                             </div>
+                                             <div className="inpex inpexs">
+                                                 <h1>Minimum Distance (Mi)</h1>
+                                                 <input type="number" onChange={e => setperdiemmil(e.target.value)} value={perdiemmil} />
+                                             </div>
+
+                                             <div className="inpex inpexs">
+                                                 <h1>Overnight Perdiem ($)</h1>
+                                                 <input type="number" onChange={e => setonperdiemamnt(e.target.value)} value={onperdiemamnt} />
+                                             </div>
+                                             <div className="inpex inpexs">
+                                                 <h1>Minimum Distance (Mi)</h1>
+                                                 <input type="number" onChange={e => setonperdiemmil(e.target.value)} value={onperdiemmil} />
+                                             </div>
+
+                                             <div className="inpex inpexs">
+                                                 <h1>Other Expenses ($)</h1>
+                                                 <input type="number" />
+                                             </div>
+
+                                         </> :
+
+                                         <div className="tablerow trow">
+                                             <div className="subtable">
+                                                 <div className="headertable clop">
+                                                     <h2 style={{ width: '50px', paddingLeft: '10px' }}>Action</h2>
+                                                     <h1>Employee</h1>
+
+                                                     <h6>Skill</h6>
+                                                     <h4>Pay rate</h4>
+                                                     <h5>OT Pay rate</h5>
+
+                                                     <h5>Distance</h5>
+
+                                                     <h2 style={{ width: '80px' }}>
+
+                                                         Perdiem
+                                                     </h2>
+                                                     <h2 style={{ width: '100px' }}>
+
+                                                         O.N Perdiem
+                                                     </h2>
+
+                                                     <h2 style={{ width: '80px' }}>
+
+                                                         Food</h2>
+
+
+
+                                                     <h3>Taxes</h3>
+                                                     <h5>NC(%)</h5>
+
+
+                                                 </div>
+                                                 {userdata && userdata.map((val, index) => (
+                                                     <>
+                                                         <div className="headertable">
+                                                             <h2 style={{ width: '50px', paddingLeft: '10px' }}>
+                                                                 <AiFillDelete onClick={e => skipthis2(index)} /></h2>
+                                                             <h1><img src='' alt="" className='valimg' /> {val.name}</h1>
+
+                                                             <h6>{val.skill}</h6>
+
+                                                             <h3>{val.payrate}</h3>
+                                                             <h4>{val.otpayrate}</h4>
+
+                                                             <h4>{parseInt(val.distance)} Miles</h4>
+                                                             <h2 style={{ width: '80px' }}>
+                                                                 {val.perdiem}
+                                                             </h2>
+                                                             <h2 style={{ width: '100px' }}>
+                                                                 {val.onperdiem}
+                                                             </h2>
+
+
+
+
+                                                             <h2 style={{ width: '80px' }}>
+
+                                                                 {val.food === 'No' ?
+                                                                     <div className="taxes" onClick={e => turn3(val.food, index)}>
+                                                                         <div className="circle">
+
+                                                                         </div>
+                                                                     </div> :
+                                                                     <h4 className="taxes2" onClick={e => turn3(val.food, index)}>
+                                                                         {<div className="circle2">
+
+                                                                         </div>}
+                                                                     </h4>
+
+                                                                 }
+                                                             </h2>
+
+                                                             <h5>{val.taxes}</h5>
+                                                             {
+                                                                 val.nc !== 'no' ?
+
+                                                                     <h5>{val.nc}%</h5>
+                                                                     :
+
+                                                                     <h5>NO</h5>
+                                                             }
+
+
+                                                         </div>
+                                                     </>
+                                                 ))
+
+                                                 }
+                                             </div>
+                                         </div>
+                         }
+
+
+                         {
+                             steps === 4 && <div className="inputname">
+                                 <button onClick={e => setj(1)} className='pluadd'>+ Add Employee</button>
+
+                             </div>
+                         }
+
+                         <div className="inpex2">
+
+                             {mapx === 'mapx' || mapx === 'mapx3' ?
+                                 <>
+
+                                     <button className='btg' onClick={e => steps > 0 ? setsteps(steps => steps - 1) : ""}><HiArrowLeft className='btgp' /> Back</button>
+                                     <button onClick={e => steps < 4 ? setstex() : req()} className='btn1'>{steps < 4 ? "Next" : "Finish"}</button>
+                                 </>
+                                 :
+
+
+                                 <button onClick={e => setmapxs('mapx3')} className='btn1'>{steps < 4 ? "Save" : "Done"}</button>
+
+                             }
+                         </div>           <div className="inputname"></div>
+                     </>
+
+
+
+
+                 </div>
+
+             }
+
+         </div>
+     </>
+
+ }
+ <div className="sitemap">
+     {mx === 0 &&
+         <>
+             <div className="newst nbst" style={{ marginTop: '20px' }}>
+                 <div className="newst1 " style={{ position: 'relative' }}>
+
+              
+                     {
+                         kshow &&
+                         <IoClose className='iov hideondesk iov2' onClick={e => setkshow(false)} />
+
+                     }
+                 </div>
+
+                 {!kshow && <div className="newsts nospacebw  hideondesk">
+                     {
+                         searchval.length === 0 ?
+
+                             data && data.map(val => (
+                                 <>{
+
+
+                                     <div onClick={e => setcurronex(val)} className="cardl jobcardl">
+                                         <div className="topl">
+                                             <p>Jobsite</p>
+
+                                             <button style={{ color: 'rgb(3, 143, 9', background: '#DBFFF8' }}>{val.clientname}</button>
+
+
+                                         </div>
+                                         <h3>{val.sitename}</h3>
+
+                                         <h1>No. Of Users: {val.user && val.user.length}</h1>
+                                         <h1>{val.user && val.address}</h1>
+                                     </div>
+
+
+                                 }
+                                 </>
+                             )) :
+
+                             data && data.map(val => (
+                                 <>{
+
+
+                                     val.sitename && val.sitename.toLowerCase().search(searchval.toLowerCase()) >= 0 &&
+                                     <div onClick={e => setcurronex(val)} className="cardl jobcardl">
+                                         <div className="topl">
+                                             <p>Jobsite</p>
+
+                                             <button style={{ color: 'rgb(3, 143, 9', background: '#DBFFF8' }}>{val.clientname}</button>
+
+
+                                         </div>
+                                         <h3>{val.sitename}</h3>
+
+                                         <h1>No. Of Users: {val.user && val.user.length}</h1>
+                                         <h1>{val.user && val.address}</h1>
+                                     </div>
+
+
+                                 }
+                                 </>
+                             ))
+
+                     }
+                 </div>
+
+                 }
+                 <div className="newst2">
+
+                     {
+                         k === 0 &&
+                         <>
+
+                             <button className='hideonmobile' onClick={e => preparesheet(0)}>Export to excel</button>
+                             <button className='hideonmobile' onClick={e => preparesheet(1)}>Enter Hours</button>
+                             <button className='addemp3 hideonmobile ' onClick={e => preparesheet(2)}> Invoice</button>
+
+                         </>
+
+                     }
+                     {
+                         k === 1 &&
+
+                         <>
+                        {
+                         l===2?
+
+                        <button onClick={e => backtop1(1)}>Payroll</button>:
+
+                        <button onClick={e => backtop2(2)}>Invoice</button>
                         }
-                        {k == 1 && l === 2 &&
-                            <div className='sssw' style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
+                             <button onClick={e => save()}>Save</button>
+
+                             <button onClick={e => setadduserd('adduser')}>Import</button>
+                           
+                             <button className='addemp' onClick={e => l === 0 ? exports() : l === 1 ? exports3() : exports2()}>{l===2?'Invoice':'Export'}</button>
+                             {/*l === 0 &&
+
+                                 <button className='addemp2 addemp' onClick={e => updateaccount()}>Update Account</button>
+
+                     */}
+                             {l === 2 &&
+                                 <>
+
+                                     {/*  <button className='addemp2 addemp' onClick={e => postclient()}>Update Account</button>*/}
+                                 </>
+                             }
+                         </>
+                     }
+
+                 </div>
+             </div>
 
 
-                                <div className="subadduser subadduserx2 roundrad">
+             {k === 0 &&
+                 <>
+                     <div className="newst">
+                         <div className="tablerow hideonmobile tablef" id='tablerow'>
+                             <div className="subtable">
+                                 <div className="headertable clop">
+                                     <h2 className='sxx'> Select</h2>
+                                     <h1>Project</h1>
 
-                                    <>
-                                        <div className="inputname roundbord">
-                                            <h1>Company </h1> 
-                                            <div className="inputnamel">
-                                                <p onClick={e=>setboxprojectsx('boxprojects')} style={{cursor:'pointer' }}>
+                                     <h6>Company</h6>
+                                     <h3>Total Employees</h3>
+                                     <h3>Status</h3>
 
-                                                  {!currcompany?  "Choose Company":currcompany
 
-                                                  }
-                                                </p>
-                                                <div className={boxprojectsx} >
-                                                   
-                                                    <IoClose onClick={e=>setboxprojectsx('boxprojects2')}  className='iocx' />
-                                                    <input type="text" placeholder='Search Company' onChange={e=>setcomval(e.target.value)} value={comval} />
-                                                    { 
+                                 </div>
+                                 {searchval.length > 0 && filter === 'jobsite' && data && data.map((val, index) => (
+                                     val.sitename.toLowerCase().search(searchval.toLowerCase()) >= 0 &&
+                                     <>
+                                         <div className="headertable" onClick={e => selectthis(val)} >
+                                             <h2 className='sxx'> <input onClick={e => addindex(index,val)} type="checkbox" checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false} /> </h2>
+                                             <h1>{val.sitename}</h1>
+
+                                             <h6>{val.clientname}</h6>
+                                             <h3>{val.user.length}</h3>
+                                             <h4>{val.status}</h4>
+
+
+
+
+
+                                         </div>
+                                     </>
+                                 ))
+
+                                 }
+                                 {searchval.length > 0 && filter === 'company' && currentItems && currentItems.map((val, index) => (
+                                     val.clientname.toLowerCase().search(searchval.toLowerCase()) >= 0 &&
+                                     <>
+                                         <div className="headertable" onClick={e => selectthis(val)} >
+                                             <h2 className='sxx'> <input onClick={e => addindex(index,val)} type="checkbox" checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false} /> </h2>
+                                             <h1>{val.sitename}</h1>
+
+                                             <h6>{val.clientname}</h6>
+                                             <h3>{val.user.length}</h3>
+                                             <h4>{val.status}</h4>
+
+
+
+
+
+                                         </div>
+                                     </>
+                                 ))
+
+                                 }
+                                 {searchval.length === 0 && currentItems && currentItems.map((val, index) => (
+
+                                     <>
+                                         <div className="headertable" onClick={e => selectthis(val)} >
+                                             <h2 className='sxx'> <input onClick={e => addindex(index,val)} type="checkbox" checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false} /> </h2>
+                                             <h1>{val.sitename}</h1>
+
+                                             <h6>{val.clientname}</h6>
+                                             <h3>{val.user.length}</h3>
+                                             <h4>{val.status}</h4>
+
+
+
+
+
+                                         </div>
+                                     </>
+                                 ))
+
+                                 }
+
+                             </div>
+                             <ReactPaginate
+                                 breakLabel="..."
+                                 nextLabel="next >"
+                                 onPageChange={handlePageClick}
+                                 pageRangeDisplayed={5}
+                                 pageCount={pageCount}
+                                 previousLabel="< previous"
+                                 renderOnZeroPageCount={null}
+                             />
+                         </div>
+
+                         <div className="comdet hideonmobile">
+                             {currone ?
+                                 <>
+                                     <h1> Project</h1>
+                                     <div className="penh" onClick={e => updateuser()
+                                     }>
+                                         <FaPencilAlt className='fadd' />
+
+                                     </div>
+                                     <div className="divx">
+                                         <div className="bcircle">
+                                             <FaBuilding className='fabv' />
+
+                                         </div>
+                                         <p>{currone.sitename}</p>
+                                     </div>
+                                     <div className="divx2">
+                                         <div className="prt prt2">
+                                             <h1>{currone.user.length} </h1>
+                                             <p>Users</p>
+                                         </div>
+                                         <div className="prt">
+                                             <h1>9</h1>
+                                             <p>Clocked inn</p>
+                                         </div>
+                                     </div>
+                                     <div className="cinfo">
+                                         <h1>
+                                             <MdLocationOn className='mdl' />Company  </h1>
+                                         <p>{currone.clientname}</p>
+                                     </div>
+                                     <div className="cinfo">
+                                         <h1>
+                                             <MdLocationOn className='mdl' />Site address</h1>
+                                         <p>{currone.address}</p>
+                                     </div>
+
+                                     <div className="badge">{currone.status}</div>
+                                 </>
+                                 :
+                                 <div className="divx">
+
+                                     <p>Select Company to view</p>
+                                 </div>}
+
+                         </div>
+
+                         {kshow && <div className="comdet">
+                             {currone ?
+                                 <>
+                                     <h1> Project</h1>
+
+                                     <div className="divx">
+                                         <div className="bcircle">
+                                             <FaBuilding className='fabv' />
+
+                                         </div>
+                                         <p>{currone.sitename}</p>
+                                     </div>
+                                     <div className="divx2">
+                                         <div className="prt prt2">
+                                             <h1>{currone.user.length} </h1>
+                                             <p>Users</p>
+                                         </div>
+                                         <div className="prt">
+                                             <h1>9</h1>
+                                             <p>Clocked inn</p>
+                                         </div>
+                                     </div>
+                                     <div className="cinfo">
+                                         <h1>
+                                             <MdLocationOn className='mdl' />Company  </h1>
+                                         <p>{currone.clientname}</p>
+                                     </div>
+                                     <div className="cinfo">
+                                         <h1>
+                                             <MdLocationOn className='mdl' />Site address</h1>
+                                         <p>{currone.address}</p>
+                                     </div>
+
+                                     <div className="badge">{currone.status}</div>
+                                 </>
+                                 :
+                                 <div className="divx">
+
+                                     <p>Select Company to view</p>
+                                 </div>}
+
+                         </div>
+
+                         }
+                     </div>
+
+                     <div className="newst hideondesk">
+                         <div className="comdetxx" ref={mapContainer3}></div>
+                     </div>
+                     <div className="newst hideonmobile">
+                         <div className="comdetxx" ref={mapContainer2}></div>
+                     </div>
+                 </>
+
+             }
+             {k == 1 && l === 2 &&
+                 <div className='sssw' style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
+
+
+                     <div className="subadduser subadduserx2 roundrad">
+
+                         <>
+                             <div className="inputname roundbord">
+                                 <h1>Company </h1> 
+                                 <div className="inputnamel">
+                                     <p onClick={e=>setboxprojectsx('boxprojects')} style={{cursor:'pointer' }}>
+
+                                       {!currcompany?  "Choose Company":currcompany
+
+                                       }
+                                     </p>
+                                     <div className={boxprojectsx} >
+                                        
+                                         <IoClose onClick={e=>setboxprojectsx('boxprojects2')}  className='iocx' />
+                                         <input type="text" placeholder='Search Company' onChange={e=>setcomval(e.target.value)} value={comval} />
+                                         { 
 comval?clients && clients.map(val => (
-      val.username.toLowerCase().search(comval.toLowerCase())>=0&&
-        <div className="rowss"  style={{cursor:'pointer'}}>
-            <p onClick={e=>selectthiscompany(val._id,val.username,val.markup)}>{val.username} </p>
-      <p></p>
-        </div>
-         )):
-        clients && clients.map(val => (
-            val.username.toLowerCase().search(comval.toLowerCase())>=0&&
-              <div className="rowss"  style={{cursor:'pointer'}}>
-                  <p onClick={e=>selectthiscompany(val._id,val.username,val.markup)}>{val.username} </p>
-            <p></p>
-              </div>
-    ))}
+val.username.toLowerCase().search(comval.toLowerCase())>=0&&
+<div className="rowss"  style={{cursor:'pointer'}}>
+ <p onClick={e=>selectthiscompany(val._id,val.username,val.markup)}>{val.username} </p>
+<p></p>
+</div>
+)):
+clients && clients.map(val => (
+ val.username.toLowerCase().search(comval.toLowerCase())>=0&&
+   <div className="rowss"  style={{cursor:'pointer'}}>
+       <p onClick={e=>selectthiscompany(val._id,val.username,val.markup)}>{val.username} </p>
+ <p></p>
+   </div>
+))}
 
 
-                                                </div>
-                                            </div>
+                                     </div>
+                                 </div>
 
-                                        </div>
-                                        <div className="inputname roundbord">
-                                            <h1>Project name</h1>
-                                            <div className="inputnamel">
-                                                <p onClick={e=>setboxprojects('boxprojects')} style={{cursor:'pointer' }}>{ind.split(" ").filter(Boolean).length>=1?`${ind.split(" ").filter(Boolean).length} projects selected`:'Select Project'}</p>
-                                                <div className={boxprojects} >
-                                                <input type="text" placeholder='Search project' onChange={e=>setproval(e.target.value)} value={proval} />
-                                                  
-                                                    <IoClose onClick={e=>setboxprojects('boxprojects2')}  className='iocx' />
-                                                    
-                                                    { proval?data && data.map((val,index) => (
-        val.clientid===currjobid&&val.sitename.toLowerCase().search(proval.toLowerCase())>=0&&
-        <div className="rowss" >
-            <p>{val.sitename} - {val.no} </p>
-            <input type="checkbox"  checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false}   onClick={e=>addindex(index,val)}/>
-        </div>
-    )):data && data.map((val,index) => (
-        val.clientid===currjobid&&val.sitename.toLowerCase().search(proval.toLowerCase())>=0&&
-        <div className="rowss" >
-            <p>{val.sitename} - {val.no} </p>
-            <input type="checkbox"  checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false}   onClick={e=>addindex(index,val)}/>
-        </div>
-    ))
+                             </div>
+                             <div className="inputname roundbord">
+                                 <h1>Project name</h1>
+                                 <div className="inputnamel">
+                                     <p onClick={e=>setboxprojects('boxprojects')} style={{cursor:'pointer' }}>{ind.split(" ").filter(Boolean).length>=1?`${ind.split(" ").filter(Boolean).length} projects selected`:'Select Project'}</p>
+                                     <div className={boxprojects} >
+                                     <input type="text" placeholder='Search project' onChange={e=>setproval(e.target.value)} value={proval} />
+                                       
+                                         <IoClose onClick={e=>setboxprojects('boxprojects2')}  className='iocx' />
+                                         
+                                         { proval?data && data.map((val,index) => (
+val.clientid===currjobid&&val.sitename.toLowerCase().search(proval.toLowerCase())>=0&&
+<div className="rowss" >
+ <p>{val.sitename} - {val.no} </p>
+ <input type="checkbox"  checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false}   onClick={e=>addindex(index,val)}/>
+</div>
+)):data && data.map((val,index) => (
+val.clientid===currjobid&&val.sitename.toLowerCase().search(proval.toLowerCase())>=0&&
+<div className="rowss" >
+ <p>{val.sitename} - {val.no} </p>
+ <input type="checkbox"  checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false}   onClick={e=>addindex(index,val)}/>
+</div>
+))
 
 }
-                                                </div>
+                                     </div>
 
-                                            </div>
+                                 </div>
 
-                                      {/*      
-                                            <select className='select2 inject' name="cars" id="cars"  onChange={e=>addindex(e.target.value)}>
+                           {/*      
+                                 <select className='select2 inject' name="cars" id="cars"  onChange={e=>addindex(e.target.value)}>
 
 {<option  >Choose Project</option>
 
 }
 {
-    data && data.map((val,index) => (
-        val.clientid===currjobid&&
-        <option value={`${val.clientid+'euika'+index}`}>{val.sitename}</option>
-    ))
+data && data.map((val,index) => (
+val.clientid===currjobid&&
+<option value={`${val.clientid+'euika'+index}`}>{val.sitename}</option>
+))
 }
 </select>*/}
-                                        </div>
+                             </div>
 
-                                        <div className="inputname roundbord">
-                                            <h1>Invoice #</h1>
-                                            <input type="text"    onChange={setinnox} value={inno} />
-                                        </div>
+                             <div className="inputname roundbord">
+                                 <h1>Invoice #</h1>
+                                 <input type="text"    onChange={setinnox} value={inno} />
+                             </div>
 
-                                        <div className="inputname inuex roundbord">
-                                            <h1>Date</h1>
-                                              
-                                            {showcalender ?
-        <div style={{position:'relative'}}>
-<IoClose className='iocl' onClick={e=>setshowcalender(false)} />
-            <Calendar onChange={onxhange}
-                value={value2} />
-        </div> :
-       <input onClick={e=>setshowcalender(true)} value={indate}  type="text" />
-
-    }
-
-                                        </div>
-
-                                        <div className="inputname roundbord">
-                                            <h1>Project no:</h1>
-                                            <input type="text" onChange={e => setinnum(e.target.value)} value={innum} />
-
-                                        </div>
-                                        <div className="inputname roundbord">
-                                            <h1>Address:</h1>
-                                            <input type="text" onChange={e => setinadd(e.target.value)} value={inadd} />
-
-                                        </div> <div className="inputname roundbord">
-                                            <h1>Due date:</h1>
-                                            <input type="text" onChange={e => setindue(e.target.value)} value={indue} />
-
-
-                                        </div>
-                                        <div className="inputname inuex roundbord">
-                                            <h1>Weekend</h1>
-                                              
-                                            {showcalenderx ?
-        <div style={{position:'relative'}}>
-<IoClose className='iocl' onClick={e=>setshowcalenderx(false)} />
-            <Calendar onChange={onxhangex}
-                value={value2x} />
-        </div> :
-       <input onClick={e=>setshowcalenderx(true)} value={inend}  type="text" />
-
-    }
-
-                                        </div>
-                                    <div className="w100 w1002">
-                                    <button className='btn1' onClick={e=>backtop()}>Generate</button>
-
-                                    </div>
-                                    </>
-
-
-
-
-                                </div>
-    
-                              
-                                <div className="subadduser subadduserx2 subadduserx3">
-
-                                    <>
+                             <div className="inputname inuex roundbord">
+                                 <h1>Date</h1>
                                    
-                                    <div className="logopart">
-                                        <img src={image4} alt="" />
-                                        <h1>{compnay}</h1>
-                                    </div>
-                                    <div className="cinfo cinfocol"  >
-     <div className="mdl2">
-     <BsBuilding className='mdl' />
-     </div>
-       <div className="cinfo">
-       <h1>
-    {add} {zpi}</h1>
- 
+                                 {showcalender ?
+<div style={{position:'relative'}}>
+<IoClose className='iocl' onClick={e=>setshowcalender(false)} />
+ <Calendar onChange={onxhange}
+     value={value2} />
+</div> :
+<input onClick={e=>setshowcalender(true)} value={indate}  type="text" />
 
-       </div>
-    
-       </div>
-       <div className="cinfo cinfocol"  >
-     <div className="mdl2">
-     <BiMailSend className='mdl' />
-     </div>
-       <div className="cinfo">
-     <h1>{mail}</h1>
- 
+}
 
-       </div>
-    
-       </div>       
-                                      
-                                       
-                                    
+                             </div>
+
+                             <div className="inputname roundbord">
+                                 <h1>Project no:</h1>
+                                 <input type="text" onChange={e => setinnum(e.target.value)} value={innum} />
+
+                             </div>
+                             <div className="inputname roundbord">
+                                 <h1>Address:</h1>
+                                 <input type="text" onChange={e => setinadd(e.target.value)} value={inadd} />
+
+                             </div> <div className="inputname roundbord">
+                                 <h1>Due date:</h1>
+                                 <input type="text" onChange={e => setindue(e.target.value)} value={indue} />
 
 
+                             </div>
+                             <div className="inputname inuex roundbord">
+                                 <h1>Weekend</h1>
+                                   
+                                 {showcalenderx ?
+<div style={{position:'relative'}}>
+<IoClose className='iocl' onClick={e=>setshowcalenderx(false)} />
+ <Calendar onChange={onxhangex}
+     value={value2x} />
+</div> :
+<input onClick={e=>setshowcalenderx(true)} value={inend}  type="text" />
 
-                                    </>
+}
+
+                             </div>
+                         <div className="w100 w1002">
+                         <button className='btn1' onClick={e=>backtop()}>Generate</button>
+
+                         </div>
+                         </>
 
 
 
 
-                                </div>
+                     </div>
+
+                   
+                     <div className="subadduser subadduserx2 subadduserx3">
+
+                         <>
+                        
+                         <div className="logopart">
+                             <img src={image4} alt="" />
+                             <h1>{compnay}</h1>
+                         </div>
+                         <div className="cinfo cinfocol"  >
+<div className="mdl2">
+<BsBuilding className='mdl' />
+</div>
+<div className="cinfo">
+<h1>
+{add} {zpi}</h1>
 
 
-                            </div>
+</div>
 
-                        }
+</div>
+<div className="cinfo cinfocol"  >
+<div className="mdl2">
+<BiMailSend className='mdl' />
+</div>
+<div className="cinfo">
+<h1>{mail}</h1>
+
+
+</div>
+
+</div>       
+                           
+                            
+                         
+
+
+
+                         </>
+
+
+
+
+                     </div>
+
+
+                 </div>
+
+             }
 {l===2&&
 <button className='addemp2 addemp' style={{marginTop:'10px'}} onClick={e => applyperdiem()}> Apply Perdiem </button>
 
@@ -4176,72 +4188,72 @@ comval?clients && clients.map(val => (
 <div className="subadduser " style={{width:'70%'}}>
 
 <>
-    <div className="inputname roundbord" style={{width:'30%'}}>
-        <h1>Company </h1>  
-        <div className="inputnamel">
-                                                <p onClick={e=>setboxprojectsx('boxprojects')} style={{cursor:'pointer' }}>
+<div className="inputname roundbord" style={{width:'30%'}}>
+<h1>Company </h1>  
+<div className="inputnamel">
+                                     <p onClick={e=>setboxprojectsx('boxprojects')} style={{cursor:'pointer' }}>
 
-                                                  {!currcompany?  "Choose Company":currcompany
+                                       {!currcompany?  "Choose Company":currcompany
 
-                                                  }
-                                                </p>
-                                                <div className={boxprojectsx} >
-                                                   
-                                                    <IoClose onClick={e=>setboxprojectsx('boxprojects2')}  className='iocx' />
-                                                    <input type="text" placeholder='Search Company' onChange={e=>setcomval(e.target.value)} value={comval} />
-                                                    { 
+                                       }
+                                     </p>
+                                     <div className={boxprojectsx} >
+                                        
+                                         <IoClose onClick={e=>setboxprojectsx('boxprojects2')}  className='iocx' />
+                                         <input type="text" placeholder='Search Company' onChange={e=>setcomval(e.target.value)} value={comval} />
+                                         { 
 comval?clients && clients.map(val => (
-      val.username.toLowerCase().search(comval.toLowerCase())>=0&&
-        <div className="rowss"  style={{cursor:'pointer'}}>
-            <p onClick={e=>selectthiscompany(val._id,val.username,val.markup)}>{val.username} </p>
-      <p></p>
-        </div>
-         )):
-        clients && clients.map(val => (
-            val.username.toLowerCase().search(comval.toLowerCase())>=0&&
-              <div className="rowss"  style={{cursor:'pointer'}}>
-                  <p onClick={e=>selectthiscompany(val._id,val.username,val.markup)}>{val.username} </p>
-            <p></p>
-              </div>
-    ))}
+val.username.toLowerCase().search(comval.toLowerCase())>=0&&
+<div className="rowss"  style={{cursor:'pointer'}}>
+ <p onClick={e=>selectthiscompany(val._id,val.username,val.markup)}>{val.username} </p>
+<p></p>
+</div>
+)):
+clients && clients.map(val => (
+ val.username.toLowerCase().search(comval.toLowerCase())>=0&&
+   <div className="rowss"  style={{cursor:'pointer'}}>
+       <p onClick={e=>selectthiscompany(val._id,val.username,val.markup)}>{val.username} </p>
+ <p></p>
+   </div>
+))}
 
 
-                                                </div>
-                                            </div>
-    </div>
-    <div className="inputname roundbord" style={{width:'30%'}}>
-        <h1>Project name</h1>
-        <div className="inputnamel">
-            <p onClick={e=>setboxprojects('boxprojects')} style={{cursor:'pointer' }}>{ind.split(" ").filter(Boolean).length>=1?`${ind.split(" ").filter(Boolean).length} projects selected`:'Select Project'}</p>
-            <div className={boxprojects} >
-                                                <input type="text" placeholder='Search project' onChange={e=>setproval(e.target.value)} value={proval} />
-                                                  
-                                                    <IoClose onClick={e=>setboxprojects('boxprojects2')}  className='iocx' />
-                                                    { proval?data && data.map((val,index) => (
-        val.clientid===currjobid&&val.sitename.toLowerCase().search(proval.toLowerCase())>=0&&
-        <div className="rowss" >
-            <p>{val.sitename} </p>
-            <input type="checkbox"  checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false}   onClick={e=>addindex(index,val)}/>
-        </div>
-    )):data && data.map((val,index) => (
-        val.clientid===currjobid&&val.sitename.toLowerCase().search(proval.toLowerCase())>=0&&
-        <div className="rowss" >
-            <p>{val.sitename} </p>
-            <input type="checkbox"  checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false}   onClick={e=>addindex(index,val)}/>
-        </div>
-    ))
+                                     </div>
+                                 </div>
+</div>
+<div className="inputname roundbord" style={{width:'30%'}}>
+<h1>Project name</h1>
+<div className="inputnamel">
+ <p onClick={e=>setboxprojects('boxprojects')} style={{cursor:'pointer' }}>{ind.split(" ").filter(Boolean).length>=1?`${ind.split(" ").filter(Boolean).length} projects selected`:'Select Project'}</p>
+ <div className={boxprojects} >
+                                     <input type="text" placeholder='Search project' onChange={e=>setproval(e.target.value)} value={proval} />
+                                       
+                                         <IoClose onClick={e=>setboxprojects('boxprojects2')}  className='iocx' />
+                                         { proval?data && data.map((val,index) => (
+val.clientid===currjobid&&val.sitename.toLowerCase().search(proval.toLowerCase())>=0&&
+<div className="rowss" >
+ <p>{val.sitename} </p>
+ <input type="checkbox"  checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false}   onClick={e=>addindex(index,val)}/>
+</div>
+)):data && data.map((val,index) => (
+val.clientid===currjobid&&val.sitename.toLowerCase().search(proval.toLowerCase())>=0&&
+<div className="rowss" >
+ <p>{val.sitename} </p>
+ <input type="checkbox"  checked={ind.search(' ' + index.toString() + ' ') >= 0 ? true : false}   onClick={e=>addindex(index,val)}/>
+</div>
+))
 
 }
-                                                </div>
+                                     </div>
 
 
-        </div>
+</div>
 
- 
-    </div>
 
-   
-    <button className='btn1' onClick={e=>preparesheet(1)}>Generate</button>
+</div>
+
+
+<button className='btn1' onClick={e=>preparesheet(1)}>Generate</button>
 
 </>
 
@@ -4252,60 +4264,60 @@ comval?clients && clients.map(val => (
 </div>
 }
 <div className="newst nbst" style={{ marginTop: '20px' }}>
-                            <div className="newst1 " style={{ position: 'relative' }}>
-                                <input type="text" placeholder='Search..' onChange={e => setsearchval(e.target.value)} />
-                               {/*currcompany&&<button onClick={e=>setadduserd2('adduser')}>+ Add User</button>
+                 <div className="newst1 " style={{ position: 'relative' }}>
+                     <input type="text" placeholder='Search..' onChange={e => setsearchval(e.target.value)} />
+                    {/*currcompany&&<button onClick={e=>setadduserd2('adduser')}>+ Add User</button>
 
 */}
-                                </div>
-                                </div>
-                        {k === 1 &&
-                            <>
-                                <div className="tablerow">
-                                    <div className="subtable">
-                                        <div className="headertable clop">
-                                            <span className='sxx'> </span>
+                     </div>
+                     </div>
+             {k === 1 &&
+                 <>
+                     <div className="tablerow">
+                         <div className="subtable">
+                             <div className="headertable clop">
+                                 <span className='sxx'> </span>
 
-                                            <h2 style={{ width: '80px', marginBottom: '0px' }}>Taxes</h2>
-                                            <h1 style={{ width: '180px' }}>Company</h1>
+                                 <h2 style={{ width: '80px', marginBottom: '0px' }}>Taxes</h2>
+                                 <h1 style={{ width: '180px' }}>Company</h1>
 
-                                            <h6 style={{ width: '80px', marginBottom: '0px' }} >Weekend</h6>
-                                            <h3> Name</h3>
-                                            <h4  style={{ width: '80px', marginBottom: '0px' }}  >Distance</h4>
+                                 <h6 style={{ width: '80px', marginBottom: '0px' }} >Weekend</h6>
+                                 <h3> Name</h3>
+                                 <h4  style={{ width: '80px', marginBottom: '0px' }}  >Distance</h4>
 
-                                                     <h4 style={{ width: '80px', marginBottom: '0px' }}>Hrs</h4>
+                                          <h4 style={{ width: '80px', marginBottom: '0px' }}>Hrs</h4>
 
-                                            <h4 style={{ width: '80px', marginBottom: '0px' }}>Pay rate</h4>
+                                 <h4 style={{ width: '80px', marginBottom: '0px' }}>Pay rate</h4>
 
-                                            <h4 style={{ width: '80px', marginBottom: '0px' }}>OT Hrs</h4>
+                                 <h4 style={{ width: '80px', marginBottom: '0px' }}>OT Hrs</h4>
 
-                                            <h4 style={{ width: '80px', marginBottom: '0px' }}>OT Payrate</h4>
+                                 <h4 style={{ width: '80px', marginBottom: '0px' }}>OT Payrate</h4>
 
-                                            <h4 style={{ width: '80px', marginBottom: '0px' }}>Total</h4>
-                                            {
-                                                applyperdiemx &&
-                                                <>
+                                 <h4 style={{ width: '80px', marginBottom: '0px' }}>Total</h4>
+                                 {
+                                     applyperdiemx &&
+                                     <>
 
-                                                    <h4 style={{ width: '80px', marginBottom: '0px' }}>Perdiem</h4>
-                                                    <h4 style={{ width: '80px', marginBottom: '0px' }}>ON Perdiem</h4>
-                                                    <h4 style={{ width: '80px', marginBottom: '0px' }}>Days</h4>
-
-
-                                                </>
-                                            }
-
-                                            <h4 style={{ width: '80px', marginBottom: '0px' }}>NC 4%</h4>
-
-                                            <h4 style={{ width: '80px', marginBottom: '0px' }}>Deductions</h4>
-
-                                            <h4 style={{ width: '80px', marginBottom: '0px' }}>Net</h4>
-                                            <h5>Action</h5>
+                                         <h4 style={{ width: '80px', marginBottom: '0px' }}>Perdiem</h4>
+                                         <h4 style={{ width: '80px', marginBottom: '0px' }}>ON Perdiem</h4>
+                                         <h4 style={{ width: '80px', marginBottom: '0px' }}>Days</h4>
 
 
-                                        </div>
-                                        {searchval.length>0&&preparedata && preparedata.map((val, index) => (
-                                            <>
-                                           {index===upind?tempjson&&     <div className="headertable">
+                                     </>
+                                 }
+
+                                 <h4 style={{ width: '80px', marginBottom: '0px' }}>NC 4%</h4>
+
+                                 <h4 style={{ width: '80px', marginBottom: '0px' }}>Deductions</h4>
+
+                                 <h4 style={{ width: '80px', marginBottom: '0px' }}>Net</h4>
+                                 <h5>Action</h5>
+
+
+                             </div>
+                             {searchval.length>0&&preparedata && preparedata.map((val, index) => (
+                                 <>
+                                {index===upind?tempjson&&     <div className="headertable">
 
 <span className='sxx'><AiFillDelete onClick={e => skipthis(index)} /> </span>
 <h2 style={{ width: '80px', marginBottom: '0px' }}><img src='' alt="" className='valimg' />{val.Taxes} </h2>
@@ -4317,88 +4329,88 @@ comval?clients && clients.map(val => (
 <h4 style={{ width: '80px', marginBottom: '0px' }} >{parseInt(val.distance)} M</h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  ><input className='hrsedit' type="text" value={tempjson.Hrs}  onChange={e => settempjson(tempjson => ({
-                                    ...tempjson,
+                         ...tempjson,
 
 
-                                    Hrs: e.target.value
+                         Hrs: e.target.value
 
-                                }))}  /></h4>
+                     }))}  /></h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >$ 
 {l===2?
 tempjson.Payrate
 :l===1&&val.cprapply==='yes'?tempjson.cpr:
-                              tempjson.Payrate
-                                                            }
+                   tempjson.Payrate
+                                                 }
 
- </h4>
+</h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >    <input className='hrsedit' type="text" value={tempjson.Ot_Hrs}  onChange={e => settempjson(tempjson => ({
-                                                                    ...tempjson,
-                                
-                                
-                                                                    Ot_Hrs: e.target.value
-                                
-                                                                }))} /></h4>
+                                                         ...tempjson,
+                     
+                     
+                                                         Ot_Hrs: e.target.value
+                     
+                                                     }))} /></h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >$   {tempjson.OT_Pay_rate}</h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >{parseFloat(val.total)} </h4>
 {
-    applyperdiemx &&
-    <>
+applyperdiemx &&
+<>
 
-        <h4 style={{ width: '80px', marginBottom: '0px' }}>   {tempjson.siteid==='193039'?
-    <input className='hrsedit' type="text" value={tempjson.perdiem}  onChange={e => settempjson(tempjson => ({
-        ...tempjson,
-
-
-        perdiem: e.target.value
-
-    }))} />
-            :
-            <>
-            $ {parseFloat(val.perdiem)} 
-            </>
-            } </h4>
-        <h4 style={{ width: '80px', marginBottom: '0px' }}>  {tempjson.siteid==='193039'?
-    <input className='hrsedit' type="text" value={tempjson.onperdiem}  onChange={e => settempjson(tempjson => ({
-        ...tempjson,
+<h4 style={{ width: '80px', marginBottom: '0px' }}>   {tempjson.siteid==='193039'?
+<input className='hrsedit' type="text" value={tempjson.perdiem}  onChange={e => settempjson(tempjson => ({
+...tempjson,
 
 
-        onperdiem: e.target.value
+perdiem: e.target.value
 
-    }))} />
-            :
-            <>
-            $ {parseFloat(val.onperdiem.toFixed(2))} 
-            </>
-            }</h4>
+}))} />
+ :
+ <>
+ $ {parseFloat(val.perdiem)} 
+ </>
+ } </h4>
+<h4 style={{ width: '80px', marginBottom: '0px' }}>  {tempjson.siteid==='193039'?
+<input className='hrsedit' type="text" value={tempjson.onperdiem}  onChange={e => settempjson(tempjson => ({
+...tempjson,
 
-        <h4 style={{ width: '80px', marginBottom: '0px' }}>    <input className='hrsedit' type="text" value={tempjson.days}  onChange={e => settempjson(tempjson => ({
-                                                                    ...tempjson,
-                                
-                                
-                                                                    days: e.target.value
-                                
-                                                                }))} /></h4>
-    </>
+
+onperdiem: e.target.value
+
+}))} />
+ :
+ <>
+ $ {parseFloat(val.onperdiem.toFixed(2))} 
+ </>
+ }</h4>
+
+<h4 style={{ width: '80px', marginBottom: '0px' }}>    <input className='hrsedit' type="text" value={tempjson.days}  onChange={e => settempjson(tempjson => ({
+                                                         ...tempjson,
+                     
+                     
+                                                         days: e.target.value
+                     
+                                                     }))} /></h4>
+</>
 }
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >{val.nc_4 === '-' ? <>0</>
 
-    :
-    parseFloat(val.nc_4.toFixed(2))
+:
+parseFloat(val.nc_4.toFixed(2))
 }</h4>
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >
-    $ {tempjson.deductions}
+$ {tempjson.deductions}
 </h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}>{parseFloat(val.net.toFixed(2))}</h4>
 <h5 className='h5'>
 
 <button className="man"  onClick={e => updatedata()}>
-  Save
+Save
 </button>
 </h5>
 
@@ -4428,30 +4440,30 @@ val.Employee.toLowerCase().search(searchval.toLowerCase())>=0&&
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >{parseFloat(val.total)} </h4>
 {
-    applyperdiemx &&
-    <>
+applyperdiemx &&
+<>
 
-        <h4 style={{ width: '80px', marginBottom: '0px' }}>$ {parseFloat(val.perdiem)} </h4>
-        <h4 style={{ width: '80px', marginBottom: '0px' }}>$ {val.onperdiem} </h4>
+<h4 style={{ width: '80px', marginBottom: '0px' }}>$ {parseFloat(val.perdiem)} </h4>
+<h4 style={{ width: '80px', marginBottom: '0px' }}>$ {val.onperdiem} </h4>
 
-        <h4 style={{ width: '80px', marginBottom: '0px' }}>{val.days}</h4>
-    </>
+<h4 style={{ width: '80px', marginBottom: '0px' }}>{val.days}</h4>
+</>
 }
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >{val.nc_4 === '-' ? <>0</>
 
-    :
-    parseFloat(val.nc_4.toFixed(2))
+:
+parseFloat(val.nc_4.toFixed(2))
 }</h4>
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >
-    $ {val.deductions}
+$ {val.deductions}
 </h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}>{parseFloat(val.net.toFixed(2))}</h4>
 <h5 className='h5'>
 
 <div className="manxx"  onClick={e => showadd(index)}>
-    <FaPencilAlt />
+<FaPencilAlt />
 </div>
 </h5>
 
@@ -4459,16 +4471,16 @@ val.Employee.toLowerCase().search(searchval.toLowerCase())>=0&&
 
 
 </div>
-                            
+                 
 
-                                           }
-                                            </>
-                                        ))
+                                }
+                                 </>
+                             ))
 
-                                        }
-                                          {searchval.length===0&&preparedata && preparedata.map((val, index) => (
-                                            <>
-                                           {index===upind?tempjson&&     <div className="headertable">
+                             }
+                               {searchval.length===0&&preparedata && preparedata.map((val, index) => (
+                                 <>
+                                {index===upind?tempjson&&     <div className="headertable">
 
 <span className='sxx'><AiFillDelete onClick={e => skipthis(index)} /> </span>
 <h2 style={{ width: '80px', marginBottom: '0px' }}><img src='' alt="" className='valimg' />{val.Taxes} </h2>
@@ -4480,97 +4492,97 @@ val.Employee.toLowerCase().search(searchval.toLowerCase())>=0&&
 <h4 style={{ width: '80px', marginBottom: '0px' }} >{parseInt(val.distance)} M</h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  ><input className='hrsedit' type="text" value={tempjson.Hrs}  onChange={e => settempjson(tempjson => ({
-                                    ...tempjson,
+                         ...tempjson,
 
 
-                                    Hrs: e.target.value
+                         Hrs: e.target.value
 
-                                }))}  /></h4>
+                     }))}  /></h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >$ 
 {l===2?
 tempjson.Payrate
 :l===1&&val.cprapply==='yes'?
 tempjson.cpr:
-                             tempjson.Payrate
-                                                            }
+                  tempjson.Payrate
+                                                 }
 
- </h4>
+</h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >    <input className='hrsedit' type="text" value={tempjson.Ot_Hrs}  onChange={e => settempjson(tempjson => ({
-                                                                    ...tempjson,
-                                
-                                
-                                                                    Ot_Hrs: e.target.value
-                                
-                                                                }))} /></h4>
+                                                         ...tempjson,
+                     
+                     
+                                                         Ot_Hrs: e.target.value
+                     
+                                                     }))} /></h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >$ 
 { tempjson.OT_Pay_rate} </h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >{parseFloat(val.total)} </h4>
 {
-    applyperdiemx &&
-    <>
+applyperdiemx &&
+<>
 
-        <h4 style={{ width: '80px', marginBottom: '0px' }}>
-            
-            {tempjson.siteid==='193039'?
-    <input className='hrsedit' type="text" value={tempjson.perdiem}  onChange={e => settempjson(tempjson => ({
-        ...tempjson,
-
-
-        perdiem: e.target.value
-
-    }))} />
-            :
-            <>
-            $ {parseFloat(val.perdiem)} 
-            </>
-            }
-          
-            
-        
-            </h4>
-        <h4 style={{ width: '80px', marginBottom: '0px' }}>   {tempjson.siteid==='193039'?
-    <input className='hrsedit' type="text" value={tempjson.onperdiem}  onChange={e => settempjson(tempjson => ({
-        ...tempjson,
+<h4 style={{ width: '80px', marginBottom: '0px' }}>
+ 
+ {tempjson.siteid==='193039'?
+<input className='hrsedit' type="text" value={tempjson.perdiem}  onChange={e => settempjson(tempjson => ({
+...tempjson,
 
 
-        onperdiem: e.target.value
+perdiem: e.target.value
 
-    }))} />
-            :
-            <>
-            $ {parseFloat(val.onperdiem.toFixed(2))} 
-            </>
-            } </h4>
+}))} />
+ :
+ <>
+ $ {parseFloat(val.perdiem)} 
+ </>
+ }
 
-        <h4 style={{ width: '80px', marginBottom: '0px' }}>    <input className='hrsedit' type="text" value={tempjson.days}  onChange={e => settempjson(tempjson => ({
-                                                                    ...tempjson,
-                                
-                                
-                                                                    days: e.target.value
-                                
-                                                                }))} /></h4>
-    </>
+ 
+
+ </h4>
+<h4 style={{ width: '80px', marginBottom: '0px' }}>   {tempjson.siteid==='193039'?
+<input className='hrsedit' type="text" value={tempjson.onperdiem}  onChange={e => settempjson(tempjson => ({
+...tempjson,
+
+
+onperdiem: e.target.value
+
+}))} />
+ :
+ <>
+ $ {parseFloat(val.onperdiem.toFixed(2))} 
+ </>
+ } </h4>
+
+<h4 style={{ width: '80px', marginBottom: '0px' }}>    <input className='hrsedit' type="text" value={tempjson.days}  onChange={e => settempjson(tempjson => ({
+                                                         ...tempjson,
+                     
+                     
+                                                         days: e.target.value
+                     
+                                                     }))} /></h4>
+</>
 }
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >{val.nc_4 === '-' ? <>0</>
 
-    :
-    parseFloat(val.nc_4.toFixed(2))
+:
+parseFloat(val.nc_4.toFixed(2))
 }</h4>
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >
-    $ {  tempjson.deductions
-                                           }
+$ {  tempjson.deductions
+                                }
 </h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}>{parseFloat(val.net.toFixed(2))}</h4>
 <h5 className='h5'>
 
 <button className="man"  onClick={e => updatedata()}>
-  Save
+Save
 </button>
 </h5>
 
@@ -4600,30 +4612,30 @@ tempjson.cpr:
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >{parseFloat(val.total)} </h4>
 {
-    applyperdiemx &&
-    <>
+applyperdiemx &&
+<>
 
-        <h4 style={{ width: '80px', marginBottom: '0px' }}> $ {parseFloat(val.perdiem)}  </h4>
-        <h4 style={{ width: '80px', marginBottom: '0px' }}> $ {val.onperdiem} </h4>
+<h4 style={{ width: '80px', marginBottom: '0px' }}> $ {parseFloat(val.perdiem)}  </h4>
+<h4 style={{ width: '80px', marginBottom: '0px' }}> $ {val.onperdiem} </h4>
 
-        <h4 style={{ width: '80px', marginBottom: '0px' }}>{val.days}</h4>
-    </>
+<h4 style={{ width: '80px', marginBottom: '0px' }}>{val.days}</h4>
+</>
 }
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >{val.nc_4 === '-' ? <>0</>
 
-    :
-    parseFloat(val.nc_4.toFixed(2))
+:
+parseFloat(val.nc_4.toFixed(2))
 }</h4>
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >
-    $ {val.deductions}
+$ {val.deductions}
 </h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}>{parseFloat(val.net.toFixed(2))}</h4>
 <h5 className='h5'>
 
 <div className="manxx"  onClick={e => showadd(index)}>
-    <FaPencilAlt />
+<FaPencilAlt />
 </div>
 </h5>
 
@@ -4631,83 +4643,88 @@ tempjson.cpr:
 
 
 </div>
-                            
-
-                                           }
-                                            </>
-                                        ))
-
-                                        }
-                                    </div>
-                                </div>
-                            </>
-
-                        }
-                    </>
-
-                }
-                {mx === 1 &&
-                    <>  <div className="projectview">
-                        <h4>     <span></span> <p>Active</p></h4>
-                        <h1>Company : <p>{currproject.clientname}</p></h1>
-                        <h1>Site : <p className='greenp'>{currproject.sitename}</p></h1>
-                        <h1 className='teamm'>Supervisor: </h1>
-                        <div className="teamates">
-                            <button>Alex Loop</button>
-
-
-
-                        </div>
-
-                        <h1 className='teamm'>Employees: </h1>
-
-                        <div className="tablerow">
-                            <div className="subtable">
-                                <div className="headertable clop">
-                                    <h1>Employee</h1>
-
-                                    <h6>Skill</h6>
-                                    <h3>Taxes</h3>
-                                    <h4>Pay rate</h4>
-                                    <h5>OT Pay rate</h5>
-                                    <h5>NC(%)</h5>
-
-
-                                </div>
-                                {currproject && currproject.user.map(val => (
-                                    <>
-                                        <div className="headertable">
-                                            <h1><img src='' alt="" className='valimg' /> {val.name}</h1>
-
-                                            <h6>{val.skill}</h6>
-
-                                            <h5>{val.taxes}</h5>
-                                            <h3>{val.payrate}</h3>
-                                            <h4>{val.otpayrate}</h4>
-                                            {
-                                                val.nc !== 'no' ?
-
-                                                    <h5>{val.nc}%</h5>
-                                                    :
-
-                                                    <h5>NO</h5>
-                                            }
-
-
-                                        </div>
-                                    </>
-                                ))
+                 
 
                                 }
-                            </div>
-                        </div>
+                                 </>
+                             ))
 
-                    </div>
-                    </>
+                             }
+                         </div>
+                     </div>
+                 </>
 
-                }
+             }
+         </>
 
-            </div></>
+     }
+     {mx === 1 &&
+         <>  <div className="projectview">
+             <h4>     <span></span> <p>Active</p></h4>
+             <h1>Company : <p>{currproject.clientname}</p></h1>
+             <h1>Site : <p className='greenp'>{currproject.sitename}</p></h1>
+             <h1 className='teamm'>Supervisor: </h1>
+             <div className="teamates">
+                 <button>Alex Loop</button>
+
+
+
+             </div>
+
+             <h1 className='teamm'>Employees: </h1>
+
+             <div className="tablerow">
+                 <div className="subtable">
+                     <div className="headertable clop">
+                         <h1>Employee</h1>
+
+                         <h6>Skill</h6>
+                         <h3>Taxes</h3>
+                         <h4>Pay rate</h4>
+                         <h5>OT Pay rate</h5>
+                         <h5>NC(%)</h5>
+
+
+                     </div>
+                     {currproject && currproject.user.map(val => (
+                         <>
+                             <div className="headertable">
+                                 <h1><img src='' alt="" className='valimg' /> {val.name}</h1>
+
+                                 <h6>{val.skill}</h6>
+
+                                 <h5>{val.taxes}</h5>
+                                 <h3>{val.payrate}</h3>
+                                 <h4>{val.otpayrate}</h4>
+                                 {
+                                     val.nc !== 'no' ?
+
+                                         <h5>{val.nc}%</h5>
+                                         :
+
+                                         <h5>NO</h5>
+                                 }
+
+
+                             </div>
+                         </>
+                     ))
+
+                     }
+                 </div>
+             </div>
+
+         </div>
+         </>
+
+     }
+
+ </div>
+ </>
+
+    }
+    </>
+       
     )
 }
 
