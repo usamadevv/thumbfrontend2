@@ -10,7 +10,6 @@ import { VscChromeClose } from 'react-icons/vsc'
 import { HiArrowLeft } from 'react-icons/hi'
 
 import prof from '../../../images/prof.png'
-import { v4 as uuidv4, v6 as uuidv6 } from 'uuid';
 
 import pdf from '../../../images/pdf.svg'
 
@@ -46,7 +45,7 @@ import html2canvas from 'html2canvas'
 import { tz } from '../../apis'
 import { useRef } from 'react'
 import { async } from '@firebase/util'
-const Invoice = (props) => {
+const Payroll = (props) => {
 
 
 const [showcalender, setshowcalender] = useState(false)
@@ -123,60 +122,7 @@ userid: val._id
     setadduserd2('adduser2')
     
 }
-function savepayroll(p){
-var updatedata=preparedata
-const updatedData = updatedata.map(element => {
-    // Check if the element's siteid and userid match the provided values
-    if (element.siteid  && element.userid) {
-        // Find the site corresponding to siteid
-        const site = data.find(site => site._id === element.siteid);
-        if (site) {
-            // Find the user corresponding to userid in the site's users array
-            const user = site.user.find(user => user.userid === element.userid);
-            if (user) {
-                // Update OT_Pay_rate with user's otpayrate
-                return {
-                    ...element,
-                    OT_Pay_rate: Number(user.otpayrate),
-                    Payrate:element.cpr,
-                    total: ((Number(element.cpr)) * (Number(element.Hrs))) + (Number(element.Ot_Hrs) * (Number(user.otpayrate))),
-                    net:
-                    ((Number(element.cpr)) * Number(element.Hrs)) + (Number(element.Ot_Hrs) * (Number(user.otpayrate)))-
-                    (
-                        element.nc_4 === 'no'|| element.nc_4 === '-'|| element.nc_4===0
-                          ? 0
-                          : (
-                              (Number(element.cpr) * 0) +
-                              (0 * parseInt(user.otpayrate))
-                            ) * 4 / 100
-                      )-element.deductions
 
-                };
-            }
-        }
-    }
-    return element; // Return the original element if no update is made
-});
-console.log(updatedData)
-  
-console.log(updatedata)
-  
-    axios.post(`${tz}/payroll/add`, {
-        data:updatedData,
-        companyid:currid,
-        status:'Pending',
-        by:datax.name,
-        createdon:new Date().toLocaleDateString('en-US'),
-        date:inend,
-
-    }).then(rees=>{
-console.log(rees)
-setshowlistview(false)
-alert("Payroll saved")
-    })
-
-
-}
 
     function importthis(val) {
         setpreparedata([])
@@ -357,37 +303,6 @@ alert("Payroll saved")
 
 
         });
-
-    }
-    const [showlistviewx, setshowlistviewx] = useState(false)
-    function showdepartments(val){
-        if(val){
-            setshowlistviewx(val)
-            clients&&clients.forEach(element => {
-                if(element._id===currid){
-                    setdepartments(element.depts)
-                }
-            });
-
-        }
-        else{
-            setshowlistviewx(val)
-        }
-    }
-    function sendemail(val){
-        const yx=document.getElementById('shareable').innerHTML
-
-
-        axios.post(`${tz}/client/sendinvoice`, {
-            email:val.email,
-            html:yx,
-            key:uuidv4(),
-        }).then(rees=>{
-console.log(rees)
-
-alert(`Email sent to ${val.dept} department`)
-setshowlistviewx(false)
-            })
 
     }
     const [itemOffset, setItemOffset] = useState(0);
@@ -922,7 +837,7 @@ console.log(rees)
 
 
                                 Ot_Hrs: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Ot_Hrs)||0,
-                                OT_Pay_rate: Number( element.otpayrate) + Number(element.otpayrate) * Number(val.markup) / 100,
+                                OT_Pay_rate: Number( element.otpayrate),
                                 nc_4: element.nc === 'no' ? '-' : ((Number(element.payrate) * 0) + (0 * Number(element.otpayrate))) * 4 / 100,
                                 total:
                                 (
@@ -1343,6 +1258,7 @@ console.log(rees)
 
     }
     function exports3() {
+        setshowlistview(false)
         const filteredData = preparedata.filter(row => row.Hrs !== 0);
 
 
@@ -2380,7 +2296,7 @@ setl(1)
 
 
     }
-    const [l, setl] = useState(2)
+    const [l, setl] = useState(1)
     const [currone, setcurrone] = useState()
     const [mx, setmx] = useState(0)
     const [currproject, setcurrproject] = useState()
@@ -2625,7 +2541,6 @@ setl(1)
     }
     const [currjobid, setcurrjobid] = useState('')
     const [currcompany, setcurrcompany] = useState('')
-    const [departments, setdepartments] = useState([])
     function selectthiscompany(val,val2,val3){
         setmkup(val3)
         setcurrjobid(val)
@@ -2881,7 +2796,7 @@ setl(1)
     <>
     {aduserl==='adduser'?
      <div className={`${aduserl} nobg`}>
-     <div className="mainpage1"  >
+     <div className="mainpage1" >
          <ReactToPrint
 
              trigger={() => <button className='exportbtn'>
@@ -2890,42 +2805,17 @@ setl(1)
              content={() => componentRef.current}
          />
 
-         <button className='exportbtn3' style={{
-            
-         }} onClick={e => showlistviewx?showdepartments(false):showdepartments(true)}>
+         <button className='exportbtn3' onClick={e => setaduserl2('adduser2')}>
       
          <img src={email} className='pdficon' alt="" />
-            Send Email!
-            
-            {showlistviewx&&
-    <div className="listview" style={{
-    }} onClick={(e) => e.stopPropagation()}>
-  
-{departments.length>0?
-departments.map((val)=>(
-  <div className="listviewsub"
-    onClick={e => sendemail(val)}
-    >
-{val.dept}
-    </div>
-))
-:
-<div className="listviewsub">
-    No department
-</div>
-
-}
-       
-</div>
-}
-            </button>
+            Send Email!</button>
             <button className='exportbtn2' onClick={e => setaduserl('adduser2')}>Cancel</button>
 
          <div className="mainpage" ref={componentRef}>
 
 
 
-             <div className="mainpage" id='shareable' >
+             <div className="mainpage" >
 
                  <h1 className='invoiceh'>{compnay}<p className='invoicep' >Invoice</p></h1>
                  <div className="spanl">
@@ -3900,12 +3790,10 @@ currency: 'USD',
                          k === 1 &&
 
                          <>
-                             <button  className='actionbtp' onClick={e => setadduserd('adduser')}>Import</button>
-                          
                         {
                          l===2?
-<>   
-   <button  className='actionbtp' onClick={e => showlistview?setshowlistview(false):setshowlistview(true)}>Actions
+<>  
+    <button  className='actionbtp' onClick={e => showlistview?setshowlistview(false):setshowlistview(true)}>Actions
 <FaSortDown className='actionbt' style={{
  marginTop:0,
  fontSize:18,
@@ -3931,7 +3819,7 @@ marginRight:5,
  }} />
        Invoice
         </div>
-        <div className="listviewsub"  onClick={e=>savepayroll(preparedata)}  >   
+        <div className="listviewsub">
        <MdOutlinePayment style={{
 fontSize:20,
 marginRight:5,
@@ -3942,6 +3830,7 @@ marginRight:5,
 
 
  </button>
+<button onClick={e => backtop1(1)}>Payroll</button>
 
 </>
                   
@@ -3949,11 +3838,46 @@ marginRight:5,
                         
                         :
 
-                 <></>
-                        }
+<>
+<button  className='actionbtp' onClick={e => showlistview?setshowlistview(false):setshowlistview(true)}>Actions
+<FaSortDown className='actionbt' style={{
+ marginTop:0,
+ fontSize:18,
+}} />
+
+
+{showlistview&&
+    <div className="listview" onClick={(e) => e.stopPropagation()}>
+    <div className="listviewsub"
+    onClick={e => save()}
+    >
+ <MdOutlineSave style={{
+fontSize:20,
+marginRight:5,
+ }}/> Save
+    </div>
+    <div className="listviewsub"
+      onClick={e => l === 0 ? exports() : l === 1 ? exports3() : exports2()}
+    >
+        <FaFilePdf style={{
+fontSize:20,
+marginRight:5,
+ }} />
+       Export
+        </div>
+      
+</div>
+}
+
+
+ </button>
+
+                      
+</>
+                       }
               
 
-                          
+                             
                              {/*l === 0 &&
 
                                  <button className='addemp2 addemp' onClick={e => updateaccount()}>Update Account</button>
@@ -4172,7 +4096,7 @@ marginRight:5,
                              <div className="inputname roundbord">
                                  <h1>Company </h1> 
                                  <div className="inputnamel">
-                                     <p onClick={e=>setboxprojectsx('boxprojects')} style={{cursor:'pointer' }}>
+                                     <p onClick={e=>setboxprojectsx('boxprojects')} style={{cursor:'pointer', fontWeight: 500,  marginLeft: 10 }}>
 
                                        {!currcompany?  "Choose Company":currcompany
 
@@ -4491,8 +4415,7 @@ val.clientid===currjobid&&val.sitename.toLowerCase().search(proval.toLowerCase()
 
 
                              </div>
-                             {searchval.length>0&&preparedata &&
-                              preparedata.map((val, index) => (
+                             {searchval.length>0&&preparedata && preparedata.map((val, index) => (
                                  <>
                                 {index===upind?tempjson&&     <div className="headertable">
 
@@ -4905,4 +4828,4 @@ $ {val.deductions}
     )
 }
 
-export default Invoice
+export default Payroll

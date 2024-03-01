@@ -3,15 +3,18 @@ import { GiEnergyArrow } from 'react-icons/gi'
 import { RiLightbulbFlashLine, RiTimerFlashFill } from 'react-icons/ri'
 import { BiTime } from 'react-icons/bi'
 import {HiArrowLeft, HiOutlineMail} from 'react-icons/hi'
-import { MdSnooze } from 'react-icons/md'
+import { MdKeyboardArrowRight, MdKeyboardBackspace, MdOutlineKeyboardArrowRight, MdSnooze } from 'react-icons/md'
 import { AiFillCamera, AiOutlineReload } from 'react-icons/ai'
 import axios from 'axios'
 import { useEffect } from 'react'
 
 import {HiUser} from 'react-icons/hi'
-import {FaPencilAlt,FaBuilding, FaPhone} from 'react-icons/fa'
+import {FaPencilAlt,FaBuilding, FaPhone, FaArrowRight} from 'react-icons/fa'
 import {IoClose, IoLockClosedOutline} from 'react-icons/io5'
 
+import ana  from '../../../images/ana.svg'
+
+import inv  from '../../../images/inv.svg'
 import * as turf from '@turf/turf'
 import ReactPaginate from 'react-paginate';
 import {MdLocationOn} from 'react-icons/md'
@@ -32,6 +35,8 @@ import * as file from 'file-saver'
 import Mapview from './Mapview'
 import Mapview2 from './Mapview2'
 import { BsBuilding } from 'react-icons/bs'
+import { Calendar } from 'react-calendar'
+import Loader from './Loader'
 const Siteemp = ({props}) => {
     const [clientidd, setclientidd] = useState('')
     function setclientx(val){
@@ -101,6 +106,11 @@ const Siteemp = ({props}) => {
     const [client, setclient] = useState('')
     const [skildata, setskildata] = useState()
     const [supervisors, setsupervisors] = useState()
+
+    const [from, setfrom] = useState('')
+    const [to, setto] = useState('')
+const [fromcalendar, setfromcalendar] = useState(false)
+const [tocalendar, settocalendar] = useState(false)
     useEffect(() => {
       
         axios.get(`${tz}/siteuser/active`).then(res => {
@@ -372,12 +382,16 @@ const [is5, setis5] = useState(0)
 const [kshow, setkshow] = useState(false)
 
 function setmapxs(){
+   
     setmapx('mapx3')
     setinpex('inpex inpexnew')
-   
+ 
     setsteps(3)
 
+
 }
+
+
 const [amountd, setamountd] = useState(0)
     function turnon4() {
         if (is4 === 0) {
@@ -995,6 +1009,12 @@ setlatlang(val.langlat)
        
 
     }
+        
+
+
+    
+  const [value, value2] = useState(new Date());
+
     const [o, seto] = useState(0)
     function addskills() {
         axios.post(`${tz}/skills/add`, {
@@ -1010,6 +1030,34 @@ setlatlang(val.langlat)
         })
 
     }
+    function deg2rad(deg) {
+        return deg * (Math.PI/180);
+    }
+    
+    function haversine(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Radius of the Earth in kilometers
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lon2 - lon1);
+        const a =
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        const distance = R * c; // Distance in kilometers
+        return distance;
+    }
+    
+    function calculatePathDistance(latlngArray) {
+        let totalDistance = 0;
+        for (let i = 0; i < latlngArray.length - 1; i++) {
+            const lat1 = latlngArray[i][0];
+            const lon1 = latlngArray[i][1];
+            const lat2 = latlngArray[i + 1][0];
+            const lon2 = latlngArray[i + 1][1];
+            totalDistance += haversine(lat1, lon1, lat2, lon2);
+        }
+        return totalDistance;
+    }
     function setshowusersx(val) {
         if (val === 'users') {
             setshowusers(val)
@@ -1022,6 +1070,59 @@ setlatlang(val.langlat)
             setids('')
         }
     }
+
+    function onChangexd(e){
+
+
+        var ustime=e.toLocaleString("en-US", {hour12:false})
+        console.log(ustime)
+        setfromcalendar(false)
+        var yt=ustime.split(', ')
+        setfrom(yt[0])
+        settocalendar(true)
+      }
+      function onChangexd2(e){
+        
+        
+    // Function to parse date strings in the format "mm/dd/yyyy" where month starts from 1
+
+
+    
+        var ustime=e.toLocaleString("en-US", {hour12:false})
+        console.log(ustime)
+        settocalendar(false)
+        var yt=ustime.split(', ')
+        setto(yt[0])
+        
+        function parseDate(dateString) {
+            const [month, day, year] = dateString.split('/');
+            return new Date(year, month - 1, day); // Adjust month by subtracting 1
+        }
+        
+        // Example usage
+        var updatedItems = {... currone};
+        var arr = [];
+        setselectedtravel(null);
+        console.log(currone)
+        currone.travel.forEach(element => {
+       
+            const parsedElementDate = parseDate(element.date);
+            const parsedFromDate = parseDate(from);
+            const parsedYtDate = parseDate(yt[0]);
+        
+            if (parsedElementDate > parsedFromDate && parsedElementDate < parsedYtDate) {
+                arr.push(element);
+            }
+        });
+        
+        updatedItems.travel = arr;
+        setselectedtravel(updatedItems);
+        console.log("Filtered travel items:", arr);
+
+
+
+      }
+
 
     function setadduserx(){
         setadduser('adduser2')
@@ -1150,30 +1251,146 @@ setlatlang(val.langlat)
     function openskil() {
         setaduser('adduser')
     }
+    const [totalMiles, setTotalMiles] = useState(0);
     const [usertype, setusertype] = useState('user')
     const [trvl, settrvl] = useState(false)
-    function showtravel(){
-      
-for(let i=0;i<currone.travel.length;i++){
-if(currone.travel[i].coords.length>1){
-  // Calculate the total distance along the LineString
-  const line = turf.lineString(currone.travel[i].coords);
-  const lineDistance = turf.lineDistance(line, { units: 'miles' });
-  const updatedItems = currone;
-  updatedItems.travel[i].dist=lineDistance
+    const [loading, setloading] = useState(false)
+    function convertToAmPm(time24) {
+        // Extract hours, minutes, and seconds from the time string
+        const [hours, minutes, seconds] = time24.split(':').map(Number);
+        
+        // Determine whether it's AM or PM
+        const period = hours >= 12 ? 'PM' : 'AM';
+    
+        // Convert hours to 12-hour format
+        const hours12 = hours % 12 || 12; // 0 should be converted to 12 for 12-hour format
+    
+        // Return the time in AM/PM format
+        return `${hours12}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${period}`;
+    }
+    
+   async  function showtravel(){
+    setselectedtravel([])
+setloading(true)
+    async function getNearbyLocation(coordinates, accessToken) {
+        try {
+            // Make a GET request to Mapbox Geocoding API for reverse geocoding
+            const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates[0]},${coordinates[1]}.json?access_token=pk.eyJ1IjoiYXlhYW56YXZlcmkiLCJhIjoiY2ttZHVwazJvMm95YzJvcXM3ZTdta21rZSJ9.WMpQsXd5ur2gP8kFjpBo8g`);
+    console.log(response.data)
+     
+            const nearbyAddress = response.data.features.length>0&&response.data.features[0].place_name || 'Unknown Address';
 
-  // Update the state with the updated array
-  setcurrone(updatedItems);
+            return nearbyAddress;
+        } catch (error) {
+            console.error('Error getting nearby location address:', error);
+            throw error;
+        }
+    }
+    function calculateTotalTimeInMinutes(startTime, endTime) {
+      if(startTime&&endTime&&endTime!='-'){
+          // Convert start time to minutes
+          const [startHours, startMinutes] = startTime.split(':').map(Number);
+          const startTimeMinutes = startHours * 60 + startMinutes;
+      
+          // Convert end time to minutes
+          const [endHours, endMinutes] = endTime.split(':').map(Number);
+          const endTimeMinutes = endHours * 60 + endMinutes;
+      
+          // Calculate difference in minutes
+          const totalTimeMinutes = endTimeMinutes - startTimeMinutes;
+          console.log(totalTimeMinutes)
+          return totalTimeMinutes;
+      }
+      else{
+        return 0
+      }
+    }
+    
+    
+for(let i=0;i<currone.travel.length;i++){
+if(currone.travel[i].coords.length>=1){
+
+
+   
+
+    if(currone.travel[i].coords.length>10){
+        const response = await axios.get(`https://api.mapbox.com/directions/v5/mapbox/driving/${currone.travel[i].coords[0][0]},${currone.travel[i].coords[0][1]};${currone.travel[i].coords[currone.travel[i].coords.length-1][0]},${currone.travel[i].coords[currone.travel[i].coords.length-1][1]}?access_token=pk.eyJ1IjoiYXlhYW56YXZlcmkiLCJhIjoiY2ttZHVwazJvMm95YzJvcXM3ZTdta21rZSJ9.WMpQsXd5ur2gP8kFjpBo8g`);
+
+  
+   // Extract total distance in meters from the API response
+   const totalDistanceMeters = response.data.routes[0].distance;
+
+   // Convert distance from meters to miles
+   const totalDistanceMiles = totalDistanceMeters / 1609.34; // 1 meter ≈ 0.000621371 miles
+
+   // Extract start and end addresses from the API response
+   const startAddress = await getNearbyLocation(currone.travel[i].coords[0], 'accessToken');
+       const endAddress =  await getNearbyLocation(currone.travel[i].coords[currone.travel[i].coords.length-1], 'sd');
+       const updatedItems = currone;
+ 
+       console.log(response.data)
+
+       const pathDistance = calculatePathDistance(currone.travel[i].coords);
+       const totaltime=  calculateTotalTimeInMinutes(currone.travel[i].start&&currone.travel[i].start,currone.travel[i].end==='-'?currone.travel[i].start:currone.travel[i].end)
+       updatedItems.travel[i].dist=totalDistanceMiles
+       updatedItems.travel[i].startloc=startAddress
+       updatedItems.travel[i].endloc=endAddress
+     console.log(totaltime)
+       updatedItems.travel[i].totaltime=totaltime
+     
+     
+       
+       setcurrone(updatedItems);
+       setselectedtravel(updatedItems);
+    }
+    else {
+           // Extract total distance in meters from the API response
+    const totalDistanceMeters = 0;
+
+    // Convert distance from meters to miles
+    const totalDistanceMiles = 0; // 1 meter ≈ 0.000621371 miles
+    const startAddress = await getNearbyLocation(currone.travel[i].coords[0], 'accessToken');
+    const endAddress =  await getNearbyLocation(currone.travel[i].coords[currone.travel[i].coords.length-1], 'sd');
+  
+   
+        const updatedItems = currone;
+ 
+
+
+        const pathDistance = calculatePathDistance(currone.travel[i].coords);
+        const totaltime=  calculateTotalTimeInMinutes(currone.travel[i].start&&currone.travel[i].start,currone.travel[i].end==='-'?currone.travel[i].start:currone.travel[i].end)
+        updatedItems.travel[i].dist=totalDistanceMiles
+        updatedItems.travel[i].startloc=startAddress
+        updatedItems.travel[i].endloc=endAddress
+      console.log(totaltime)
+        updatedItems.travel[i].totaltime=totaltime
+      
+      
+        
+        setcurrone(updatedItems);
+        setselectedtravel(updatedItems);
+    }
+ 
+   
+
+
+  
+
 }
 else{
     const updatedItems = currone;
     updatedItems.travel[i].dist=0.00
+    updatedItems.travel[i].totaltime=0
+    
   
-    // Update the state with the updated array
     setcurrone(updatedItems);
+
+  setselectedtravel(updatedItems);
 }
    
 }
+
+setloading(false)
 settrvl(true)
 
      
@@ -1186,8 +1403,16 @@ settrvl(true)
         
 
     }
+    const [selectedtravel, setselectedtravel] = useState()
 const [trvl2, settrvl2] = useState(false)
 const [cords, setcords] = useState([])
+useEffect(() => {
+if(steps===3){
+}
+    return () => {
+      
+    }
+  }, [steps])
    function coord(val){
    
 setcords(val)
@@ -1201,13 +1426,45 @@ settrvl2(true)
 <div className="trvl" style={{width:'100%',margin:'auto',paddingLeft:40,paddingTop:20}} >
 
     
-<div className="newst1" >
+<div className="newst1 w700" >
 
     {trvl2?
-                  <button className='deleter' onClick={e=>settrvl2(false)}> Back</button>
+
+    <button className='deleter' onClick={e=>settrvl2(false)}> Back</button>
+  
     :
 
-    <button className='deleter' onClick={e=>settrvl(false)}> Back</button>
+
+    <>
+    
+    <>
+    <div className="strtprt">
+    <MdKeyboardBackspace onClick={e=>settrvl(false)} className='mds' />
+     Travel logs 
+    </div>
+    <div className="endprt">
+        <p>Date range:</p>
+    <div className="boxfrom"
+    onClick={e=>setfromcalendar(true)}
+    >
+        {fromcalendar&&
+              <Calendar onChange={onChangexd} 
+              value={value} />
+        }
+       {from?from:'Start date'}
+    </div>
+    <p>To:</p>
+    <div className="boxfrom" onClick={e=>settocalendar(true)}>
+    {tocalendar&&
+              <Calendar onChange={onChangexd2} 
+              value={value} />
+        }
+      {to?to:'End date'}
+    </div>
+    </div>
+    
+    </>
+    </>
     }
 
   
@@ -1217,17 +1474,85 @@ settrvl2(true)
 {!trvl2
 ?
 
-<div className="tablerow hideonmobile table2f "  >
+<>
+
+<div className="w74 width70">
+
+    <div className="w74card">
+        
+ <div className="iconinv">
+ <img src={ana} alt="" />
+ </div>
+
+ <div className="iconpara">
+    <p>Total Miles</p>
+    <h1>{
+      selectedtravel&&selectedtravel.travel.reduce((accumulator, currentValue) => accumulator + currentValue['dist'], 0).toFixed(2)
+
+            }        </h1>
+ </div>
+    </div>
+    <div className="w74card">
+        
+        <div className="iconinv">
+        <img src={inv} alt="" />
+        </div>
+       
+        <div className="iconpara">
+           <p>Travel Time</p>
+           <h1 style={{
+            fontSize:25
+           }} >{
+      Math.floor(selectedtravel.travel.reduce((accumulator, currentValue) => accumulator + currentValue['totaltime'], 0)/60 )
+
+            } h {
+                Math.floor(selectedtravel.travel.reduce((accumulator, currentValue) => accumulator + currentValue['totaltime'], 0)%60 )
+          
+                      } m </h1>
+        </div>
+           </div>
+
+    <div className="w74card">
+        
+        <div className="iconinv">
+        <img src={ana} alt="" />
+        </div>
+       
+        <div className="iconpara">
+           <p>Total Days</p>
+           <h1>{[...new Set(selectedtravel&&selectedtravel.travel.map(obj => obj.date))].length}</h1>
+        </div>
+           </div>
+           <div className="w74card">
+               
+               <div className="iconinv">
+               <img src={inv} alt="" />
+               </div>
+              
+               <div className="iconpara">
+                  <p>Perdiem</p>
+                  <h1>56$</h1>
+               </div>
+                  </div>
+
+</div>
+<div className="tablerow hideonmobile width70 "  >
                            <div className="headertable clop sticky">
                           
                                 <h4 style={{ width: "120px",paddingLeft:10 }}>Date</h4>
 
-
+                                <h6  style={{ width: "300px", }} >Start Point </h6>
+<h2 style={{
+    width:30,
+    marginRight:30,
+}}></h2>
+<h6  style={{ width: "300px", }} >End Point </h6>
                                 <h2 >Distance</h2>
-                           
-                                <h6>Start time</h6>
+                              
+                                <h6 >Start time</h6>
 
                                 <h6>End time</h6>
+                             
                                 <h2 >Perdiem</h2>
                                 <h6>Action</h6>
                                 
@@ -1237,19 +1562,26 @@ settrvl2(true)
                         <div className="subtable">
                          
                            
-                            {searchval.length === 0 && currone.travel && currone.travel.map(val => (
+                            {selectedtravel.travel && selectedtravel.travel.map(val => (
 
                                 <>
                                     <div className="headertable">
            
                                         <h4 style={{ width: "120px",paddingLeft:10 }}>{val.date}</h4>
-                                       
+                                        <h6 className='silverfont' style={{ width: "300px", }}  >{val.startloc?val.startloc.substring(0,40):'Unknown address'}</h6>
+<h2 style={{
+    width:30,
+    marginRight:30,
+}
+} ><MdOutlineKeyboardArrowRight className='grenfont' /></h2>
+<h6 className='silverfont' style={{ width: "300px", }}  >{val.endloc?val.endloc.substring(0,40):'Unknown address'}</h6>
                                         <h2> {val.dist.toFixed(2)}  Miles</h2>
                                     
 
-                                        <h6 >{val.start}</h6>
+                                        <h6 >{val.start&&val.start!=='-'?convertToAmPm(val.start):'-'}</h6>
 
-                                        <h6>{val.end}</h6>
+                                        <h6>{val.end&&val.end!=='-'?convertToAmPm(val.end):'-'}</h6>
+                                      
                                         <h2>$ 75 </h2>
                                         <h6><div onClick={e=>coord(val.coords)} className="tinvoice" style={{cursor:'pointer'}} >View Route</div></h6>
                                      
@@ -1262,6 +1594,8 @@ settrvl2(true)
   
                         </div>
                     </div>
+</>
+
 :
                    <Mapview
                    props={{
@@ -1534,6 +1868,9 @@ settrvl2(true)
                            <div className={inpex}>
                                <h1>Phone:</h1>
                                <input value={phone} type="text" onChange={e => setphone(e.target.value)} />
+
+                           </div>
+                           <div className={inpex}>
 
                            </div>
                            {steps===2&&
@@ -1927,7 +2264,16 @@ settrvl2(true)
     <p>{currone.name}</p>
         <p className='sklx'>{currone.skill}</p>
 
-       <p className='sklo' onClick={e=>showtravel()}>Travel logs</p>
+{
+
+}
+{
+    !loading?
+    <p className='sklo' onClick={e=>showtravel()}>Travel logs</p>
+    :
+    <Loader />
+}
+    
     </div>
        </div>
     

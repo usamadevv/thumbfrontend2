@@ -24,6 +24,7 @@ import { SocketProvider } from './Components/Context/SocketContext';
 import RoomPage from './Components/Home/Notes/Room';
 import LobbyScreen from './Components/Home/Notes/Lobby';
 import Apo from './Components/Home/Notes/APO';
+import Sentinvoice from './Components/Siteuser/Sentinvoice';
 function App() {
   const [footer, setfooter] = useState("footer")
   
@@ -54,6 +55,8 @@ function App() {
 
           <Route exact path='/generate' element={<Generate />} />
           <Route exact path='/invoice/:id' element={<Invoice />} />
+
+          <Route exact path='/file/:id' element={<Sentinvoice />} />
 
         </Routes>
         </SocketProvider>

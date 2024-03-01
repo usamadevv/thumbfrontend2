@@ -7,21 +7,15 @@ import {BsFolder} from 'react-icons/bs'
 
 
 
-import { v4 as uuidv4, v6 as uuidv6 } from 'uuid';
 
 import { GiEnergyArrow } from 'react-icons/gi'
 import { RiLightbulbFlashLine, RiTimerFlashFill } from 'react-icons/ri'
 import { BiTime } from 'react-icons/bi'
-import { MdSnooze } from 'react-icons/md'
+import { MdOutlinePayment, MdOutlineSave, MdSnooze } from 'react-icons/md'
 import { AiOutlineReload } from 'react-icons/ai'
 import axios from 'axios'
 import { useEffect } from 'react'
-import { VscChromeClose } from 'react-icons/vsc'
-import { HiArrowLeft } from 'react-icons/hi'
-import { BsClockFill } from 'react-icons/bs'
-
-import { IoClose } from 'react-icons/io5'
-import { FaFileImage } from 'react-icons/fa'
+import { FaFileImage, FaFilePdf, FaSortDown } from 'react-icons/fa'
 import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
@@ -48,8 +42,14 @@ import { async } from '@firebase/util'
 
 import g from '../../../images/g.png'
 import g2 from '../../../images/g2.png'
+
+
+import dots from '../../../images/dots.png'
+
+import filep from '../../../images/filep.png'
 import Invoice from './invoice'
-const Files = () => {
+import Payroll from './Payroll'
+const Payrollfiles = () => {
     const [files, setfiles] = useState([])
 const [companies, setcompanies] = useState([])
 
@@ -437,7 +437,7 @@ const [i, seti] = useState(0)
 const [taxes, settaxes] = useState('taxes')
 const [circle, setcircle] = useState('circle')
 const [is, setis] = useState(0)
-
+const [showlistviewx, setshowlistviewx] = useState(false)
 
 const [taxes2, settaxes2] = useState('taxes')
 const [circle2, setcircle2] = useState('circle')
@@ -1027,6 +1027,8 @@ function exports() {
 
 }
 function exports3() {
+    const filteredData = currdata.data.filter(row => row.Hrs !== 0);
+
 
     var styl1p =
     {
@@ -1214,8 +1216,25 @@ function exports3() {
     var ext = '.xlsx'
 
     const myHeader = ["Taxes", "Client", "Date", 'Employee', 'Hrs', 'Payrate', 'Ot_Hrs', 'OT_Pay_rate', 'total', 'nc_4', 'deductions', 'net'];
-    const ws = XLSX.utils.json_to_sheet(preparedata, { header: myHeader })
+ 
+    const filteredData2 = filteredData.map(item => {
+        const formattedItem = {};
+        Object.keys(item).forEach(key => {
+            if (myHeader.includes(key)) {
+                if (key === 'Payrate' && typeof item[key] === 'string') {
+                    formattedItem[key] = parseFloat(item[key].replace(/[^0-9.-]+/g,""));
+                } else {
+                    formattedItem[key] = item[key];
+                }
+            }
+        });
+        return formattedItem;
+    });
+    
+    const ws = XLSX.utils.json_to_sheet(filteredData2, { header: myHeader })
 
+  
+    
     var wscols = [
         { wch: 6 },
         { wch: 7 },
@@ -1229,7 +1248,7 @@ function exports3() {
         { wch: 8 },
         { wch: 12 },
     ];
-    for (var k = 0; k < preparedata.length + 1; k++) {
+    for (var k = 0; k < filteredData.length + 1; k++) {
         if (k === 0) {
 
             ws[`B${k + 1}`].s = styl1p
@@ -1246,6 +1265,7 @@ function exports3() {
             ws[`L${k + 1}`].s = styl1p
         }
         else {
+            
             if (k % 2 === 0) {
 
                 ws[`B${k + 1}`].s = styl2x
@@ -1256,10 +1276,10 @@ function exports3() {
                 ws[`F${k + 1}`].s = cstyl2x
                 ws[`G${k + 1}`].s = styl2x
                 ws[`H${k + 1}`].s = cstyl2x
-                ws[`I${k + 1}`].s = styl2x
+                ws[`I${k + 1}`].s = cstyl2x
                 ws[`J${k + 1}`].s = styl2x
                 ws[`K${k + 1}`].s = styl2x
-                ws[`L${k + 1}`].s = styl2x
+                ws[`L${k + 1}`].s = cstyl2x
             } else if (k % 2 !== 0) {
 
                 ws[`B${k + 1}`].s = styl2xp
@@ -1270,10 +1290,10 @@ function exports3() {
                 ws[`F${k + 1}`].s = cstyl2xp
                 ws[`G${k + 1}`].s = styl2xp
                 ws[`H${k + 1}`].s = cstyl2xp
-                ws[`I${k + 1}`].s = styl2xp
+                ws[`I${k + 1}`].s = cstyl2xp
                 ws[`J${k + 1}`].s = styl2xp
                 ws[`K${k + 1}`].s = styl2xp
-                ws[`L${k + 1}`].s = styl2xp
+                ws[`L${k + 1}`].s = cstyl2xp
             }
 
         }
@@ -1722,7 +1742,7 @@ function selectthis(val) {
 
 
 }
-
+const [payrolldata, setpayrolldata] = useState([])
 
 useEffect(() => {
     axios.get(`${tz}/siteuser/active`).then(res => {
@@ -1733,6 +1753,12 @@ useEffect(() => {
     axios.get(`${tz}/jobsite/getall`).then(res => {
         console.log(res)
         setdata(res.data.Jobsite)
+        axios.get(`${tz}/payroll/getall`).then(rese => {
+            console.log(rese)
+            setpayrolldata(rese.data.Payroll)
+      
+
+        })
 
         setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
         setpageCount(Math.ceil(res.data.Jobsite.length / 5))
@@ -1923,21 +1949,6 @@ const [j, setj] = useState(0)
 const [k, setk] = useState(1)
 
 const [ind, setind] = useState('')
-function sendemail(val){
-    const yx=document.getElementById('shareable').innerHTML
-
-
-    axios.post(`${tz}/client/sendinvoice`, {
-        email:val.email,
-        html:yx,
-        key:uuidv4(),
-    }).then(rees=>{
-console.log(rees)
-alert(`Email sent to ${val.dept} department`)
-setshowlistviewxx(false)
-        })
-
-}
 function addindex(index,val) {
     setlastcom(val.clientid)
     if (ind.search(' ' + index.toString() + ' ') >= 0) {
@@ -1985,8 +1996,58 @@ function updatedata() {
     setadduser3('adduser2')
 
 }
+const [menuactiveon, setmenuactiveon] = useState('')
+function setshowlistviewx2(val,val2){
+    setmenuactiveon(val2)
+    setshowlistviewx(val)
+
+}
 const [l, setl] = useState(2)
 const [currone, setcurrone] = useState()
+function updatestatus(val){
+    axios.post(`${tz}/payroll/updatestatus`, {
+        _id: selected,
+        status: val,
+      
+
+   
+
+
+
+    }).then(res => {
+        alert(`Payroll is ${val} `)
+    })
+}
+function updatestatus2(val,val2){
+    var payr=payrolldata
+    axios.post(`${tz}/payroll/updatestatus`, {
+        _id: val2,
+        status: val,
+      
+
+   
+
+
+
+    }).then(res => {
+        alert(`Payroll is ${val} `)
+        setshowlistviewx(false)
+      // Update the array of JSON objects
+const updatedArray = payr.map(item => {
+    // Check if the current item's id matches the id of the item to be updated
+    if (item._id === val2) {
+        // If it matches, return the updated item
+        item.status=val;
+        return item;
+    } else {
+        // If it doesn't match, return the original item unchanged
+        return item;
+    }
+});
+setpayrolldata(updatedArray)
+
+    })
+}
 const [mx, setmx] = useState(0)
 const [currproject, setcurrproject] = useState()
 function setms(val) {
@@ -2027,6 +2088,7 @@ useEffect(() => {
 
     }
 }, [])
+const [showlistview, setshowlistview] = useState(false)
 const [clientid, setclientid] = useState('')
 function skipthis(element) {
 
@@ -2230,8 +2292,9 @@ function selectthiscompany(val){
 
 }
 const [selectedweek, setselectedweek] = useState('')
+const [currdata, setcurrdata] = useState(null)
 function openfiles(val){
-    setselectedweek(val)
+   setcurrdata(val)
     setshowfiles(true)
  
 }
@@ -2491,22 +2554,6 @@ function opm() {
         }
         return months;
       };
-      const [departments, setdepartments] = useState([])
-      const [showlistviewxx, setshowlistviewxx] = useState(false)
-      function showdepartments(val){
-        if(val){
-            setshowlistviewxx(val)
-            companies&&companies.forEach(element => {
-                if(element._id===selected){
-                    setdepartments(element.depts)
-                }
-            });
-
-        }
-        else{
-            setshowlistviewxx(val)
-        }
-    }
     function setselectedx(val)
     {
         setcomp(val)
@@ -2526,7 +2573,7 @@ setweekends(distinctWeekNumbers)
     
     {active===0?
     
-<Invoice onCancel={e=>setactive(1)} />
+<Payroll onCancel={e=>setactive(1)} />
 
 :
 <>
@@ -2540,35 +2587,12 @@ txp&&txp.length>0&&<div className={`${aduserl} nobg` }>
   />
   <button className='exportbtn2' onClick={e => setaduserl('adduser2')}>Cancel</button>
 
-  <button className='exportbtn3' onClick={e => showlistviewxx?showdepartments(false):showdepartments(true)}>
-      Send Email!
-      {showlistviewxx&&
-    <div className="listview" style={{
-    }} onClick={(e) => e.stopPropagation()}>
-  
-{departments.length>0?
-departments.map((val)=>(
-  <div className="listviewsub"
-    onClick={e => sendemail(val)}
-    >
-{val.dept}
-    </div>
-))
-:
-<div className="listviewsub">
-    No department
-</div>
-
-}
-       
-</div>
-}
-      </button>
+  <button className='exportbtn3' onClick={e => setaduserl2('adduser2')}>Send Email!</button>
   <div className="mainpage" ref={componentRef}>
 
 
 
-      <div className="mainpage" id='shareable' >
+      <div className="mainpage" >
 
           <h1 className='invoiceh'>{compnay}<p className='invoicep' >Invoice</p></h1>
           <div className="spanl">
@@ -2787,7 +2811,7 @@ departments.map((val)=>(
 <div className="files">
       
 <div className="files1">
-    <button onClick={e=>setactive(0)} className='invoicecreate'>+ Create Invoice</button>
+    <button onClick={e=>setactive(0)} className='invoicecreate'>+ Create Payroll</button>
 <h1>Files</h1>
 {companies.map(val=>(
 val._id===selected? <div className="rwlis2" onClick={e=>setselectedx(val)}>
@@ -2807,16 +2831,56 @@ val._id===selected? <div className="rwlis2" onClick={e=>setselectedx(val)}>
 {
     monthss&&monthss.map(valx=>(
         <>
-       {weekends.some(val => val && valx.month === Number(val.split('/')[0]))&&
+       {payrolldata.some(val => val.date && valx.month === Number(val.date.split('/')[0]))&&
        <h1 className='cvs' style={{
 width:'100%'            
         }} >{valx.name}</h1>
        } 
-        {weekends&&weekends.map(val=>(
-val&&valx.month===Number(val.split('/')[0])&&<div className='divfile' onClick={e=>openfiles(val)}>
+        {payrolldata&&payrolldata.map(val=>(
+            val.companyid===selected&&
+            val.date && valx.month === Number(val.date.split('/')[0])&&
+<div className='divfile' onClick={e=>openfiles(val)}>
 
-<img src={g2} alt="" />
-<h1>Weekend - {val}</h1>
+
+<button className='statusbt'
+style={{
+color:val.status==='Paid'?'#6787c8':val.status==='Pending'?'#c8a967':'#67c8b7'  ,
+
+backgroundColor:val.status==='Paid'?'#eef7fb':val.status==='Pending'?'#fbf8ee':'#eefbf9'  ,
+}}
+>
+
+    {val.status}
+    </button>
+
+    <button onClick={e=>e.stopPropagation()} className='dots'>
+        
+        <img onClick={e => showlistviewx?setshowlistviewx2(false,val._id):setshowlistviewx2(true,val._id)}  src={dots} alt="" />
+        {showlistviewx&&menuactiveon===val._id&&
+    <div className="listview listview2" onClick={(e) => e.stopPropagation()}>
+    <div className="listviewsub"
+    onClick={e => updatestatus2('Approved',val._id)}
+    >
+ <MdOutlineSave style={{
+fontSize:20,
+marginRight:5,
+ }}/> Approve
+    </div>
+    <div className="listviewsub"
+        onClick={e => updatestatus2('Paid',val._id)}
+    >
+        <FaFilePdf style={{
+fontSize:20,
+marginRight:5,
+ }} />
+       Mark as paid
+        </div>
+      
+</div>
+}
+        </button>
+<img className='nomargin' src={filep} alt="" />
+<h1>Payroll - {val.date&&val.date}</h1>
 </div>
 ))
 
@@ -2824,43 +2888,173 @@ val&&valx.month===Number(val.split('/')[0])&&<div className='divfile' onClick={e
         </>
     ))
 }
+      
+     
+     
 
 </div>
 :
-<div className="files2">
-<div className="btn11">
-{divfile.length>0&&
-<button className='btn1' onClick={e=>exports2()}>Open</button>}
-</div>
-{files&&files.map(val=>(
-val.weekno===selectedweek&&
-<>{
-val._id===divfile? <div className='divfilenew divfilenewx ' onClick={e=>importthis(val)}>
+<div
+style={{
+width:'80%',
 
-<div className="subfilenew">
+flexDirection:'column',
 
-<img src={g2} alt="" />
-<h1>{val.weekno}</h1>
-</div>
-<span>
-Updated by: {val.by&&val.by} on {val.created&&val.created}
-</span>
-</div>: <div className='divfilenew' onClick={e=>importthis(val)}>
+}}
+>
 
-<div className="subfilenew">
 
-<img src={g2} alt="" />
-<h1>{val.weekno}</h1>
+<div className="endbt" style={{
+    display:'flex',
+    alignItems:'center',
+    marginTop:10,
+    justifyContent:'space-between',
+    width:'98%',
+    marginLeft:'1%'
+}}>
+    <h4 className='headering'>
+        Payroll - {currdata.date&&currdata.date}
+    </h4>
+    <button  className='actionbtp styleaction' onClick={e => showlistview?setshowlistview(false):setshowlistview(true)}>Actions
+<FaSortDown className='actionbt' style={{
+ marginTop:0,
+ fontSize:18,
+}} />
+
+
+{showlistview&&
+    <div className="listview" onClick={(e) => e.stopPropagation()}>
+    <div className="listviewsub"
+    onClick={e => updatestatus('Approved')}
+    >
+ <MdOutlineSave style={{
+fontSize:20,
+marginRight:5,
+ }}/> Approve
+    </div>
+    <div className="listviewsub"
+        onClick={e => updatestatus('Paid')}
+    >
+        <FaFilePdf style={{
+fontSize:20,
+marginRight:5,
+ }} />
+       Mark as paid
+        </div>
+        <div className="listviewsub"  onClick={e=>exports3()}  >   
+       <MdOutlinePayment style={{
+fontSize:20,
+marginRight:5,
+ }} />Export
+        </div>
 </div>
-<span>
-Updated by: {val.by&&val.by} on {val.created&&val.created}
-</span>
+}
+
+
+ </button>
+
 </div>
-}   </>
-))
+
+<div className="tablerow" style={{
+    width:'97%',
+    marginLeft:'1%',
+    justifySelf:'center'
+}} >
+<div className="subtable">
+    <div className="headertable clop">
+    
+        <h2 style={{ width: '80px',marginLeft:10, marginBottom: '0px' }}>Taxes</h2>
+        <h1 style={{ width: '180px' }}>Company</h1>
+
+        <h6 style={{ width: '80px', marginBottom: '0px' }} >Weekend</h6>
+        <h3> Name</h3>
+        <h4  style={{ width: '80px', marginBottom: '0px' }}  >Distance</h4>
+
+                 <h4 style={{ width: '80px', marginBottom: '0px' }}>Hrs</h4>
+
+        <h4 style={{ width: '80px', marginBottom: '0px' }}>Pay rate</h4>
+
+        <h4 style={{ width: '80px', marginBottom: '0px' }}>OT Hrs</h4>
+
+        <h4 style={{ width: '80px', marginBottom: '0px' }}>OT Payrate</h4>
+
+        <h4 style={{ width: '80px', marginBottom: '0px' }}>Total</h4>
+       
+        <h4 style={{ width: '80px', marginBottom: '0px' }}>NC 4%</h4>
+
+        <h4 style={{ width: '80px', marginBottom: '0px' }}>Deductions</h4>
+
+        <h4 style={{ width: '80px', marginBottom: '0px' }}>Net</h4>
+        <h5>Action</h5>
+
+
+    </div>
+  
+      {searchval.length===0&&currdata && currdata.data.map((val, index) => (
+        <>
+        
+
+<div className="headertable">
+
+<h2 style={{ width: '80px', marginLeft:10,marginBottom: '0px' }}>{val.Taxes} </h2>
+<h1 style={{ width: '180px' }}>{val.Client}</h1>
+
+<h6 style={{ width: '80px', marginBottom: '0px' }} >{val.Date}</h6>
+<h3>{val.Employee}</h3>
+
+<h4 style={{ width: '80px', marginBottom: '0px' }} >{parseInt(val.distance)} M</h4>
+
+<h4 style={{ width: '80px', marginBottom: '0px' }}  >{val.Hrs}</h4>
+
+<h4 style={{ width: '80px', marginBottom: '0px' }}  >$ {val.cpr}</h4>
+
+<h4 style={{ width: '80px', marginBottom: '0px' }}  >{val.Ot_Hrs}</h4>
+
+<h4 style={{ width: '80px', marginBottom: '0px' }}  >$ {val.OT_Pay_rate} </h4>
+
+<h4 style={{ width: '80px', marginBottom: '0px' }}  >{parseFloat(val.total)} </h4>
+{/*
+applyperdiemx &&
+<>
+
+<h4 style={{ width: '80px', marginBottom: '0px' }}> $ {parseFloat(val.perdiem)}  </h4>
+<h4 style={{ width: '80px', marginBottom: '0px' }}> $ {val.onperdiem} </h4>
+
+<h4 style={{ width: '80px', marginBottom: '0px' }}>{val.days}</h4>
+</>
+      */}
+
+<h4 style={{ width: '80px', marginBottom: '0px' }}  >{val.nc_4 === '-' ? <>0</>
+
+:
+parseFloat(Number(val.nc_4).toFixed(2))
+}</h4>
+<h4 style={{ width: '80px', marginBottom: '0px' }}  >
+$ {val.deductions}
+</h4>
+
+<h4 style={{ width: '80px', marginBottom: '0px' }}>{parseFloat(val.net.toFixed(2))}</h4>
+<h5 className='h5'>
+
+
+</h5>
+
+
+
+
+</div>
+
+
+       
+        </>
+    ))
+
+    }
+</div>
+</div>
+</div>
 
 }
-</div>}
 </div>
 }
 </>
@@ -2873,5 +3067,5 @@ Updated by: {val.by&&val.by} on {val.created&&val.created}
 
 }
 
-export default Files
+export default Payrollfiles
 

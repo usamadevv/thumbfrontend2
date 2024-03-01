@@ -24,7 +24,7 @@ function doLinesIntersect(line1, line2) {
       const result = [];
       for (let i = 0; i < array.length - chunkSize + 1; i++) {
         result.push(array.slice(i, i + chunkSize));
-        i =i+10;
+        i =i+25;
       }
       return result;
     }
@@ -47,79 +47,44 @@ function doLinesIntersect(line1, line2) {
       center:  props.user[0],
       zoom: 14
   });
+  mapnew.current.addControl(new mapboxgl.NavigationControl());
+
   mapnew.current.on('style.load',async function () {
 
-    const getEquallySpacedIndexes = (length) => {
-      // Calculate the step size to ensure that we have 10 equally spaced indexes
-      const step = Math.max(Math.floor(length / 10), 1);
-    
-      // Initialize an array to store the selected indexes
-      const indexes = [];
-    
-      // Push the first index
-      indexes.push(0);
-    
-      // Push the equally spaced indexes
-      for (let i = step; i < length; i += step) {
-        indexes.push(i);
-      }
-    
-      // Push the last index
-      indexes.push(length - 1);
-    
-      return indexes;
-    };
-    
-    // Usage:
-    const cf = getEquallySpacedIndexes(props.user.length).map(index => props.user[index]);
 
-
-    await axios.get(`https://api.mapbox.com/directions/v5/mapbox/driving/${cf.join(';')}?access_token=pk.eyJ1IjoiYXlhYW56YXZlcmkiLCJhIjoiY2ttZHVwazJvMm95YzJvcXM3ZTdta21rZSJ9.WMpQsXd5ur2gP8kFjpBo8g&overview=full&alternatives=true`)
-    .then(res=>{
-  console.log(res)
+     // Add the path as a GeoJSON source
    
-       
-      
-  const newLine = pol.toGeoJSON(res.data.routes[0].geometry);
+      mapnew.current.addSource('path', {
+          type: 'geojson',
+          data: path
+      });
+
+      // Add a line layer to the map
+      mapnew.current.addLayer({
+          id: 'path',
+          type: 'line',
+          source: 'path',
+          layout: {
+              'line-join': 'round',
+              'line-cap': 'round'
+          },
+          paint: {
+              'line-color': '#ff0000',
+              'line-width': 2
+          }
+      });
+
+    // Add a layer to hide extraneous features
+    // Adjust z-index of the line layer to make sure it's displayed above other layers
+    mapnew.current.moveLayer('path', 'waterway-label');
 
   
-           mapnew.current.addSource(`route`, {
-               'type': 'geojson',
-               'data': {
-               'type': 'Feature',
-               'properties': {},
-               'geometry':pol.toGeoJSON(res.data.routes[0].geometry)
-               }
-               });
-               mapnew.current.addLayer({
-               'id': `route`,
-               'type': 'line',
-               'source': `route`,
-               'layout': {
-               'line-join': 'round',
-               'line-cap': 'round'
-               },
-               'paint': {
-               'line-color':  'green',
-               'line-width': 4
-               }
-               });
-               
-      // create a HTML element for each feature
-  
-       
-  
-  
-           mapnew.current.resize()
-       
-  
-  
-     
-     
-  
-  
-  
-    })
+
+  // Hide extraneous features
+  mapnew.current.setLayoutProperty('road-label', 'visibility', 'none');
+  mapnew.current.setLayoutProperty('building', 'visibility', 'none');
+  mapnew.current.setLayoutProperty('poi-label', 'visibility', 'none');
+
 const el = document.createElement('div');
              el.className = 'marker1';
              const el2 = document.createElement('div');

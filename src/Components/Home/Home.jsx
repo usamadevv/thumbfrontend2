@@ -1,6 +1,6 @@
 import React,{useCallback} from 'react'
 import "./Home.css"
-import { MdOutlineDashboard } from 'react-icons/md'
+import { MdOutlineDashboard, MdOutlinePayments } from 'react-icons/md'
 import { CgMediaLive } from 'react-icons/cg'
 import { TbDeviceDesktopAnalytics, TbBriefcase, TbChartInfographic } from 'react-icons/tb'
 import { AiTwotoneSecurityScan, AiOutlineMenuFold, AiOutlineLogout } from 'react-icons/ai'
@@ -101,6 +101,7 @@ import Formdat from './Formdata'
 import { useSocket } from '../Context/SocketContext'
 import { useNavigate } from 'react-router-dom'
 import Siteview from './Jobsite/Siteview'
+import Payrollfiles from './Jobsite/Payrollfiles'
 const Sector = ({ radius, startAngle, endAngle, fillColor }) => {
   // Convert angles to radians
   const startRadians = (startAngle * Math.PI) / 180;
@@ -342,6 +343,11 @@ function logout(){
           <p className={`${grp1} ${i===2&&'activemenu'}`} onClick={e => setis(87)}><TbDeviceDesktopAnalytics className='iconj' /> <p>Live view</p></p>
            
           }
+           {datax.presence==='Allowed'&&
+          
+          <p className={`${grp1} ${i===2&&'activemenu'}`} onClick={e => setis(41)}><MdOutlinePayments className='iconj' /> <p>Payroll</p></p>
+           
+          }
            {datax.company==='Allowed'&&
           <p className={`${grp2} ${i===61&&'activemenu'}`} onClick={e => setis(61)} > 
         {i===61?              
@@ -411,7 +417,6 @@ function logout(){
              <p  className={`${grp3} ${i===10&&'activemenu'}`} onClick={e => setis(10)}><BsClockHistory className='iconj' /><p>Reports</p></p>
             
           }
-          <p  className={`${grp3} ${i===10&&'activemenu'}`} onClick={e => setis(62)}><BiFileBlank className='iconj' /><p>Saved invoices</p></p>
     {datax.admin==='Allowed'&&
               <p className={`grts ${i===14&&'activemenu'}`} onClick={e => setis(14)}> <VscSourceControl className='iconj' /> <p>Admin Control</p></p>
             
@@ -568,15 +573,23 @@ function logout(){
           <Admin />
           
 
-          } {i===61&&
-            <Invoice />
+          } {i===62&&
+            <Files />
             
   
-            }{i===62&&
+            }{i===61&&
               <Files />
               
     
-              }{i===32&&
+              }
+              {i===41&&
+              <Payrollfiles />
+              
+    
+              }
+              
+              
+              {i===32&&
                 <Formdat />
                 
       

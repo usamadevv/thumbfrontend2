@@ -51,6 +51,7 @@ function submit() {
         address:address+" "+cty+" "+state+" "+zip,
         number:phone,
         terms:terms,
+        depts:depts,
         markup:markup,     
         status:cstatus,
         weekend:weekend  
@@ -93,6 +94,7 @@ function submit() {
         address:address,
         number:phone,
         terms:terms,
+        depts:depts,
         markup:markup,
         status:cstatus,
         _id:idb      ,
@@ -778,6 +780,7 @@ function updateuser() {
            setphone(val.number)
            setterms(val.terms)
            setmarkup(val.markup)
+           setdepts(val.depts)
            setcstatus(val.status)
            setidb(val._id)
            
@@ -991,11 +994,11 @@ const [state, setstate] = useState('')
                                             {depts && depts.map((val ,index)=> (
                                                 <>
                                                     <div className="headertable">
-                                                        <h1><img src='' alt="" className='valimg' /> {val.dept}</h1>
+                                                        <h1><img src='' alt="" className='valimg' /> {val.email}</h1>
 
-                                                        <h6>{val.email}</h6>
+                                                        <h6>{val.password}</h6>
 
-                                                        <h3>{val.password}</h3>
+                                                        <h3>{val.dept}</h3>
 
                                                        
 
@@ -1303,7 +1306,7 @@ const [state, setstate] = useState('')
       />
 </div>
 }
-    <div className="comdet">
+    <div className="comdet mtop120">
     {currone?
       <>  <div className="penh" onClick={e=>updateuser()
         }>
