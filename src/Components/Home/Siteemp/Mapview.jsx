@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import * as turf from '@turf/turf'
 import mapboxgl from 'mapbox-gl'
 import axios from 'axios'
@@ -10,7 +10,7 @@ const Mapview = ({props}) => {
 const markerx=useRef(null)
 
 const markerx2=useRef(null)
-    
+const markerxa = useRef([]);
     
     useEffect( () => {
       // Function to check if two lines intersect
@@ -135,6 +135,25 @@ const el = document.createElement('div');
          markerx2.current = new mapboxgl.Marker(el2)
              .setLngLat(props.user[props.user.length-1])
              .addTo(mapnew.current)
+
+
+            
+             props.user.forEach((point, index) => {
+              const markerElement = document.createElement('div');
+              markerElement.className = `marker3`;
+      
+              // Create a new marker at the current point
+              markerxa.current[index] = new mapboxgl.Marker(markerElement)
+                  .setLngLat(point)
+                  .addTo(mapnew.current);
+
+          
+       
+          });
+
+        
+             
+            
   })
     
                  
@@ -143,11 +162,51 @@ const el = document.createElement('div');
       
       }
     }, [])
+    function showusermv(){
+console.log(markerxa.current)
+    if(markerxa.current.length==0){
+     
+      props.user.forEach((point, index) => {
+        const markerElement = document.createElement('div');
+        markerElement.className = `marker3`;
+
+        // Create a new marker at the current point
+        markerxa.current[index] = new mapboxgl.Marker(markerElement)
+            .setLngLat(point)
+            .addTo(mapnew.current);
+
+    
+ 
+    });
+    setchec(0)
+    }
+    else{
+      markerxa.current.forEach(marker => {
+        if (marker) {
+            marker.remove();
+        }
+    });
+    markerxa.current=[]
+    setchec(1)
+    }
+   
+
+    
+    }
+    const [chec, setchec] = useState(0)
   return (
 
-    <div className='rvlmap'  ref={mapc} style={{ width:'80%',height:550,margin:'auto',marginTop:'40px!important',borderRadius:20}}>
-
+    <>
+ 
+    <div className="kkbtn">
+      <p  className='mapbgn' onClick={e=>showusermv()}> <input checked={chec==0?true:false} defaultChecked={true} type="checkbox" /> Show user movement</p>
     </div>
+     <div className='rvlmap'  ref={mapc} style={{ width:'80%',height:550,margin:'auto',marginTop:'40px!important',borderRadius:20}}>
+     </div>
+
+    </>
+   
+ 
   )
 }
 

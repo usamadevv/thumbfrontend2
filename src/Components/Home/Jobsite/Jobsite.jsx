@@ -1943,7 +1943,12 @@ setradius(val)
                 address: address,
                 weekend: weekend,
                 latlang: JSON.stringify(chklatlang),
-                _id: currone._id
+                _id: currone._id,
+
+                perdiemamnt: perdiemamnt,
+                onperdiemamnt: onperdiemamnt,
+                perdiemmiles:perdiemmil,
+                onperdiemmiles:onperdiemmil,
 
 
 
@@ -1983,6 +1988,8 @@ setradius(val)
                 perdiemamnt: perdiemamnt,
                 onperdiemamnt: onperdiemamnt,
                 latlang: latlang,
+                perdiemmiles:perdiemmil,
+                onperdiemmiles:onperdiemmil,
                 
                 
             }).then(res => {

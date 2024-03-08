@@ -806,7 +806,7 @@ console.log(rees)
 
 
                             }
-                           
+                          
 
                             setpreparedata(pr => [...pr, {
                                 Taxes: element.taxes,
@@ -817,21 +817,30 @@ console.log(rees)
                                 Hrs: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Hrs)||0,
                                 Payrate: valx === 1 ? Number(element.payrate).toFixed(2) : Number(Number(element.payrate) + Number(element.payrate) * Number(val.markup) / 100).toFixed(2) ,
                                 siteid:val._id,
+                                perdiemmiles:Number(val.perdiemmiles?val.perdiemmiles:0),
+                                onperdiemmiles:Number(val.onperdiemmiles?val.onperdiemmiles:0),
                                 cpr:element.cpr,
                                 cprapply:(allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.cprapply)||'no',
                                 userid: element.userid,
                                 distance: parseInt(element.distance),
                                 days: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.days)||0,
-                                perdiemel: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.perdiemel)||element.perdiem, onperdiemel: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.onperdiemel)||element.onperdiem,
-                                perdiem: applyperdiemx ? (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.perdiem)||0 : 0, onperdiem: applyperdiemx ? (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.onperdiem)||0 : 0,
+                             //   perdiemel: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.perdiemel)||element.perdiem, 
+                               // onperdiemel: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.onperdiemel)||element.onperdiem,
+                              perdiemel:'No',
+                              onperdiemel:'No',
+                              
+                                // perdiem: applyperdiemx ? (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.perdiem)||0 : 0,
+                                //onperdiem: applyperdiemx ? (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.onperdiem)||0 : 0,
+                                perdiem:applyperdiemx ?val.perdiemamnt:0, 
+                                onperdiem:applyperdiemx ?val.onperdiemamnt:0,
 
 
                                 Ot_Hrs: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Ot_Hrs)||0,
                                 OT_Pay_rate: Number(element.otpayrate) + Number(element.otpayrate) * Number(val.markup) / 100,
                                 nc_4: element.nc === 'no' ? '-' : ((Number(element.payrate) * 0) + (0 * Number(element.otpayrate))) * 4 / 100,
-                                total: ((Number(element.payrate)+Number(element.payrate) * Number(val.markup) / 100) * (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Hrs)||0) + ((allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Ot_Hrs)||0 *( Number(element.otpayrate)+Number(element.payrate) * Number(val.markup) / 100)),
+                                total: ((Number(element.payrate)+Number(element.payrate) * Number(val.markup) / 100) * Number((allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Hrs)||0)) + (Number((allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Ot_Hrs)||0) *( Number(element.otpayrate)+Number(element.payrate) * Number(val.markup) / 100)),
                                 deductions: 0,
-                                net: ((Number(element.payrate)+Number(element.payrate) * Number(val.markup) / 100) * (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Hrs)||0) + ((allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Ot_Hrs)||0 * (Number(element.otpayrate)+Number(element.payrate) * Number(val.markup) / 100)) - 0 - (element.nc === 'no' ? 0 : ((Number(element.payrate) * 0) + (0 * parseInt(element.otpayrate))) * 4 / 100)
+                                net: ((Number(element.payrate)+Number(element.payrate) * Number(val.markup) / 100) * Number((allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Hrs)||0)) + (Number((allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Ot_Hrs)||0) * (Number(element.otpayrate)+Number(element.payrate) * Number(val.markup) / 100)) - 0 - (element.nc === 'no' ? 0 : ((Number(element.payrate) * 0) + (0 * parseInt(element.otpayrate))) * 4 / 100)
 
 
 
@@ -912,13 +921,19 @@ console.log(rees)
                                 Hrs: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Hrs)||0,
                                 Payrate:  valx === 1 ? Number(element.payrate).toFixed(2) : Number(Number(element.payrate) + Number(element.payrate) * Number(val.markup) / 100).toFixed(2),
                                 siteid:val._id,
+                                perdiemmiles:Number(val.perdiemmiles?val.perdiemmiles:0),
+                                onperdiemmiles:Number(val.onperdiemmiles?val.onperdiemmiles:0),
                                 cpr:element.cpr,
                                 cprapply:element.payratetype==='custom'?'yes':'no',
                                 userid: element.userid,
                                 distance: parseInt(element.distance),
                                 days: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.days)||0,
-                                perdiemel: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.perdiemel)||element.perdiem, onperdiemel: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.onperdiemel)||element.onperdiem,
-                                perdiem: applyperdiemx ? (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.perdiem)||0 : 0, onperdiem: applyperdiemx ? (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.onperdiem)||0 : 0,
+                             //   perdiemel: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.perdiemel)||element.perdiem, onperdiemel: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.onperdiemel)||element.onperdiem,
+                             perdiemel:'No',
+                             onperdiemel:'No',
+                             
+                             perdiem:applyperdiemx ?val.perdiemamnt:0, 
+                                onperdiem:applyperdiemx ?val.onperdiemamnt:0,
 
 
                                 Ot_Hrs: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Ot_Hrs)||0,
@@ -1090,6 +1105,8 @@ console.log(rees)
                                 skill: element.skill,
                                 userid: element.userid,
                                 siteid:val._id,
+                                perdiemmiles:Number(val.perdiemmiles?val.perdiemmiles:0),
+                                onperdiemmiles:Number(val.onperdiemmiles?val.onperdiemmiles:0),
                                 cpr:element.cpr,
                                 cprapply:element.payratetype==='custom'?'yes':'no',
                                 Hrs: 0,
@@ -1097,8 +1114,12 @@ console.log(rees)
 
                                 distance: parseInt(element.distance),
                                 days: 0,
-                                perdiemel: element.perdiem, onperdiemel: element.onperdiem,
-                                perdiem:val.perdiemamnt,   onperdiem:val.onperdiemamnt,
+                               // perdiemel: element.perdiem, onperdiemel: element.onperdiem,
+                                
+                               perdiemel:'No',
+                               onperdiemel:'No',
+                               
+                               perdiem:val.perdiemamnt,   onperdiem:val.onperdiemamnt,
 
                                 Ot_Hrs: 0,
                                 OT_Pay_rate: Number(element.otpayrate) + Number(element.otpayrate) * Number(val.markup) / 100,
@@ -1195,6 +1216,8 @@ console.log(rees)
                                 cprapply:'yes',
                                 userid: element.userid,
                                 siteid:val._id,
+                                perdiemmiles:Number(val.perdiemmiles?val.perdiemmiles:0),
+                                onperdiemmiles:Number(val.onperdiemmiles?val.onperdiemmiles:0),
                                 perdiem:val.perdiemamnt,   onperdiem:val.onperdiemamnt,
                                 Payrate: valx === 1 ? parseInt(element.payrate) : parseInt(element.payrate),
                                 Ot_Hrs: 0,
@@ -1206,8 +1229,10 @@ console.log(rees)
 
 
                                 ,
-                                perdiemel: element.perdiem, onperdiemel: element.onperdiem,
-
+                             //   perdiemel: element.perdiem, onperdiemel: element.onperdiem,
+ perdiemel:'No',
+                              onperdiemel:'No',
+                              
                             }])
                             if(inex===val.user.length-1&&done===0){
                            
@@ -2337,7 +2362,7 @@ setl(1)
 
         }
 
-        p[upind].net = p[upind].total - (tempjson.nc_4 !== '-' ? p[upind].nc_4 : 0) - p[upind].deductions + (applyperdiemx ? Number(p[upind].perdiem * p[upind].days) : 0) + (applyperdiemx ? Number(p[upind].onperdiem * p[upind].days) : 0)
+        p[upind].net = p[upind].total - (tempjson.nc_4 !== '-' ? p[upind].nc_4 : 0) - p[upind].deductions + (applyperdiemx&&p[upind].perdiemel==='Yes' ? Number(p[upind].perdiem * p[upind].days) : 0) + (applyperdiemx&&p[upind].onperdiemel==='Yes' ? Number(p[upind].onperdiem) : 0)
 
         setpreparedata(p)
 
@@ -2793,9 +2818,107 @@ setl(1)
         }
     }
     const [comval, setcomval] = useState('')
+    const [loadingperdiem, setloadingperdiem] = useState(false)
     function applyperdiem() {
+        setloadingperdiem(true)
         console.log(preparedata)
-        const updatedArray = preparedata.map((obj, index) => {
+        const extractedData = preparedata.map(item => {
+            return {
+                id: item.userid,
+             
+            };
+        });
+        
+      
+        axios.post(`${tz}/siteuser/getdistance`, {
+           users:extractedData,
+           weekend:inend
+        }).then(rees=>{
+            console.log(rees)
+            const updatedArray = preparedata.map((obj, index) => {
+
+                const foundUser = rees.data.find(user => user.userid === obj.userid);
+const elday=foundUser.dailymiles.some(val=>val>=obj.perdiemmiles)
+const elon=foundUser.dailymiles.some(val=>val>=obj.onperdiemmiles)
+                if (index === preparedata.length - 1) {
+    
+                    setapplyperdiemx(true)
+                }
+                if ( elday&& elon ) {
+                    var updobj = {
+                        ...obj,
+                        perdiemel:'Yes',
+                        onperdiemel:'Yes',
+
+                        perdiem: Number(obj.perdiem),
+                        onperdiem:  Number(obj.onperdiem),
+                        days:obj.days,
+                        distance:foundUser.miles
+                    }
+                    updobj.total = Number(updobj.total) 
+                    updobj.net = Number(updobj.net) + Number(obj.perdiem) * obj.days + Number(obj.onperdiem) 
+                    return updobj
+                }
+                else if (elon&& !elday) {
+    
+                    var updobj = {
+                        ...obj,
+                        perdiemel:'No',
+                        onperdiemel:'Yes',
+                        perdiem:  Number(obj.perdiem),
+                        onperdiem: Number(obj.onperdiem),
+                        days:obj.days,
+                        distance:foundUser.miles
+                    }
+                    updobj.total = Number(updobj.total) 
+                    updobj.net = Number(updobj.net) + Number(obj.perdiem) * obj.days + 0
+                    return updobj
+                }
+                else if (elday && !elon) {
+    
+                    var updobj = {
+                        ...obj,
+                        perdiemel:'Yes',
+                        onperdiemel:'No',
+                        perdiem: Number(obj.perdiem),
+                        onperdiem:  Number(obj.onperdiem),
+                        days:obj.days,
+                        distance:foundUser.miles
+                    }
+                    updobj.total = Number(updobj.total) 
+                    updobj.net = Number(updobj.net) + Number(obj.onperdiem) * obj.days + 0
+                    return updobj
+                }
+                else {
+    
+                    var updobj = {
+                        ...obj,
+                        perdiemel:'No',
+                        onperdiemel:'No',
+                        perdiem: Number(obj.perdiem),
+                        onperdiem: Number(obj.onperdiem),
+                        days:obj.days,
+                        distance:foundUser.miles
+                    }
+                    updobj.total = Number(updobj.total) + 0 + 0
+                    updobj.net = Number(updobj.net) + 0 + 0
+                    return updobj
+                }
+            });
+    
+            setpreparedata(updatedArray);
+            console.log(updatedArray)
+            console.log(perdiemamnt1)
+            console.log(onperdiemamnt1)
+    
+            setadduser2('adduser2')
+            console.log(preparedata)
+            setloadingperdiem(false)
+        })
+
+
+        /*
+      const updatedArray = preparedata.map((obj, index) => {
             if (index === preparedata.length - 1) {
 
                 setapplyperdiemx(true)
@@ -2852,6 +2975,7 @@ setl(1)
 
         setadduser2('adduser2')
         console.log(preparedata)
+        */
 
 
 
@@ -4355,10 +4479,7 @@ val.clientid===currjobid&&
                  </div>
 
              }
-{l===2&&
-<button className='addemp2 addemp' style={{marginTop:'10px'}} onClick={e => applyperdiem()}> Apply Perdiem </button>
 
-}
 {l!==2&&
 
 <div className="subadduser " style={{width:'70%'}}>
@@ -4440,11 +4561,20 @@ val.clientid===currjobid&&val.sitename.toLowerCase().search(proval.toLowerCase()
 </div>
 }
 <div className="newst nbst" style={{ marginTop: '20px' }}>
-                 <div className="newst1 " style={{ position: 'relative' }}>
+                 <div className="newst1 " style={{ position: 'relative',flexDirection:'row',display:'flex' }}>
                      <input type="text" placeholder='Search..' onChange={e => setsearchval(e.target.value)} />
                     {/*currcompany&&<button onClick={e=>setadduserd2('adduser')}>+ Add User</button>
 
 */}
+{l===2&&
+
+<button className='addemp2 prdm addemp' style={{marginTop:'10px'}} onClick={e => applyperdiem()}>
+    {loadingperdiem&&
+    <span class="loaderx3"></span>
+}
+     Apply Perdiem </button>
+
+}
                      </div>
                      </div>
              {k === 1 &&
@@ -4455,7 +4585,7 @@ val.clientid===currjobid&&val.sitename.toLowerCase().search(proval.toLowerCase()
                                  <span className='sxx'> </span>
 
                                  <h2 style={{ width: '80px', marginBottom: '0px' }}>Taxes</h2>
-                                 <h1 style={{ width: '180px' }}>Company</h1>
+                                 <h1 style={{ width: '220px' }}>Company</h1>
 
                                  <h6 style={{ width: '80px', marginBottom: '0px' }} >Weekend</h6>
                                  <h3> Name</h3>
@@ -4498,12 +4628,19 @@ val.clientid===currjobid&&val.sitename.toLowerCase().search(proval.toLowerCase()
 
 <span className='sxx'><AiFillDelete onClick={e => skipthis(index)} /> </span>
 <h2 style={{ width: '80px', marginBottom: '0px' }}><img src='' alt="" className='valimg' />{val.Taxes} </h2>
-<h1 style={{ width: '180px' }}>{val.Client}</h1>
+<h1 className='flx' style={{ width: '180px' }}>{val.Client}
+<div className="prjt">
+    <div className="prjtc">
+        
+    </div>
+    {data&&data.find(vala=>vala._id===val.siteid)?.sitename||''}
+</div>
+</h1>
 
 <h6 style={{ width: '80px', marginBottom: '0px' }} >{val.Date}</h6>
 <h3>{val.Employee}</h3>
 
-<h4 style={{ width: '80px', marginBottom: '0px' }} >{parseInt(val.distance)} M</h4>
+<h4 className='boldit' style={{ width: '80px', marginBottom: '0px' }} >{parseInt(val.distance)} M</h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  ><input className='hrsedit' type="text" value={tempjson.Hrs}  onChange={e => settempjson(tempjson => ({
                          ...tempjson,
@@ -4547,7 +4684,11 @@ perdiem: e.target.value
 }))} />
  :
  <>
- $ {parseFloat(val.perdiem)} 
+<button className={`${val.perdiemel==='No'?'bgredbtn':'bggnbtn'}`}>
+
+
+$ {parseFloat(val.perdiem).toFixed(2)} 
+</button> 
  </>
  } </h4>
 <h4 style={{ width: '80px', marginBottom: '0px' }}>  {tempjson.siteid==='193039'?
@@ -4560,7 +4701,11 @@ onperdiem: e.target.value
 }))} />
  :
  <>
- $ {parseFloat(val.onperdiem.toFixed(2))} 
+ <button className={`${val.onperdiemel==='No'?'bgredbtn':'bggnbtn'}`}>
+
+
+ $ {parseFloat(val.onperdiem).toFixed(2)} 
+ </button>
  </>
  }</h4>
 
@@ -4600,12 +4745,19 @@ val.Employee.toLowerCase().search(searchval.toLowerCase())>=0&&
 
 <span className='sxx'><AiFillDelete onClick={e => skipthis(index)} /> </span>
 <h2 style={{ width: '80px', marginBottom: '0px' }}><img src='' alt="" className='valimg' />{val.Taxes} </h2>
-<h1 style={{ width: '180px' }}>{val.Client}</h1>
+<h1 className='flx' style={{ width: '180px' }}>{val.Client}
+<div className="prjt">
+    <div className="prjtc">
+        
+    </div>
+    {data&&data.find(vala=>vala._id===val.siteid)?.sitename||''}
+</div>
+</h1>
 
 <h6 style={{ width: '80px', marginBottom: '0px' }} >{val.Date}</h6>
 <h3>{val.Employee}</h3>
 
-<h4 style={{ width: '80px', marginBottom: '0px' }} >{parseInt(val.distance)} M</h4>
+<h4 className='boldit' style={{ width: '80px', marginBottom: '0px' }} >{parseInt(val.distance)} M</h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >{val.Hrs}</h4>
 
@@ -4620,8 +4772,23 @@ val.Employee.toLowerCase().search(searchval.toLowerCase())>=0&&
 applyperdiemx &&
 <>
 
-<h4 style={{ width: '80px', marginBottom: '0px' }}>$ {parseFloat(val.perdiem)} </h4>
-<h4 style={{ width: '80px', marginBottom: '0px' }}>$ {val.onperdiem} </h4>
+<h4 style={{ width: '80px', marginBottom: '0px' }}>
+<button className={`${val.perdiemel==='No'?'bgredbtn':'bggnbtn'}`}>
+
+
+$ {parseFloat(val.perdiem).toFixed(2)} 
+</button>
+</h4>
+<h4 style={{ width: '80px', marginBottom: '0px' }}>
+    
+ 
+    
+    <button className={`${val.onperdiemel==='No'?'bgredbtn':'bggnbtn'}`}>
+
+
+ $ {parseFloat(val.onperdiem)} 
+ </button>
+    </h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}>{val.days}</h4>
 </>
@@ -4661,12 +4828,17 @@ $ {val.deductions}
 
 <span className='sxx'><AiFillDelete onClick={e => skipthis(index)} /> </span>
 <h2 style={{ width: '80px', marginBottom: '0px' }}><img src='' alt="" className='valimg' />{val.Taxes} </h2>
-<h1 style={{ width: '180px' }}>{val.Client}</h1>
+<h1 className='flx' style={{ width: '180px' }}>{val.Client}
+<div className="prjt">
+<div className="prjtc">
+</div>
+{data&&data.find(vala=>vala._id===val.siteid)?.sitename||''}</div>
+</h1>
 
 <h6 style={{ width: '80px', marginBottom: '0px' }} >{val.Date}</h6>
 <h3>{val.Employee}</h3>
 
-<h4 style={{ width: '80px', marginBottom: '0px' }} >{parseInt(val.distance)} M</h4>
+<h4 className='boldit' style={{ width: '80px', marginBottom: '0px' }} >{parseInt(val.distance)} M</h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  ><input className='hrsedit' type="text" value={tempjson.Hrs}  onChange={e => settempjson(tempjson => ({
                          ...tempjson,
@@ -4714,7 +4886,14 @@ perdiem: e.target.value
 }))} />
  :
  <>
- $ {parseFloat(val.perdiem)} 
+
+
+ <button className={`${val.perdiemel==='No'?'bgredbtn':'bggnbtn'}`}>
+
+
+$ {parseFloat(val.perdiem).toFixed(2)} 
+</button> 
+ 
  </>
  }
 
@@ -4731,7 +4910,11 @@ onperdiem: e.target.value
 }))} />
  :
  <>
- $ {parseFloat(val.onperdiem.toFixed(2))} 
+<button className={`${val.onperdiemel==='No'?'bgredbtn':'bggnbtn'}`}>
+
+
+$ {parseFloat(val.onperdiem).toFixed(2)} 
+</button> 
  </>
  } </h4>
 
@@ -4772,12 +4955,17 @@ Save
 
 <span className='sxx'><AiFillDelete onClick={e => skipthis(index)} /> </span>
 <h2 style={{ width: '80px', marginBottom: '0px' }}><img src='' alt="" className='valimg' />{val.Taxes} </h2>
-<h1 style={{ width: '180px' }}>{val.Client}</h1>
+<h1 className='flx' style={{ width: '180px' }}>{val.Client}
+<div className="prjt">
+<div className="prjtc">
+</div>
+{data&&data.find(vala=>vala._id===val.siteid)?.sitename||''}</div>
+</h1>
 
 <h6 style={{ width: '80px', marginBottom: '0px' }} >{val.Date}</h6>
 <h3>{val.Employee}</h3>
 
-<h4 style={{ width: '80px', marginBottom: '0px' }} >{parseInt(val.distance)} M</h4>
+<h4 className='boldit' style={{ width: '80px', marginBottom: '0px' }} >{parseInt(val.distance)} M</h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >{val.Hrs}</h4>
 
@@ -4792,8 +4980,17 @@ Save
 applyperdiemx &&
 <>
 
-<h4 style={{ width: '80px', marginBottom: '0px' }}> $ {parseFloat(val.perdiem)}  </h4>
-<h4 style={{ width: '80px', marginBottom: '0px' }}> $ {val.onperdiem} </h4>
+<h4 style={{ width: '80px', marginBottom: '0px' }}> 
+<button className={`${val.perdiemel==='No'?'bgredbtn':'bggnbtn'}`}>
+
+
+$ {parseFloat(val.perdiem).toFixed(2)} 
+</button>  </h4>
+<h4 style={{ width: '80px', marginBottom: '0px' }}><button className={`${val.onperdiemel==='No'?'bgredbtn':'bggnbtn'}`}>
+
+
+$ {parseFloat(val.onperdiem).toFixed(2)} 
+</button>  </h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}>{val.days}</h4>
 </>

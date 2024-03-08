@@ -1234,6 +1234,12 @@ setlatlang(val.langlat)
             }
       }
     }
+    const [toupdate, settoupdate] = useState(null)
+    function updatetravelmiles(val)
+    {
+        settoupdate(val)
+
+    }
     const [skillname, setskillname] = useState('')
     function deleteskill(val) {
         axios.post(`${tz}/skills/delete`, {
@@ -1249,7 +1255,19 @@ setlatlang(val.langlat)
     }
     const [showusers, setshowusers] = useState('users')
     function openskil() {
+        
         setaduser('adduser')
+    }
+    function updatetravel(val) {
+        axios.post(`${tz}/siteuser/updatetravel`,{
+            _id:currone._id,
+            val
+
+
+        }).then(res => {
+        console.log(res)
+        })
+
     }
     const [totalMiles, setTotalMiles] = useState(0);
     const [usertype, setusertype] = useState('user')
@@ -1306,7 +1324,26 @@ setloading(true)
       }
     }
     
-    
+    const getEquallySpacedIndexes = (length) => {
+        // Calculate the step size to ensure that we have 10 equally spaced indexes
+        const step = Math.max(Math.floor(length / 10), 1);
+      
+        // Initialize an array to store the selected indexes
+        const indexes = [];
+      
+        // Push the first index
+        indexes.push(0);
+      
+        // Push the equally spaced indexes
+        for (let i = step; i < length; i += step) {
+          indexes.push(i);
+        }
+      
+        // Push the last index
+        indexes.push(length - 1);
+      
+        return indexes;
+      };
 for(let i=0;i<currone.travel.length;i++){
 if(currone.travel[i].coords.length>=1){
 
@@ -1314,7 +1351,9 @@ if(currone.travel[i].coords.length>=1){
    
 
     if(currone.travel[i].coords.length>10){
-        const response = await axios.get(`https://api.mapbox.com/directions/v5/mapbox/driving/${currone.travel[i].coords[0][0]},${currone.travel[i].coords[0][1]};${currone.travel[i].coords[currone.travel[i].coords.length-1][0]},${currone.travel[i].coords[currone.travel[i].coords.length-1][1]}?access_token=pk.eyJ1IjoiYXlhYW56YXZlcmkiLCJhIjoiY2ttZHVwazJvMm95YzJvcXM3ZTdta21rZSJ9.WMpQsXd5ur2gP8kFjpBo8g`);
+        const cf = getEquallySpacedIndexes(currone.travel[i].coords.length).map(index => currone.travel[i].coords[index]);
+
+        const response = await axios.get(`https://api.mapbox.com/directions/v5/mapbox/driving/${cf.join(';')}?access_token=pk.eyJ1IjoiYXlhYW56YXZlcmkiLCJhIjoiY2ttZHVwazJvMm95YzJvcXM3ZTdta21rZSJ9.WMpQsXd5ur2gP8kFjpBo8g`);
 
   
    // Extract total distance in meters from the API response
@@ -1406,6 +1445,34 @@ settrvl(true)
     const [selectedtravel, setselectedtravel] = useState()
 const [trvl2, settrvl2] = useState(false)
 const [cords, setcords] = useState([])
+const [newdistance, setnewdistance] = useState(0)
+function updatedistance()
+{
+   
+
+
+axios.post(`${tz}/siteuser/updatetravelmiles`,{
+    _id:currone._id,
+    val:toupdate,
+    distance:newdistance
+
+
+}).then(res => {
+console.log(res)
+var temptravel=selectedtravel
+setselectedtravel(null)
+var found=temptravel.travel.findIndex(item=>item._id===toupdate._id)
+console.log(found)
+temptravel.travel[found].dist=Number(newdistance)
+
+temptravel.travel[found].distance=Number(newdistance)
+setselectedtravel(temptravel)
+
+console.log(temptravel)
+settoupdate(null)
+})
+
+}
 useEffect(() => {
 if(steps===3){
 }
@@ -1565,7 +1632,7 @@ settrvl2(true)
                             {selectedtravel.travel && selectedtravel.travel.map(val => (
 
                                 <>
-                                    <div className="headertable">
+                                    <div className="headertable" >
            
                                         <h4 style={{ width: "120px",paddingLeft:10 }}>{val.date}</h4>
                                         <h6 className='silverfont' style={{ width: "300px", }}  >{val.startloc?val.startloc.substring(0,40):'Unknown address'}</h6>
@@ -1575,7 +1642,19 @@ settrvl2(true)
 }
 } ><MdOutlineKeyboardArrowRight className='grenfont' /></h2>
 <h6 className='silverfont' style={{ width: "300px", }}  >{val.endloc?val.endloc.substring(0,40):'Unknown address'}</h6>
-                                        <h2> {val.dist.toFixed(2)}  Miles</h2>
+                                        
+                                        
+                                        {toupdate&&toupdate._id===val._id?
+
+                                        <h2 className='savg'>
+                                        <input type="number" onChange={e=>setnewdistance(e.target.value)} />
+                                        <button onClick={e=>updatedistance()}>Save</button>
+                                        </h2  >:
+<h2 className='updaten' > {val.distance?Number(val.distance).toFixed(2):val.dist.toFixed(2)}  Miles
+                                        <button onClick={e=>updatetravelmiles(val)}><FaPencilAlt /></button>
+                                        </h2>
+                                        
+                                        }
                                     
 
                                         <h6 >{val.start&&val.start!=='-'?convertToAmPm(val.start):'-'}</h6>
