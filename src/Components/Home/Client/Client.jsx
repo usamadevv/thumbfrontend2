@@ -12,7 +12,7 @@ import jsPDF from 'jspdf';
 import * as file from 'file-saver'
 import {HiArrowLeft} from 'react-icons/hi'
 import axios from 'axios'
-import {MdLocationOn} from 'react-icons/md'
+import {MdDelete, MdLocationOn} from 'react-icons/md'
 import { useEffect } from 'react';
 import { tz } from '../../apis';
 import {FaPencilAlt} from 'react-icons/fa'
@@ -85,8 +85,10 @@ function submit() {
 }
     })}
     else{
+        setloadding(true)
        console.log('hy')
        setactiontype('edit')
+       setcurrone(null)
        
     axios.post(`${tz}/client/updatedata`,{
       
@@ -103,22 +105,28 @@ function submit() {
         console.log(res)
         
     }).then(()=>{
-        setadduser('adduser2')
-
-        setsteps(0)
-        setsteps(0)
+        
         if(selected==='active')
         {
             axios.get(`${tz}/client/active`).then(res2=>{
                 console.log(res2)
                 setuserd(res2.data.Client)
-        
+                setadduser('adduser2')
+
+                setsteps(0)
+                setsteps(0)
             setcurrentItems(res2.data.Client.slice(itemOffset, endOffset))
             setpageCount(Math.ceil(res2.data.Client.length / 10))
                 setadduser('adduser2')
                 setsteps(0)
+                setloadding(false)
               })
         }  else if(selected==='Pending'){
+            setadduser('adduser2')
+
+        setsteps(0)
+        setsteps(0)
+        
             axios.get(`${tz}/client/inactive`).then(res2=>{
                 console.log(res2)
                 setuserd2(res2.data.Client)
@@ -127,12 +135,14 @@ function submit() {
             setpageCount2(Math.ceil(res2.data.Client.length / 10))
                 setadduser('adduser2')
                 setsteps(0)
+
+                setloadding(false)
               })
         }
     })} 
     }
     
-
+const [loadding, setloadding] = useState(false)
 const [userd, setuserd] = useState()
 const [currone, setcurrone] = useState()
 function selectthis(val){
@@ -994,7 +1004,8 @@ const [state, setstate] = useState('')
                                             {depts && depts.map((val ,index)=> (
                                                 <>
                                                     <div className="headertable">
-                                                        <h1><img src='' alt="" className='valimg' /> {val.email}</h1>
+                                                        <MdDelete onClick={e=>setdepts(depts.filter(vala=>vala.email!==val.email))} />
+                                                        <h1> <img src='' alt="" className='valimg' /> {val.email}</h1>
 
                                                         <h6>{val.password}</h6>
 
@@ -1075,7 +1086,14 @@ const [state, setstate] = useState('')
                 <div className="inpex2">
                     <button className='btg' onClick={e=>steps>0?setsteps(steps=>steps-1):""}><HiArrowLeft className='btgp'/> Back</button>
 
-                <button onClick={e=>steps<3?setsteps(steps=>steps+1):submit()} className='btn1'>{steps<3?"Next":"Finish"}</button>
+                <button onClick={e=>steps<3?setsteps(steps=>steps+1):submit()} className='btn1'>{steps<3?"Next": 
+              
+                loadding?
+                <span className='loaderx3'></span>
+                :  "Finish"
+
+                
+                }</button>
                 </div>
 <div className="inputname"></div>
               </>

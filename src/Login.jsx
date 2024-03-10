@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import ss from './images/ss.png'
 import axios from 'axios'
 import { tz } from './Components/apis'
 const Login = () => {
+
+  
+  
     const [reset, setreset] = useState(false)
     const [steps, setsteps] = useState(0)
     const [sending, setsending] = useState(false)
@@ -37,6 +40,16 @@ else{
     const [pass, setpass] = useState('')
     const [resetmail, setresetmail] = useState('')
     const [hidden, sethidden] = useState(true)
+    useEffect(() => {
+    
+      const emaillast=localStorage.getItem('username')
+      if(emaillast){
+        setemail(emaillast)
+      }
+        return () => {
+          
+        }
+      }, [])
     function login(e) {
         e.preventDefault()
         axios.post(`${tz}/admin/login`,{
@@ -96,7 +109,7 @@ else{
         <h2>
             Email
         </h2>
-        <input onChange={e=>setemail(e.target.value)} type="text"  />
+        <input onChange={e=>setemail(e.target.value)} value={email} type="text"  />
         <h2>Password</h2>
         
         <input   type={hidden?"password":"text"}  onChange={e=>setpass(e.target.value)} />

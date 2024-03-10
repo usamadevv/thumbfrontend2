@@ -3084,10 +3084,10 @@ departments.map((val)=>(
 
                      </div>
                      <div className="bill1">
-                         <h3>
-                             Company:
-                         </h3>
-                         <h2>{add}</h2>
+                       
+                         <h2 style={{
+                          marginTop:10  
+                         }} >{add}</h2>
                          <h2>{zpi}</h2>
                          <h2>919-381-0394</h2>
                          <h2>www.cfi-solutions.com</h2>

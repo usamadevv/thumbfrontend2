@@ -220,6 +220,8 @@ function setis(val){
 }
 
 function logout(){
+  
+
     localStorage.removeItem('userid')
     window.location.pathname='/login'
 }
