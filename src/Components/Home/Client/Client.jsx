@@ -5,7 +5,7 @@ import { AiOutlineReload } from 'react-icons/ai'
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import ReactPaginate from 'react-paginate';
-import {FaBuilding} from 'react-icons/fa'
+import {FaArrowLeft, FaBuilding} from 'react-icons/fa'
 import {IoClose} from 'react-icons/io5'
 import XLSX from 'sheetjs-style'
 import jsPDF from 'jspdf';
@@ -19,6 +19,7 @@ import {FaPencilAlt} from 'react-icons/fa'
 import ana  from '../../../images/ana.svg'
 
 import inv  from '../../../images/inv.svg'
+import Tasks from '../Jobsite/Tasks';
 
 const Client = () => {
     
@@ -597,7 +598,7 @@ skipHeader:true,
 function generateid(){
     setidb(Math.floor(Math.random()*(999-100+1)+100)   )
 }
-
+const [subpart, setsubpart] = useState('task')
 const [transacid, settransacid] = useState('')
 const [cstatus, setcstatus] = useState('Active')
 const [weekend, setweekend] = useState('0')
@@ -625,6 +626,7 @@ function openhistory(val) {
     setinvoicemenu(val.invoicedata)
     setcuurid(val._id)
     setinvoice(1)
+    
     val.invoicedata.forEach(element => {
         setpaid(paid=>paid+parseInt(element.paid))
         
@@ -1133,7 +1135,7 @@ const [state, setstate] = useState('')
                 </div>
             </div>}
 
-            <div className="newst nbst">
+            {invoice!==1&&<div className="newst nbst">
 <div className="w74">
 
     <div className="w74card">
@@ -1184,7 +1186,7 @@ const [state, setstate] = useState('')
 
 </div>
 
-            </div>
+            </div>}
 {invoice===0&&
 
 <div className="newst">
@@ -1370,8 +1372,25 @@ const [state, setstate] = useState('')
 </div>
 
 }
-{invoice===1&&
 
+{invoice===1&&
+<>
+<div className="backinv">
+    <FaArrowLeft onClick={e=>setinvoice(0)} />
+
+</div>
+<div className="switchtask">
+<button className={`${subpart==='task'?'activeswitch':'inactiveswitch'}`} onClick={e=>setsubpart('task')} >Tasks</button>
+
+<button className={`${subpart==='invoice'?'activeswitch':'inactiveswitch'}`} onClick={e=>setsubpart('invoice')}  >Invoices</button></div>
+
+</>
+
+
+}
+{invoice===1&&
+(
+subpart==='invoice'?
 <>
 
 <div className="projectview pv2">
@@ -1424,6 +1443,7 @@ const [state, setstate] = useState('')
 </div>
 </div>
 </>
+:<Tasks company={cuurid} />)
 }
 
 {invoice===2&&

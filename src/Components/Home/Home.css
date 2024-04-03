@@ -2704,6 +2704,96 @@ height: 90vh;
     width: 50px;
     border: none;
 }
+.switchtask{
+    width: 30%;
+    margin-left: 20px;
+
+border-bottom: 2px solid #dedede;
+}
+.formcon{
+    display: flex;
+
+}
+.formcon>button{
+    width: 250px!important;
+}
+.ssemailc>button,.formcon>button{
+    margin-left: 10px;
+height: 35px;
+width: 200px;
+min-width: 80px;
+background-color: #5D69D4;
+padding-left: 15px;
+padding-right: 15px;
+border-radius: 40px;
+font-weight: 500 !important;
+font-size: 14px;
+color: white;
+border: none;
+font-family: 'Inter', sans-serif !important;
+
+}
+.formcon>input{
+    width: 50%;
+border-radius: 100px;
+padding-left: 20px;
+height: 35px;
+border: 1px solid #C9CEFF;
+}
+.ssemailc{
+    margin-top: 20px;
+}
+.formcon>input{
+    margin-right: 10px;
+}
+.whnbutton{
+    width: 50px;
+    padding-left: 5px;
+    border: none;
+    color: white;
+   background-color:  #4852A8;
+    height: 27px;
+    border-radius: 5px;
+
+}
+.whn{width: 70px;
+    padding-left: 5px;
+    border: 1px solid #4852A8;
+    color: gray;
+    height: 27px;
+    border-radius: 5px;
+
+}
+.whnpen{
+   
+color: #4852A8;
+font-size: 18px;
+}
+.backinv{
+    margin-left: 20px;
+    margin-top: 30px;
+    color: gray;
+    cursor: pointer;
+}
+.activeswitch{
+    background-color: transparent;
+border: none;
+border-bottom: 2px solid #4852A8;
+padding-left: 20px;
+padding-right: 20px;
+margin-bottom: -2px;
+color: #4852A8;
+font-size: 14px;
+}
+.inactiveswitch{
+    background-color: transparent;
+border: none;
+padding-left: 20px;
+padding-right: 20px;
+margin-bottom: -2px;
+color: #aaaaaa;
+font-size: 14px;
+}
 .savg>input{
     margin-right: 5px;
     border: 1px solid #2f68a9;

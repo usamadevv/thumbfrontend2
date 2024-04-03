@@ -12,6 +12,7 @@ import {AiFillDelete} from 'react-icons/ai'
 import XLSX from 'sheetjs-style'
 import jsPDF from 'jspdf';
 import * as file from 'file-saver'
+import { IoSettingsSharp } from 'react-icons/io5'
 const Admin = () => {
 
 const [adduser, setadduser] = useState('adduser2')
@@ -57,9 +58,16 @@ function updatead(){
 }
 const [actiontypex, setactiontypex] = useState('edit')
 useEffect(() => {
+
   axios.get(`${tz}/admin/getall`).then(res=>{
     console.log(res)
     setdata(res.data.Admin)
+  })
+
+  axios.get(`${tz}/email/getall`).then(res=>{
+    console.log(res)
+    setdata(res.data.Admin)
+    setemailemail(res.data.Leave[0].email)
   })
 
   return () => {
@@ -68,7 +76,19 @@ useEffect(() => {
 }, [])
 
 
-
+const [emailpass, setemailpass] = useState('')
+const [emailemail, setemailemail] = useState('')
+function addcreden(){
+    axios.post(`${tz}/email/add`,{
+email:emailemail,
+pass:emailpass
+    }).then(res=>{
+        console.log(res)
+        setEmailc(false)
+        alert('Credentials are updated')
+       
+      })
+}
 const [actiontype, setactiontype] = useState('edit')
 
 
@@ -201,6 +221,7 @@ function addadmin2(){
     setadduser('adduser')
 
 }
+const [Emailc, setEmailc] = useState(false)
 function addadmin(){
   if(actiontype==='edit'){
     if(email&&password){
@@ -288,6 +309,8 @@ const [currid, setcurrid] = useState('')
 const [name, setname] = useState('')
   return (
     <>
+
+    
     {i===0&&
 <>
 <div className={adduser}>
@@ -519,7 +542,22 @@ const [name, setname] = useState('')
 }
     <div className="sitemap">
     <div className="newst">
-        <div className="ss"></div>
+        <div className="ssemailc">
+            {Emailc?
+<div className="formcon">
+<input type="text" onChange={e=>setemailemail(e.target.value)} value={emailemail} />
+
+<input type="text" onChange={e=>setemailpass(e.target.value)} />
+<button onClick={e=>addcreden()}>Update Credentials</button>
+</div>:
+
+
+<button onClick={e=>setEmailc(true)} ><IoSettingsSharp /> Email configuration  </button>
+      
+            }
+
+
+        </div>
                     <div className="newst2" style={{marginTop:'20px'}}>
 
 {ids.search('4sd')>=0&&ids.split('4sd').length===2&&

@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { tz } from '../../apis'
 
-const Tasks = () => {
+const Tasks = (props) => {
     const [companies, setcompanies] = useState([])
     const [tasks, settasks] = useState([])
    useEffect(() => {
@@ -151,8 +151,34 @@ settaskno('')
 
 
                                        </div>
-                                       {tasks && tasks.map((val, index) => (
-                                           
+                                       {props&&props.company&&tasks && tasks.map((val, index) => (
+                                         props&&props.company&&props.company===val.clientid&&  
+                                           <>
+                                               <div className="headertable">
+                                                   <h2 className='sxx'> <input onClick={e => addindex(index,val)} type="checkbox" checked={ind.search(val._id) >= 0 ? true : false} /> </h2>
+                                                   <h1 style={{
+                                            width:'100px'
+                                           }}>{val.description}</h1>
+
+                                                   <h6>{val.name}</h6>
+                                                   <h3
+                                                   style={{
+                                                    width:'230px'
+                                                   }}
+                                                   >{val.clientname}</h3>
+                                                   <h4>{val.status}</h4>
+
+
+
+
+
+                                               </div>
+                                           </>
+                                       ))
+
+                                       }
+                                         {props&&!props.company&&tasks && tasks.map((val, index) => (
+                              
                                            <>
                                                <div className="headertable">
                                                    <h2 className='sxx'> <input onClick={e => addindex(index,val)} type="checkbox" checked={ind.search(val._id) >= 0 ? true : false} /> </h2>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaRegBell } from 'react-icons/fa'
+import { FaEdit, FaRegBell } from 'react-icons/fa'
 import { BiLogOutCircle } from 'react-icons/bi'
 import { BsCreditCard2FrontFill } from 'react-icons/bs'
 import { RiMoneyDollarCircleFill } from 'react-icons/ri'
@@ -7,7 +7,7 @@ import { IoMdCheckmarkCircleOutline } from 'react-icons/io'
 import { useState } from 'react'
 import { BiUserCircle } from 'react-icons/bi'
 import 'react-calendar/dist/Calendar.css';
-import { FiDownload } from 'react-icons/fi'
+import { FiDownload, FiEdit } from 'react-icons/fi'
 import { AiOutlineReload } from 'react-icons/ai'
 import { AiOutlineDashboard } from 'react-icons/ai'
 import ReactToPrint from 'react-to-print';
@@ -33,6 +33,7 @@ import { useRef } from 'react'
 import { IoAnalytics } from 'react-icons/io5'
 import { AiOutlineProfile, AiOutlineMessage } from 'react-icons/ai'
 import date from 'date-and-time';
+import { VscChromeClose } from 'react-icons/vsc'
 
 const Sitepresence = () => {
 
@@ -144,6 +145,11 @@ const [activebtn, setactivebtn] = useState('0')
     setdatep(yt[0])
     mopenthis(activesite,yt[0])
   }
+  const [editid, seteditid] = useState('')
+  function editthis(val){
+    console.log(val)
+    seteditid(val._id)
+  }
   function onChangexd(e){
 
 
@@ -218,6 +224,10 @@ const [filter, setfilter] = useState('sitename')
 
 const [selectedjobsites, setselectedjobsites] = useState([])
 const [searchval, setsearchval] = useState('')
+function skipthis(val){
+    setprojects(projects=>[...projects,val])
+    setselectedjobsites( selectedjobsites.filter((item) => item !== val))
+}
 function openthis(val){
 
     setselectedjobsites(selectedjobsites=>[...selectedjobsites,val])
@@ -235,6 +245,42 @@ setpending2([])
 
 
     })
+
+}
+const [updatedwh, setupdatedwh] = useState('')
+function updatethis(val,index,indx){
+    function calculateInterval(startTime, endTime) {
+        const start = new Date(`2000-01-01T${startTime}`);
+        const end = new Date(`2000-01-01T${endTime}`);
+        const intervalInMilliseconds = end - start;
+        const intervalInMinutes = intervalInMilliseconds / (1000 * 60); // Convert milliseconds to minutes
+        return intervalInMinutes;
+      }
+    const regex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+if(regex.test(updatedwh)){
+var hoursupdate=calculateInterval(val.time,updatedwh)
+var tempclk=clk
+tempclk[index].objects[indx].chkouttime=updatedwh
+
+tempclk[index].objects[indx].workinghours=`${Math.floor(hoursupdate / 60)}:${Math.floor(hoursupdate % 60)}`
+
+axios.post(`${tz}/siteatt/updatetime`,{
+    _id:val._id,
+    time:updatedwh,
+    wh:`${Math.floor(hoursupdate / 60)}:${Math.floor(hoursupdate % 60)}`,
+}).then(rex => {
+console.log(rex)
+seteditid('')
+setupdatedwh('')
+setclk(tempclk)
+
+})
+
+
+}
+else{
+    alert('Time format should be hh:mm:ss in 24 hours')
+}
 
 }
 const [datearr, setdatearr] = useState([])
@@ -519,6 +565,7 @@ justifyContent:'flex-start'
         paddingRight:10,
     }}
     >{val.sitename}
+    <VscChromeClose onClick={e=>skipthis(val)} />
 </button>
 ))}
 
@@ -553,8 +600,36 @@ justifyContent:'flex-start'
 <h2>Status</h2>
 </div>
 
-{activebtn===`0`&& val3.objects&&val3.objects.map(val=>(
+{activebtn===`0`&& val3.objects&&val3.objects.map((val,indx)=>(
 selectedjobsites.some(obj => obj._id === val.projectid)&&
+
+(val._id===editid?
+
+<div className="otherrow">
+
+<h1>
+    <div className="rond" style={{
+        maxWidth:30,}
+    }>
+        {val.username.charAt(0)}
+    </div>
+    {val.username}  <div className="jsite">
+        <div className="nupoint">
+            
+        </div>
+        {val.projectname}
+    </div></h1>
+<h2>{val.time}</h2>
+<h2><input type="text" className='whn' onChange={e=>setupdatedwh(e.target.value)}  /></h2>
+<h2>{val.workinghours}</h2>
+<h2>Status</h2>
+<h2 >
+    <button className='whnbutton' onClick={e=>updatethis(val,index,indx)}>Save</button>
+     </h2>
+
+</div>
+
+:
 <div className="otherrow">
 
 <h1>
@@ -573,15 +648,21 @@ selectedjobsites.some(obj => obj._id === val.projectid)&&
 <h2>{val.chkouttime}</h2>
 <h2>{val.workinghours}</h2>
 <h2>Status</h2>
+<h2 onClick={e=>editthis(val)}> <FiEdit className='whnpen' /> </h2>
 
 </div>
+)
 ))
 
 }
 {activebtn===`1`&& val3.objects&&val3.objects.map(val=>(
 
 selectedjobsites.some(obj => obj._id === val.projectid)&&
+
+
+
 val.chkouttime!=='-'&&
+
 <div className="otherrow">
 
 <h1>
@@ -729,6 +810,7 @@ justifyContent:'flex-start'
         paddingRight:10,
     }}
     >{val.sitename}
+        <VscChromeClose onClick={e=>skipthis(val)} />
 </button>
 ))}
 

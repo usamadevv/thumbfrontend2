@@ -141,7 +141,10 @@ const updatedData = updatedata.map(element => {
                     Payrate:element.cpr,
                     total: ((Number(element.cpr)) * (Number(element.Hrs))) + (Number(element.Ot_Hrs) * (Number(user.otpayrate))),
                     net:
-                    ((Number(element.cpr)) * Number(element.Hrs)) + (Number(element.Ot_Hrs) * (Number(user.otpayrate)))-
+                    ((Number(element.cpr)) * Number(element.Hrs)) + (Number(element.Ot_Hrs) * (Number(user.otpayrate)))
+                    +(element.onperdiemel==='Yes'?Number(element.onperdiem):0)
+                    +(element.perdiemel==='Yes'?Number(element.perdiem)*Number(element.days):0)
+-
                     (
                         element.nc_4 === 'no'|| element.nc_4 === '-'|| element.nc_4===0
                           ? 0
@@ -149,8 +152,8 @@ const updatedData = updatedata.map(element => {
                               (Number(element.cpr) * 0) +
                               (0 * parseInt(user.otpayrate))
                             ) * 4 / 100
-                      )-element.deductions
-
+                      )-(element.deductions)
+                     
                 };
             }
         }
@@ -3233,13 +3236,13 @@ currency: 'USD',
                      </div>
 
                      <div className="special">
-                         <h1>Special Notes & Instruction</h1>
+                         <h1>Special Notes & Instructions</h1>
 
                      </div>
 
 
                      <h1 className='h1h'>
-                         Thanks for your business. Its a pleasure to work with you on your project.
+                        Thank you for your business. It is a pleasure to work with you on your project.
                      </h1>
                  </div>
 

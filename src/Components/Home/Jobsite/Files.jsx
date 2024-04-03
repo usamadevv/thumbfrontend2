@@ -2760,13 +2760,13 @@ departments.map((val)=>(
               </div>
 
               <div className="special">
-                  <h1>Special Notes & Instruction</h1>
+                  <h1>Special Notes & Instructions</h1>
 
               </div>
 
 
               <h1 className='h1h'>
-                  Thanks for your business. Its a pleasure to work with you on your project.
+              Thank you for your business. It is a pleasure to work with you on your project.
               </h1>
           </div>
 

@@ -2005,6 +2005,9 @@ function setshowlistviewx2(val,val2){
 const [l, setl] = useState(2)
 const [currone, setcurrone] = useState()
 function updatestatus(val){
+
+
+
     axios.post(`${tz}/payroll/updatestatus`, {
         _id: selected,
         status: val,
@@ -2015,13 +2018,32 @@ function updatestatus(val){
 
 
     }).then(res => {
-        alert(`Payroll is ${val} `)
+  
+        if(val==='Approved'){
+            axios.post(`${tz}/siteuser/adduserhours`, {
+              
+                preparedata: currdata.data,
+              
+        
+           
+        
+        
+        
+            }).then(res => {
+                alert(`Payroll is ${val} `)
+        
+            })
+
+        }
+        else{
+            alert(`Payroll is ${val} `)
+        }
     })
 }
 function updatestatus2(val,val2){
     var payr=payrolldata
     axios.post(`${tz}/payroll/updatestatus`, {
-        _id: val2,
+        _id: val2._id,
         status: val,
       
 
@@ -2030,21 +2052,55 @@ function updatestatus2(val,val2){
 
 
     }).then(res => {
-        alert(`Payroll is ${val} `)
-        setshowlistviewx(false)
-      // Update the array of JSON objects
-const updatedArray = payr.map(item => {
-    // Check if the current item's id matches the id of the item to be updated
-    if (item._id === val2) {
-        // If it matches, return the updated item
-        item.status=val;
-        return item;
-    } else {
-        // If it doesn't match, return the original item unchanged
-        return item;
-    }
-});
-setpayrolldata(updatedArray)
+
+        if(val==='Approved'){
+            axios.post(`${tz}/siteuser/adduserhours`, {
+              
+                preparedata: val2.data,
+              
+        
+           
+        
+        
+        
+            }).then(res => {
+                alert(`Payroll is ${val} `)
+                setshowlistviewx(false)
+              // Update the array of JSON objects
+        const updatedArray = payr.map(item => {
+            // Check if the current item's id matches the id of the item to be updated
+            if (item._id === val2._id) {
+                // If it matches, return the updated item
+                item.status=val;
+                return item;
+            } else {
+                // If it doesn't match, return the original item unchanged
+                return item;
+            }
+        });
+        setpayrolldata(updatedArray)
+        
+            })
+
+        }
+        else{
+            alert(`Payroll is ${val} `)
+            setshowlistviewx(false)
+          // Update the array of JSON objects
+    const updatedArray = payr.map(item => {
+        // Check if the current item's id matches the id of the item to be updated
+        if (item._id === val2._id) {
+            // If it matches, return the updated item
+            item.status=val;
+            return item;
+        } else {
+            // If it doesn't match, return the original item unchanged
+            return item;
+        }
+    });
+    setpayrolldata(updatedArray)
+        }
+      
 
     })
 }
@@ -2859,7 +2915,7 @@ backgroundColor:val.status==='Paid'?'#eef7fb':val.status==='Pending'?'#fbf8ee':'
         {showlistviewx&&menuactiveon===val._id&&
     <div className="listview listview2" onClick={(e) => e.stopPropagation()}>
     <div className="listviewsub"
-    onClick={e => updatestatus2('Approved',val._id)}
+    onClick={e => updatestatus2('Approved',val)}
     >
  <MdOutlineSave style={{
 fontSize:20,
@@ -2867,7 +2923,7 @@ marginRight:5,
  }}/> Approve
     </div>
     <div className="listviewsub"
-        onClick={e => updatestatus2('Paid',val._id)}
+        onClick={e => updatestatus2('Paid',val)}
     >
         <FaFilePdf style={{
 fontSize:20,
@@ -2979,7 +3035,10 @@ marginRight:5,
         <h4 style={{ width: '80px', marginBottom: '0px' }}>OT Payrate</h4>
 
         <h4 style={{ width: '80px', marginBottom: '0px' }}>Total</h4>
-       
+        <h4 style={{ width: '80px', marginBottom: '0px' }}>Perdiem</h4>
+                                         <h4 style={{ width: '80px', marginBottom: '0px' }}>ON Perdiem</h4>
+                                         <h4 style={{ width: '80px', marginBottom: '0px' }}>Days</h4>
+
         <h4 style={{ width: '80px', marginBottom: '0px' }}>NC 4%</h4>
 
         <h4 style={{ width: '80px', marginBottom: '0px' }}>Deductions</h4>
@@ -3013,16 +3072,36 @@ marginRight:5,
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >$ {val.OT_Pay_rate} </h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >{parseFloat(val.total)} </h4>
-{/*
-applyperdiemx &&
-<>
+
+{
+val.perdiemel==='Yes' ?
+
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}> $ {parseFloat(val.perdiem)}  </h4>
-<h4 style={{ width: '80px', marginBottom: '0px' }}> $ {val.onperdiem} </h4>
+:
+<h4 style={{ width: '80px', marginBottom: '0px' }}> 0 </h4>
 
-<h4 style={{ width: '80px', marginBottom: '0px' }}>{val.days}</h4>
-</>
-      */}
+}
+
+{
+val.onperdiemel==='Yes' ?
+
+
+<h4 style={{ width: '80px', marginBottom: '0px' }}> $ {parseFloat(val.onperdiem)}  </h4>
+:
+<h4 style={{ width: '80px', marginBottom: '0px' }}> 0 </h4>
+
+}
+{
+val.perdiemel==='Yes' ?
+
+
+<h4 style={{ width: '80px', marginBottom: '0px' }}> {val.days} </h4>
+:
+<h4 style={{ width: '80px', marginBottom: '0px' }}> 0 </h4>
+
+}
+
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >{val.nc_4 === '-' ? <>0</>
 

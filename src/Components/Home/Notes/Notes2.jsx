@@ -60,7 +60,7 @@ const [calling, setcalling] = useState(false)
   
   
     useEffect(() => {
-       
+    
       socket.on("room:join", handleJoinRoom);
 
       socket.on("room:callto", handleJoinRoom);
@@ -395,19 +395,21 @@ function sendmsg(){
     
         }).then( res=>{
             console.log(res)
-           
+        
            if(utype==='user'){
             axios.post(`${tz}/siteuser/adduser`,{
                 sender: activeid._id,
                        user:localStorage.getItem('userid'),
-                       unseen:1
+                       unseen:1,
+                       msg:msg,
                
                    }).then( resx=>{
                       
                        axios.post(`${tz}/admin/adduser`,{
                            sender:localStorage.getItem('userid'),
                                   user:activeid._id,
-                                  unseen:0
+                                  unseen:0,
+                                  msg:msg,
                           
                               }).then( resx2=>{
                                   setadduser('adduser2')
@@ -415,6 +417,9 @@ function sendmsg(){
                                   openthischat(activeid,utype)
                                   console.log(resx)
                   setprocess(false)
+                  socket.emit('newmessage',{activeid:activeid._id,msg:{time:dateput[1],
+                
+               date:dateput[0],msg:msg },from:localStorage.getItem('userid')})
                   
                               })
        
@@ -424,7 +429,8 @@ function sendmsg(){
             axios.post(`${tz}/super/adduser`,{
                 sender: activeid._id,
                        user:localStorage.getItem('userid'),
-                       unseen:1
+                       unseen:1,
+                       msg:msg
                
                    }).then( resx=>{
                       
@@ -432,6 +438,8 @@ function sendmsg(){
                            sender:localStorage.getItem('userid'),
                                   user:activeid._id,
                                   unseen:0
+                                  ,
+                       msg:msg
                           
                               }).then( resx2=>{
                                   setadduser('adduser2')
@@ -440,7 +448,10 @@ function sendmsg(){
                                   console.log(resx)
                   
                                   setprocess(false)
-                  
+                                  socket.emit('newmessage',{activeid:activeid._id,msg:{time:dateput[1],
+                                
+                               date:dateput[0],msg:msg },from:localStorage.getItem('userid')})
+                                  
                               })
        
                    })
@@ -536,14 +547,14 @@ function addtask2() {
                     </div>
              <div className="colcard">
              <h1>{val.name} </h1>
-             <h3
+          {searchval.length===0&&   <h3
                  className='nutp'
                  >{new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()?'Today':
                  new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()-1?'Yesterday':
                  `${
                     new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getMonth()+1}/${
                  new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()}`}</h3>
-             
+             }
                         <h1>
                         <div className="roli">
                         User
@@ -559,14 +570,15 @@ function addtask2() {
                     addedusers&&addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id)&& 
                     <div className={`cardmsg ${activeid&&activeid.name===val.name&&'msgback'}`} onClick={e=>openthischat(val,'super')}>
    
+ {searchval.length===0&&
    <h3
-                 className='nutp'
-                 >{new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()?'Today':
-                 new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()-1?'Yesterday':
-                 `${
-                    new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getMonth()+1}/${
-                 new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()}`}</h3>
-               
+   className='nutp'
+   >{new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()?'Today':
+   new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()-1?'Yesterday':
+   `${
+      new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getMonth()+1}/${
+   new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()}`}</h3>
+}       
    {addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).unseen>0&&<div className="nut">
    { addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).unseen}
    
@@ -612,14 +624,17 @@ function addtask2() {
              <div className="colcard">
              <h1>{val.name} </h1>
                         <h1>
+                   {searchval.length===0&&
                         <h3
-                 className='nutp'
-                 >{new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()?'Today':
-                 new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()-1?'Yesterday':
-                 `${
-                    new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getMonth()+1}/${
-                 new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()}`}</h3>
-             
+                        className='nutp'
+                        >{new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()?'Today':
+                        new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()-1?'Yesterday':
+                        `${
+                           new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getMonth()+1}/${
+                        new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()}`}</h3>
+                    
+
+                   }
                         <div className="roli">
                         User
                         </div>
@@ -635,7 +650,9 @@ function addtask2() {
                  addedusers&&addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id)&& 
                  <div className={`cardmsg ${activeid&&activeid.name===val.name&&'msgback'}`} onClick={e=>openthischat(val,'user')}>
 
-<h3
+{
+    searchval.length===0&&
+    <h3
                  className='nutp'
                  >{new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()?'Today':
                  new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()===currentDatee.getDate()-1?'Yesterday':
@@ -643,6 +660,7 @@ function addtask2() {
                     new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getMonth()+1}/${
                  new Date(addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).timestamp).getDate()}`}</h3>
              
+}
 {addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).unseen>0&&<div className="nut">
 { addedusers.contacts&&addedusers.contacts.find(person => person.userid === val._id).unseen}
 
