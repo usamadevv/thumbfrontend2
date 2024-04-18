@@ -9,7 +9,7 @@ import axios from 'axios'
 import { useEffect } from 'react'
 
 import {HiUser} from 'react-icons/hi'
-import {FaPencilAlt,FaBuilding, FaPhone, FaArrowRight} from 'react-icons/fa'
+import {FaPencilAlt,FaBuilding, FaPhone, FaArrowRight, FaCaretDown} from 'react-icons/fa'
 import {IoClose, IoLockClosedOutline} from 'react-icons/io5'
 
 import ana  from '../../../images/ana.svg'
@@ -535,6 +535,16 @@ setsupermode('true')
         }
 
     }
+    function formatPhoneNumber(number) {
+        // Remove all non-digit characters
+        const cleanNumber = number.replace(/\D/g, '');
+        
+        // Format the number in USA phone number format
+        const formattedNumber = cleanNumber.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+        
+        return formattedNumber;
+    }
+    
     const [actiontype, setactiontype] = useState('edit')
     const [clients, setclients] = useState()
     useEffect(() => {
@@ -1258,6 +1268,9 @@ setlatlang(val.langlat)
         
         setaduser('adduser')
     }
+    const [boxfixed, setboxfixed] = useState(false)
+    const [searchby, setsearchby] = useState('name')
+
     function updatetravel(val) {
         axios.post(`${tz}/siteuser/updatetravel`,{
             _id:currone._id,
@@ -1473,6 +1486,8 @@ settoupdate(null)
 })
 
 }
+const [searchvala, setsearchvala] = useState('')
+const [currcom, setcurrcom] = useState('')
 useEffect(() => {
 if(steps===3){
 }
@@ -2126,8 +2141,54 @@ settrvl2(true)
              
 
                 <div className="newst nbst" style={{marginTop:'20px'}}>
-                <div className="newst1">
-                    <input type="text" placeholder='Search..' onChange={e=>setsearchval(e.target.value)}/>
+                <div className="newst1" style={{
+                    display:'flex'
+                }}>
+                {searchby==='name'?
+                   <div className="sero">
+                   <input type="text" placeholder='Search..' onChange={e=>setsearchval(e.target.value)}/>
+                   <select className='select2i'  value={searchby} name="cars" id="cars"  onChange={e => setsearchby(e.target.value)}>
+                                    
+                                    <option value='name'>By Name</option>
+                                    <option value='company'>By Company</option>
+
+                                    </select>
+                   </div>
+                :
+             
+                <button className='light hglight mlight' style={{position:'relative'}} onClick={e=>boxfixed?setboxfixed(false):setboxfixed(true)}>{currcom?currcom.username:'Choose Company'}  <FaCaretDown className='fac' /> 
+
+<select className='select2i'  value={searchby} name="cars" id="cars"  onChange={e => setsearchby(e.target.value)}>
+                                    
+                                               <option value='name'>By Name</option>
+                                               <option value='company'>By Company</option>
+
+                                               </select>
+                {
+                    
+                boxfixed&&<div className="boxfixed" >
+                <input type="text" onClick={e=>e.stopPropagation()}  onChange={e=>setsearchvala(e.target.value)} placeholder='Search project' />
+            {searchval.length===0&&clients&&clients.map(val=>(
+            <>
+            <div className="headertablenewx" onClick={e=>setcurrcom(val)}  >
+                <div className="rond">
+                    {val.username.charAt(0)}
+                </div>
+            <h1 style={{width:"100%"}}>
+                
+                {val.username}</h1>
+            
+            
+            </div>
+            </>
+            ))
+            
+            }
+            </div>
+            }
+                </button>
+          
+                }
                     <button className='deleter' onClick={e=>deleteuser()}> Delete</button>
                     <button onClick={e=>setadduser('adduser')}>+ Create User</button>
 
@@ -2182,7 +2243,7 @@ settrvl2(true)
                             </div>
                         <div className="subtable">
                          
-                            {searchval.length > 0 && filter === 'name' && data && data.map(val => (
+                            {searchval.length > 0 && searchby === 'name' && data && data.map(val => (
                                 val.name.toLowerCase().search(searchval.toLowerCase()) >= 0 &&
                                 <>
                                     <div className="headertable" onClick={e=>selectthis(val)}>
@@ -2202,7 +2263,7 @@ settrvl2(true)
                                         <h6 ><div className="tinvoice">{val.skill}</div></h6>
 
                                         <h6 style={{width:250}} >{val.client}</h6>
-                                        <h6>{val.phone}</h6>
+                                        <h6>{val.phone&&formatPhoneNumber(val.phone)}</h6>
                                     
 
                                     </div>
@@ -2210,8 +2271,8 @@ settrvl2(true)
                             ))
 
                             }
-                            {searchval.length > 0 && filter === 'skill' && currentItems && currentItems.map(val => (
-                                val.skill.toLowerCase().search(searchval.toLowerCase()) >= 0 &&
+                            {currcom && searchby === 'company' && data && data.map(val => (
+                                val.clientid.toLowerCase().search(currcom._id.toLowerCase()) >= 0 &&
                                 <>
                                     <div className="headertable" onClick={e=>selectthis(val)}>
                                         <span className='sxx'> <input type="checkbox" checked={ids.search(val._id) >= 0} onClick={e => ids.search(val._id) >= 0 ? setids(ids.replace(val._id + '4sd', '')) : setids(ids + val._id + '4sd')} /> </span>
@@ -2230,7 +2291,7 @@ settrvl2(true)
                                         <h6 ><div className="tinvoice">{val.skill}</div></h6>
 
                                         <h6 style={{width:250}} >{val.client}</h6>
-                                        <h6>{val.phone}</h6>
+                                        <h6>{val.phone&&formatPhoneNumber(val.phone)}</h6>
 
 
                                     </div>
@@ -2238,7 +2299,7 @@ settrvl2(true)
                             ))
 
                             }
-                            {searchval.length === 0 && currentItems && currentItems.map(val => (
+                            {searchval.length === 0 &&searchby==='name'&& currentItems && currentItems.map(val => (
 
                                 <>
                                     <div className="headertable" onClick={e=>selectthis(val)}>
@@ -2258,7 +2319,7 @@ settrvl2(true)
                                         <h6 ><div className="tinvoice">{val.skill}</div></h6>
 
                                         <h6 style={{width:250}} >{val.client}</h6>
-                                        <h6>{val.phone}</h6>
+                                        <h6>{val.phone&&formatPhoneNumber(val.phone)}</h6>
                                      
                                     </div>
                                 </>
@@ -2388,7 +2449,7 @@ settrvl2(true)
        <div className="cinfo">
        <h1>
     Phone </h1>
-        <p>{currone.phone}</p>
+        <p>{currone.phone&&formatPhoneNumber(currone.phone)}</p>
        </div>
     
        </div>
@@ -2501,8 +2562,334 @@ settrvl2(true)
 
                 }
                 {showusers === 'supervisors' &&
+<>
+<div className="newst">
 
-                   <div className="newst">
+<div className="tablerow hideonmobile table2f " >
+                           <div className="headertable clop sticky">
+                                <span className='sxx'><input type="checkbox" checked={o === 1} onClick={e => fillall()} /> </span>
+
+                                <h4 style={{ width: "80px" }}>No.</h4>
+
+
+                                <h2 style={{ paddingLeft: '5px' }}>Staff</h2>
+                       
+
+                                <h6>Skill</h6>
+
+                                <h6 style={{width:250}} >Company</h6>
+                                <h6>Phone</h6>
+
+
+                            </div>
+                        <div className="subtable">
+                         
+                            {searchval.length > 0 && searchby === 'name' && data && data.map(val => (
+                                val.name.toLowerCase().search(searchval.toLowerCase()) >= 0 &&
+                                <>
+                                    <div className="headertable" onClick={e=>selectthis(val)}>
+                                        <span className='sxx'> <input type="checkbox" checked={ids.search(val._id) >= 0} onClick={e => ids.search(val._id) >= 0 ? setids(ids.replace(val._id + '4sd', '')) : setids(ids + val._id + '4sd')} /> </span>
+
+                                        <h4 style={{ width: "80px" }}>{val.idno}</h4>
+                                        {ids.search(val._id) >= 0 ?
+
+
+                                            <h2 className='blackmark' style={{ marginLeft: '5px' }}>{val.name}</h2>
+                                            :
+
+                                            <h2 style={{ marginLeft: '5px' }}>{val.name}</h2>
+
+                                        }
+                                  
+                                        <h6 ><div className="tinvoice">{val.skill}</div></h6>
+
+                                        <h6 style={{width:250}} >{val.client}</h6>
+                                        <h6>{val.phone&&formatPhoneNumber(val.phone)}</h6>
+                                    
+
+                                    </div>
+                                </>
+                            ))
+
+                            }
+                            {currcom && searchby === 'company' && data && data.map(val => (
+                                val.supermode&&val.supermode==='true'&&
+                                val.clientid.toLowerCase().search(currcom._id.toLowerCase()) >= 0 &&
+                                <>
+                                    <div className="headertable" onClick={e=>selectthis(val)}>
+                                        <span className='sxx'> <input type="checkbox" checked={ids.search(val._id) >= 0} onClick={e => ids.search(val._id) >= 0 ? setids(ids.replace(val._id + '4sd', '')) : setids(ids + val._id + '4sd')} /> </span>
+
+                                        <h4 style={{ width: "80px" }}>{val.idno}</h4>
+                                        {ids.search(val._id) >= 0 ?
+
+
+                                            <h2 className='blackmark' style={{ marginLeft: '5px' }}>{val.name}</h2>
+                                            :
+
+                                            <h2 style={{ marginLeft: '5px' }}>{val.name}</h2>
+
+                                        }
+                                     
+                                        <h6 ><div className="tinvoice">{val.skill}</div></h6>
+
+                                        <h6 style={{width:250}} >{val.client}</h6>
+                                        <h6>{val.phone&&formatPhoneNumber(val.phone)}</h6>
+
+
+                                    </div>
+                                </>
+                            ))
+
+                            }
+                            {searchval.length === 0 && searchby === 'name'&& data && data.map(val => (
+val.supermode&&val.supermode==='true'&&
+                                <>
+                                    <div className="headertable" onClick={e=>selectthis(val)}>
+                                        <span className='sxx'> <input type="checkbox" checked={ids.search(val._id) >= 0} onClick={e => ids.search(val._id) >= 0 ? setids(ids.replace(val._id + '4sd', '')) : setids(ids + val._id + '4sd')} /> </span>
+
+                                        <h4 style={{ width: "80px" }}>{val.idno}</h4>
+                                        {ids.search(val._id) >= 0 ?
+
+
+                                            <h2 className='blackmark' style={{ marginLeft: '5px' }}>{val.name}</h2>
+                                            :
+
+                                            <h2 style={{ marginLeft: '5px' }}>{val.name}</h2>
+
+                                        }
+                                    
+                                        <h6 ><div className="tinvoice">{val.skill}</div></h6>
+
+                                        <h6 style={{width:250}} >{val.client}</h6>
+                                        <h6>{val.phone&&formatPhoneNumber(val.phone)}</h6>
+                                     
+                                    </div>
+                                </>
+                            ))
+
+                            }
+
+  
+                        </div>
+                    </div>
+                    {!kshow&&data&&data.map(val=>(
+    <div className="cardlx hideondesk" onClick={e=>selectthis2(val)}>
+        <div className="topcardlx">
+        <div className="bcircle birclex">
+        {
+            val.imgurl?
+            <img className='imgur' src={val.imgurl} alt="" />
+            
+            :
+
+            <HiUser className='fabv' />
+        }
+       
+
+        </div>
+        <div className="detailsx">
+            <h1>{val.name?val.name:'No Name'}</h1>
+            <p>
+                {val.skill&&val.skill.substring(0,20)}
+            </p>
+      
+        </div>
+
+        </div>
+    </div>
+))
+
+}
+
+    <div className="comdet2 hideonmobile">
+    {currone?
+      <>  <div className="penh" onClick={e=>updateuser()
+        }>
+            <FaPencilAlt className='fadd' />
+
+        </div>
+        <h1>User info</h1>
+   
+        <div className="divx divcf">
+       <div className="bcircle">
+     <div className="iconcha">
+     <AiFillCamera className='iconchai' />
+     <input type="file" onChange={e=>fileupload(e.target.files[0])} />
+     </div>
+        {
+            currone.imgurl2?
+            <img className='imgur' src={currone.imgurl2} alt="" />
+            
+            : currone.imgurl?
+            <img className='imgur' src={currone.imgurl} alt="" />
+            
+            :
+
+            <HiUser className='fabv' />
+        }
+
+        </div>
+    <div className="divxinfo">
+    <p>{currone.name}</p>
+        <p className='sklx'>{currone.skill}</p>
+
+{
+
+}
+{
+    !loading?
+    <p className='sklo' onClick={e=>showtravel()}>Travel logs</p>
+    :
+    <Loader />
+}
+    
+    </div>
+       </div>
+    
+       <div className="divx2">
+        <div className="prt prt2">
+<h1>{currone.payrate} $</h1>
+<p>Pay rate</p>
+        </div>
+        <div className="prt prt2">
+<h1>{currone.cpr} $</h1>
+<p>Custom Pay rate</p>
+        </div>
+        <div className="prt">
+        <h1>{currone.otpayrate} $</h1>
+<p>OT Pay rate</p>
+        </div>
+       </div>
+       <div className="cinfo cinfocol"  >
+     <div className="mdl2">
+     <BsBuilding className='mdl' />
+     </div>
+       <div className="cinfo">
+       <h1>
+    Company </h1>
+        <p>{currone.client}</p>
+       </div>
+    
+       </div>
+       <div className="cinfo cinfocol"  >
+     <div className="mdl2">
+     <FaPhone className='mdl' />
+     </div>
+       <div className="cinfo">
+       <h1>
+    Phone </h1>
+        <p>{currone.phone&&formatPhoneNumber(currone.phone)}</p>
+       </div>
+    
+       </div>
+    
+       <div className="cinfo cinfocol"  >
+     <div className="mdl2">
+     <HiOutlineMail className='mdl' />
+     </div>
+       <div className="cinfo">
+       <h1>
+    Email </h1>
+        <p>{currone.email}</p>
+       </div>
+    
+       </div>
+     
+       <div className="cinfo cinfocol"  >
+     <div className="mdl2">
+     <IoLockClosedOutline className='mdl' />
+     </div>
+       <div className="cinfo">
+       <h1>
+    Password </h1>
+        <p>{currone.password}</p>
+       </div>
+    
+       </div>
+    
+       <div className="badge">
+        {currone.status}
+       </div>
+       </>
+       :
+       <div className="divx">
+       
+        <p>Select Company to view</p>
+       </div> }
+
+    </div>
+    {
+        kshow&&
+
+    <div className="comdet2 ">
+    {currone?
+      <>  <div className="penh botonm" onClick={e=>setkshow(false)
+        }>
+            <IoClose className='fadd' />
+
+        </div>
+        <h1>User info</h1>
+   
+        <div className="divx">
+       <div className="bcircle">
+        {
+            currone.imgurl?
+            <img className='imgur' src={currone.imgurl} alt="" />
+            
+            :
+
+            <HiUser className='fabv' />
+        }
+
+        </div>
+        <p>{currone.name}</p>
+        <p className='skl'>{currone.skill}</p>
+       </div>
+       <div className="divx2">
+        <div className="prt prt2">
+<h1>{currone.payrate} $</h1>
+<p>Pay rate</p>
+        </div>
+        <div className="prt">
+        <h1>{currone.otpayrate} $</h1>
+<p>OT Pay rate</p>
+        </div>
+       </div>
+       <div className="cinfo">
+        <h1>
+            <MdLocationOn className='mdl' />Company </h1>
+        <p>{currone.client}</p>
+       </div>
+       <div className="cinfo">
+        <h1>
+            <MdLocationOn className='mdl' />Phone</h1>
+        <p>{currone.phone}</p>
+       </div>
+       <div className="cinfo">
+        <h1>
+            <MdLocationOn className='mdl' />Email </h1>
+        <p>{currone.email}</p>
+       </div>
+       <div className="cinfo">
+        <h1>
+            <MdLocationOn className='mdl' />Password </h1>
+        <p>{currone.password}</p>
+       </div>
+       <div className="badge">
+        {currone.status}
+       </div>
+       </>
+       :
+       <div className="divx">
+       
+        <p>Select Company to view</p>
+       </div> }
+
+    </div>
+    }
+</div>
+
+              {/*     <div className="newst">
                      <div className="tablerow   tablef">
                         <div className="subtable">
                             <div className="headertable clop">
@@ -2611,7 +2998,8 @@ settrvl2(true)
        </div> }
 </div>
                    </div>
-                }
+    */} 
+    </>}
 
             </div></>
             }

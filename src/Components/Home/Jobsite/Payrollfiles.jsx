@@ -2008,6 +2008,10 @@ function updatestatus(val){
 
 
 
+   if(val==='Approved'&&selected.status==='Approved'){
+    alert('Payroll is already approved ')
+   }
+   else{
     axios.post(`${tz}/payroll/updatestatus`, {
         _id: selected,
         status: val,
@@ -2039,8 +2043,12 @@ function updatestatus(val){
             alert(`Payroll is ${val} `)
         }
     })
+   }
 }
 function updatestatus2(val,val2){
+   if(val==='Approved'&&val2.status==='Approved'){
+    alert('Payroll is already approved')
+   }else{
     var payr=payrolldata
     axios.post(`${tz}/payroll/updatestatus`, {
         _id: val2._id,
@@ -2103,6 +2111,7 @@ function updatestatus2(val,val2){
       
 
     })
+   }
 }
 const [mx, setmx] = useState(0)
 const [currproject, setcurrproject] = useState()
@@ -3050,6 +3059,7 @@ marginRight:5,
     </div>
   
       {searchval.length===0&&currdata && currdata.data.map((val, index) => (
+        val.Hrs>0&&
         <>
         
 

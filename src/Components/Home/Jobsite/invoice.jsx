@@ -10,6 +10,8 @@ import { VscChromeClose } from 'react-icons/vsc'
 import { HiArrowLeft } from 'react-icons/hi'
 
 import prof from '../../../images/prof.png'
+
+import filea from '../../../images/filea.png'
 import { v4 as uuidv4, v6 as uuidv6 } from 'uuid';
 
 import pdf from '../../../images/pdf.svg'
@@ -22,7 +24,7 @@ import image4 from '../../../images/image4.png'
 import Calendar from 'react-calendar'
 
 import { IoClose } from 'react-icons/io5'
-import { FaFileImage, FaFilePdf, FaSortDown } from 'react-icons/fa'
+import { FaFileAlt, FaFileCsv, FaFileImage, FaFilePdf, FaSortDown } from 'react-icons/fa'
 import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
@@ -156,6 +158,30 @@ const updatedData = updatedata.map(element => {
                      
                 };
             }
+        }
+        else{
+            const user = empdata.find(user => user._id === element.userid);
+            return {
+                ...element,
+                OT_Pay_rate: Number(user.otpayrate),
+                Payrate:user.cpr,
+                total: ((Number(user.cpr)) * (Number(element.Hrs))) + (Number(element.Ot_Hrs) * (Number(user.otpayrate))),
+                net:
+                ((Number(user.cpr)) * Number(element.Hrs)) + (Number(element.Ot_Hrs) * (Number(user.otpayrate)))
+                +(element.onperdiemel==='Yes'?Number(element.onperdiem):0)
+                +(element.perdiemel==='Yes'?Number(element.perdiem)*Number(element.days):0)
+-
+                (
+                    element.nc_4 === 'no'|| element.nc_4 === '-'|| element.nc_4===0
+                      ? 0
+                      : (
+                          (Number(user.cpr) * 0) +
+                          (0 * parseInt(user.otpayrate))
+                        ) * 4 / 100
+                  )-(element.deductions)
+                 
+            };
+
         }
     }
     return element; // Return the original element if no update is made
@@ -1025,32 +1051,22 @@ console.log(rees)
                 data.forEach((val, index) => {
                     
                     if (valx === 2) {
-
-
                         console.log(val.address)
-
                         const date = new Date();
-
                         const date3 = new Date();
-
                         var result = date3.setDate(date.getDate() + 20);
                         const date2 = new Date(result)
-
                         let day = date.getDate();
                         let month = date.getMonth() + 1;
                         let year = date.getFullYear();
-
-
                         let day2 = date2.getDate();
                         let month2 = date2.getMonth() + 1;
                         let year2 = date2.getFullYear();
-
                         // This arrangement can be altered based on how we want the date's format to appear.
                         let currentDate = `${month}-${day}-${year}`;
                         setindate(currentDate)
                         let currentDate2 = `${month2}-${day2}-${year2}`;
                         setindue(currentDate2)
-
                     }
                     if (ind.search(' ' + index.toString() + ' ') >= 0) {
                         axios.post(`${tz}/client/findbyid`, {
@@ -1084,9 +1100,6 @@ console.log(rees)
                         setinnum(val.no)
                         setmkup(val.markup)
                         setincname(val.clientname)
-
-
-
                         setperdiemamnt1(Number(val.perdiemamnt))
                         setonperdiemamnt1(Number(val.onperdiemamnt))
 
@@ -2082,7 +2095,10 @@ console.log(rees)
     }
 
 const [datax, setdatax] = useState(null)
+const [timesheets, settimesheets] = useState([])
+const [activebtnn, setactivebtnn] = useState('timesheet')
     useEffect(() => {
+
 
 
         if(localStorage.getItem('userid')&&localStorage.getItem('userid').length>0){
@@ -2105,6 +2121,10 @@ const [datax, setdatax] = useState(null)
             setempdata(res.data.Siteuserd)
         })
 
+        axios.get(`${tz}/timesheet/getall`).then(res => {
+            console.log(res)
+            settimesheets(res.data.Timesheet)
+        })
         axios.get(`${tz}/jobsite/getall`).then(res => {
             console.log(res)
             setdata(res.data.Jobsite)
@@ -2329,7 +2349,6 @@ setl(1)
             setind(ind.replace(' ' + index.toString() + ' ', ''))
         }
         else {
-
             setind(ind + ' ' + index.toString() + ' ')
             console.log(ind)
         }
@@ -2984,6 +3003,273 @@ const elon=foundUser.dailymiles.some(val=>val>=obj.onperdiemmiles)
 
 
     }
+    function importthissheet(vala){
+        setpreparedata([])
+        console.log(ind)
+      setind('')
+      let inda=''
+        async function processData() {
+         
+        
+                const indexes = vala.projects.map(elementa => data.findIndex(item => item._id === elementa.projectid));
+          
+                console.log(indexes)
+            
+                indexes.forEach(element => {
+                   
+                    inda=inda + ' ' + element.toString() + ' '
+                });
+                setind(inda)
+          }
+         
+          
+          processData();
+
+          setinend(vala.Weekend)
+          const date = new Date();
+
+          const date3 = new Date();
+
+          var result = date3.setDate(date.getDate() + 20);
+          const date2 = new Date(result)
+
+          let day = date.getDate();
+          let month = date.getMonth() + 1;
+          let year = date.getFullYear();
+
+
+          let day2 = date2.getDate();
+          let month2 = date2.getMonth() + 1;
+          let year2 = date2.getFullYear();
+
+          // This arrangement can be altered based on how we want the date's format to appear.
+          let currentDate = `${month}/${day}/${year}`;
+          setindate(currentDate)
+          let currentDate2 = `${month2}/${day2}/${year2}`;
+          setindue(currentDate2)
+          axios.post(`${tz}/client/findbyid`, {
+            Client_id: currid
+        }).then(res => {
+            setinadd(res.data.Client[0].address)
+        })
+
+       var userdone=[]
+       var users=vala.Data
+       var pdata=[]
+ data.forEach((val, index) => {
+                    
+                    
+                    if (inda.search(' ' + index.toString() + ' ') >= 0) {
+                     
+
+
+                        setinname(val.sitename)
+
+                        setinnum(val.no)
+                        setmkup(val.markup)
+                        setincname(val.clientname)
+                        setperdiemamnt1(Number(val.perdiemamnt))
+                        setonperdiemamnt1(Number(val.onperdiemamnt))
+
+
+                        val.user.length > 0 && val.user.forEach((element,inex) => {
+
+                            
+                            console.log(val)
+                        
+                                setcurrid(val.clientid)
+
+                                console.log(users)
+var indx=users.length>0?users.findIndex(vl=>vl.userid===element.userid):-1
+console.log(indx)
+ 
+if(indx!==-1&&!(pdata.some(vl=>vl.userid===users[indx].userid))){
+    console.log(users[indx])
+var hrs=Number( users[indx].total.split(':')[0]==='-'?0:users[indx].total.split(':')[0])
+var days=(Number(users[indx].hrs&&users[indx].hrs.length>0)?
+    
+users[indx].hrs.reduce((count, obj) => {
+    const totalMinutes = obj.time.reduce((acc, time) => {
+      const [hours, minutes] = time.split(':').map(Number);
+      return acc + hours * 60 + minutes;
+    }, 0);
+    
+    if (totalMinutes > 8 * 60) {
+      count++;
+    }
+    
+    return count;
+  }, 0):
+0
+)
+var rhrs=hrs>40?40:hrs
+var ohrs=hrs>40?hrs-40:0
+console.log(days)
+
+var prt=Number(Number(element.payrate) + Number(element.payrate) * Number(val.markup) / 100).toFixed(2) 
+var oprt=Number(Number(element.otpayrate) + Number(element.otpayrate) * Number(val.markup) / 100).toFixed(2) 
+    setpreparedata(pr => [...pr, {
+        Taxes: element.taxes,
+        Client: val.clientname,
+        Date: users[indx].Weekend,
+        
+        Employee: element.name,
+        skill: element.skill,
+        userid: element.userid,
+        siteid:val._id,
+        perdiemmiles:Number(val.perdiemmiles?val.perdiemmiles:0),
+        onperdiemmiles:Number(val.onperdiemmiles?val.onperdiemmiles:0),
+        cpr:element.cpr,
+        cprapply:element.payratetype==='custom'?'yes':'no',
+        Hrs:rhrs,
+        Payrate: prt ,
+
+        distance: parseInt(element.distance),
+        days: days,
+       // perdiemel: element.perdiem, onperdiemel: element.onperdiem,
+        
+       perdiemel:'No',
+       onperdiemel:'No',
+       
+       perdiem:val.perdiemamnt, 
+    onperdiem:val.onperdiemamnt,
+
+        Ot_Hrs: ohrs,
+        OT_Pay_rate: oprt,
+        nc_4: element.nc === 'no' ? '-' : ((prt * 0) + (0 * oprt)) * 4 / 100,
+        total: (prt * rhrs) + (ohrs * oprt),
+        deductions: 0,
+        net: (prt * rhrs) + (ohrs * oprt) - 0 - (element.nc === 'no' ? 0 : ((prt * 0) + (0 * oprt)) * 4 / 100)
+
+
+
+
+    }])
+
+ pdata.push({
+        Taxes: element.taxes,
+        Client: val.clientname,
+        Date: users[indx].Weekend,
+        
+        Employee: element.name,
+        skill: element.skill,
+        userid: element.userid,
+        siteid:val._id,
+        perdiemmiles:Number(val.perdiemmiles?val.perdiemmiles:0),
+        onperdiemmiles:Number(val.onperdiemmiles?val.onperdiemmiles:0),
+        cpr:element.cpr,
+        cprapply:element.payratetype==='custom'?'yes':'no',
+        Hrs:hrs,
+        Payrate: Number(Number(element.payrate) + Number(element.payrate) * Number(val.markup) / 100).toFixed(2) ,
+
+        distance: parseInt(element.distance),
+        days: days,
+       // perdiemel: element.perdiem, onperdiemel: element.onperdiem,
+        
+       perdiemel:'No',
+       onperdiemel:'No',
+       
+       perdiem:val.perdiemamnt, 
+    onperdiem:val.onperdiemamnt,
+
+        Ot_Hrs: hrs,
+        OT_Pay_rate: Number(element.otpayrate) + Number(element.otpayrate) * Number(val.markup) / 100,
+        nc_4: element.nc === 'no' ? '-' : ((Number(element.payrate) * 0) + (0 * Number(element.otpayrate))) * 4 / 100,
+        total: (Number(element.payrate) * hrs) + (hrs * Number(element.otpayrate)),
+        deductions: 0,
+        net: (Number(element.payrate) * hrs) + (hrs * Number(element.otpayrate)) - 0 - (element.nc === 'no' ? 0 : ((Number(element.payrate) * 0) + (0 * parseInt(element.otpayrate))) * 4 / 100)
+
+
+
+
+    })
+  
+}
+
+                            
+
+                          
+
+                        });
+                    }
+                  
+
+                });
+
+            var pro=data.find(vl=>vl._id===vala.projects[0].projectid)
+
+          
+             if(users.length>0){
+               users.forEach((element,index2) => {
+                var days=(Number(element.hrs&&element.hrs.length>0)?
+    
+element.hrs.reduce((count, obj) => {
+    const totalMinutes = obj.time.reduce((acc, time) => {
+      const [hours, minutes] = time.split(':').map(Number);
+      return acc + hours * 60 + minutes;
+    }, 0);
+    
+    if (totalMinutes > 8 * 60) {
+      count++;
+    }
+    
+    return count;
+  }, 0):
+0
+)
+                var emp=empdata.find(vl=>vl._id===element.userid)
+                var hrs=Number( element.total==='-'?0:element.total.split(':')[0])
+             if(!(pdata.some(vl=>vl.userid===element.userid))){
+                var prt=Number(Number(emp.payrate) + Number(emp.payrate) * Number(pro.markup) / 100).toFixed(2) 
+                var oprt=Number(Number(emp.otpayrate) + Number(emp.otpayrate) * Number(pro.markup) / 100).toFixed(2) 
+var rhrs=hrs>40?40:hrs
+var ohrs=hrs>40?hrs-40:0
+                setpreparedata(pr => [...pr, {
+                    Taxes: 'No',
+                    Client: vala.clientname,
+                    Date: element.Weekend,
+                    
+                    Employee: element.username,
+                    skill: emp.skill,
+                    userid: element.userid,
+                    siteid:pro._id,
+                    perdiemmiles:Number(pro.perdiemmiles?pro.perdiemmiles:0),
+                    onperdiemmiles:Number(pro.onperdiemmiles?pro.onperdiemmiles:0),
+                    cpr:Number(emp.cpr),
+                    cprapply:'no',
+                    Hrs:rhrs,
+                    Payrate: prt,
+            
+                    distance: 0,
+                    days: days,
+                   // perdiemel: emp.perdiem, onperdiemel: emp.onperdiem,
+                    
+                   perdiemel:'No',
+                   onperdiemel:'No',
+                   
+                   perdiem:pro.perdiemamnt, 
+                onperdiem:pro.onperdiemamnt,
+            
+                    Ot_Hrs: ohrs,
+                    OT_Pay_rate: oprt,
+                    nc_4: emp.nc === 'no' ? '-' : ((prt * 0) + (0 *oprt)) * 4 / 100,
+                    total: (prt * rhrs) + (ohrs *oprt),
+                    deductions: 0,
+                    net: (prt * rhrs) + (ohrs *oprt) - 0 - (emp.nc === 'no' ? 0 : ((prt * 0) + (0 * oprt)) * 4 / 100)
+            
+            
+            
+            
+                }])
+             }
+               });
+             }
+
+
+              setadduserd('adduser2')
+
+
+    }
     const [zpi, setzpi] = useState('Durham NC 27705')
     const [mail, setmail] = useState('admin@cfl-solution.com')
     const [aduserx, setaduserx] = useState('adduser2')
@@ -3074,7 +3360,19 @@ departments.map((val)=>(
                              Bill To:
                          </h3>
                          <h2>{incname?incname:currcompany}</h2>
-                         <h2>{inadd}</h2>
+                         {
+                            inadd&&inadd.search('\n')>0?
+                            <>
+                            <h2>{inadd.split('\n')[0]}</h2>
+                            <h2>{inadd.split('\n')[1]}</h2>
+                            </>
+:<>
+
+<h2>
+    {inadd}</h2></>
+
+                         }
+                        
 {!multiple&&innum&&<>
 
 
@@ -3265,9 +3563,16 @@ currency: 'USD',
            
           
  <div className={adduserd}>
+
+
      <div className="longsub">
+        <div className="selectn">
+            <button className={activebtnn==='invoice'?'selectnbtn':'selectnbtno'} onClick={e=>setactivebtnn('invoice')} >Invoices</button>
+            <button  className={activebtnn==='timesheet'?'selectnbtn':'selectnbtno'} onClick={e=>setactivebtnn('timesheet')} >Timesheets</button>
+        </div>
          <IoClose className='posif' onClick={e => setadduserd('adduser2')} />
          {
+            activebtnn==='invoice'?
              clients && clients.map(val2 => (
                  val2._id === currid &&
                  val2.invoicedata .slice()
@@ -3284,6 +3589,24 @@ currency: 'USD',
                          <div className="linn"></div>
                      </>
                  ))
+             )):
+             timesheets&&timesheets.map(val=>(
+               (val.companyid&&val.companyid===currid)&&
+                <>
+                <div className="rowval">
+             
+                    <img src={filea} className='faff' alt="" />
+                    <div className="midone">
+                        <h4>{val.filename?val.filename:'New timesheet'} <h6>           {val.projects.length>0&&val.projects[0].projectname+', '} {val.projects.length>0&&val.projects.length+'  more'} </h6></h4>
+                        <h6>
+                 
+<h4>Created {val.createdon &&val.createdon}: Weekend : {val.Weekend &&val.Weekend}</h4>
+                        </h6>
+                    </div>
+                    <button onClick={e => importthissheet(val)} >Import</button>
+                </div>
+                
+                </>
              ))
          }
 

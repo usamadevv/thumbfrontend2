@@ -342,12 +342,12 @@ function logout(){
           }
             {datax.presence==='Allowed'&&
           
-          <p className={`${grp1} ${i===2&&'activemenu'}`} onClick={e => setis(87)}><TbDeviceDesktopAnalytics className='iconj' /> <p>Live view</p></p>
+          <p className={`${grp1} ${i===87&&'activemenu'}`} onClick={e => setis(87)}><TbDeviceDesktopAnalytics className='iconj' /> <p>Live view</p></p>
            
           }
            {datax.presence==='Allowed'&&
           
-          <p className={`${grp1} ${i===2&&'activemenu'}`} onClick={e => setis(41)}><MdOutlinePayments className='iconj' /> <p>Payroll</p></p>
+          <p className={`${grp1} ${i===41&&'activemenu'}`} onClick={e => setis(41)}><MdOutlinePayments className='iconj' /> <p>Payroll</p></p>
            
           }
            {datax.company==='Allowed'&&
@@ -483,7 +483,15 @@ function logout(){
                </>
                 :
             i===2?
-         <h1 className='headering'>Timesheets</h1>   :
+         <h1 className='headering'>Timesheets</h1>: i===87?
+         <>
+         <h1 className='headering' >
+            Live View
+          </h1>
+          <p className='headeringpara' >
+            Let's view insights on jobsites
+          </p>
+         </>   :
 
             <></> 
             }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaEdit, FaRegBell } from 'react-icons/fa'
+import { FaCaretDown, FaEdit, FaRegBell } from 'react-icons/fa'
 import { BiLogOutCircle } from 'react-icons/bi'
 import { BsCreditCard2FrontFill } from 'react-icons/bs'
 import { RiMoneyDollarCircleFill } from 'react-icons/ri'
@@ -67,31 +67,38 @@ const Sitepresence = () => {
       }
       
 
-    const [currtaskforinterval, setcurrtaskforinterval] = useState({})
+    const [currtaskforinterval, setcurrtaskforinterval] = useState([])
     const [timeinterval, settimeinterval] = useState([])
     
    function intrvaltasks(val,date){
 
      // sExample usage
-     var foundobj=val.objects.find(obj => obj.date ===date) || {}
-     const startTime = ( val.objects.find(obj => obj.date ===date) || {}).time;
-     const endTime = ( val.objects.find(obj => obj.date ===date) || {}).chkouttime;
+     var foundobjs=val.objects.filter(obj => obj.date ===date&&obj.chkouttime!=='-') || []
+console.log(foundobjs)
+     const startTime =  foundobjs[0].time;
+     const endTime = foundobjs[foundobjs.length-1].chkouttime;
      
      const timeArray = generateTimeArray(`${startTime.split(':')[0]}:${startTime.split(':')[1]}`,
      `${endTime.split(':')[0]}:${endTime.split(':')[1]}`);
      console.log(timeArray);
+     
+    foundobjs.forEach((element,index) => {
+        const updatedTasks = element.tasks.map(({ start, end,...rest }) => ({
+            start,
+            mins:Number(start.split(':')[1]),
+            end,
+            interval: calculateInterval(start, end),
+            ...rest
+          }));
 
-     const updatedTasks = foundobj.tasks.map(({ start, end,...rest }) => ({
-        start,
-        mins:Number(start.split(':')[1]),
-        end,
-        interval: calculateInterval(start, end),
-        ...rest
-      }));
 
-foundobj.tasks=updatedTasks
-     setcurrtaskforinterval(foundobj)
-     console.log(foundobj)
+          foundobjs[index].tasks=updatedTasks
+    });
+
+    
+
+     setcurrtaskforinterval(foundobjs)
+
 
 
      settimeinterval(timeArray)
@@ -180,7 +187,8 @@ const [activebtn, setactivebtn] = useState('0')
     setfrom(yt[0])
     mopenthisweekly(activesite,yt[0])
   }
-
+const [timesheet, settimesheet] = useState([])
+  const [companies, setcompanies] = useState([])
 
     useEffect(() => {
       
@@ -188,6 +196,15 @@ const [activebtn, setactivebtn] = useState('0')
 
             var dateput = res.data.Date.split(', ')
             setdatep(dateput[0])
+            axios.get(`${tz}/client/active`).then(res2=>{
+                console.log(res2)
+                setcompanies(res2.data.Client)
+                axios.get(`${tz}/timesheet/getall`).then(res2=>{
+                    console.log(res2)
+                    settimesheet(res2.data.Timesheet)
+                })    
+            })   
+               
             axios.get(`${tz}/jobsite/getall`).then(resq => {
                 console.log(resq)
                 
@@ -214,6 +231,69 @@ const [activebtn, setactivebtn] = useState('0')
 
         }
     }, [])
+    function formatDatae(date) {
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed, so add 1
+        const day = date.getDate().toString().padStart(2, '0');
+        const year = date.getFullYear();
+      
+        return `${month}/${day}/${year}`;
+      }
+      
+    function parseDate(inputDate) {
+        const parts = inputDate.split('/');
+        const month = parseInt(parts[0]);
+        const day = parseInt(parts[1]);
+        const year = parseInt(parts[2]);
+      
+        // Validate the date components
+        if (isNaN(month) || isNaN(day) || isNaN(year) || month < 1 || month > 12 || day < 1 || day > 31) {
+          throw new Error('Invalid date format or out of range.');
+        }
+      
+        // Swap the date and month if it seems to be in the 'dd/mm/yyyy' format
+        if (day <= 12 && month > 12) {
+          [month, day] = [day, month];
+        }
+      
+        // Create a new Date object
+        const date = new Date(year, month - 1, day); // Month is 0-indexed, so subtract 1
+      
+        // Subtract 7 days
+        date.setDate(date.getDate() - 6);
+      
+        return formatDatae(date);
+      }
+      
+    function viewtimesheet(val){
+
+        setactivesheet('create')
+        setactivetype('weekly')
+        var sel=[]
+        var pro=projects
+        val.projects.forEach(element => {
+          sel.push(projects.find((item) => item._id === element.projectid))
+           pro.push(projects.filter((item) => item._id !== element.projectid))
+        });
+        setprojects(pro)
+       setselectedjobsites(sel)
+       var weekenda=parseDate(val.Weekend)
+
+       
+       mopenthisweekly(sel[0],weekenda)
+    }
+    const [boxfixeda, setboxfixeda] = useState(false)
+    const [currcom, setcurrcom] = useState(null)
+    function openthiscom(val){
+        
+     
+        setselectedjobsites([])
+        setcurrcom(val)
+     
+                setselectedjobsites( projects.filter((item) => item.clientid === val._id))
+                setprojects( projects.filter((item) => item.clientid !== val._id))
+         
+
+    }
 
     const [user, setuser] = useState()
     const [project, setproject] = useState()
@@ -284,6 +364,7 @@ else{
 
 }
 const [datearr, setdatearr] = useState([])
+const [activesheet, setactivesheet] = useState('view')
 function mopenthisweekly(val,bn){
     settimeinterval([])
     setdatearr([])
@@ -445,13 +526,117 @@ setclk(resultArray)
     })
 
 }
+function savetimesheet(){
+    const userInput = prompt('Please enter file name:');
+
+    const projectss = selectedjobsites.map(obj => ({
+        projectname: obj.sitename,
+        projectid: obj._id
+      }));
+
+      var dataa=[]
+      clk&&clk.forEach(val=>{
+
+     
+        // Group objects by 'name' property
+        const groupedData = [];
+
+        // Group objects by 'name' property
+        val.objects.forEach(obj => {
+          // Find index of the group with the same name
+         if(obj.chkouttime!=='-'){
+            const index = groupedData.findIndex(group => group.date === obj.date);
+        
+            if (index === -1) {
+              // If not found, create a new group
+              groupedData.push({ date: obj.date, time: [obj.workinghours] });
+            } else {
+              // If found, append workinghours to existing group
+              groupedData[index].time.push(obj.workinghours);
+            }
+         }
+        });
+        
+       
+        
+        dataa.push({
+            username:val.objects[0].username,
+            userid:val.userid,
+            total:val.total,
+            clientname:currcom.username,
+            clientid:currcom._id,
+            Weekend:datearr[datearr.length-1].date,
+            hrs:groupedData,
+            days:groupedData.length,
+
+        })
+
+      })
+    
+      var date=new Date()
+      const datea = new Date(); // Month is 0-indexed, so we subtract 1
+
+  // Extract month, day, and year from the Date object
+  const mm = String(datea.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed, so we add 1
+  const dd = String(datea.getDate()).padStart(2, '0');
+  const yyyy = datea.getFullYear();
+
+  // Return formatted date string
+  var tr= `${mm}/${dd}/${yyyy}`;
+
+   var datetobesaved={
+    createdon:tr,
+        companyid:currcom._id,
+        clientname:currcom.username,
+        filename:userInput,
+        projects:projectss,
+        Weekend:datearr[datearr.length-1].date,
+        Data:dataa
+
+
+        
+
+
+    }
+    console.log(datetobesaved)
+    axios.post(`${tz}/timesheet/add`, {
+        datetobesaved
+    }).then(res=>{
+        console.log(res)
+        axios.get(`${tz}/timesheet/getall`).then(resa=>{
+            console.log(res)
+            settimesheet(resa.data.Timesheet)
+    alert('Timesheet saved')
+            
+        })
+
+    })
+
+}
 
 const [activesite, setactivesite] = useState()
    const [o, seto] = useState(0)
 const [i, seti] = useState(0)
+function formatDatea(inputDate) {
+    const parts = inputDate.split('/');
+    const date = new Date(parts[2], parts[0] - 1, parts[1]); // Month is 0-indexed, so subtract 1
+  
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthAbbreviation = months[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+  
+    return `${monthAbbreviation} ${day}, ${year}`;
+  }
+  
     return (
      
         <div className="attside attddide">
+<div className="twside">
+    <button className={activesheet==='create'?'activesheet':'nonactivesheet'} onClick={e=>setactivesheet('create')} >+ Create Timesheet</button>
+    <button className={activesheet==='view'?'activesheet':'nonactivesheet'} onClick={e=>setactivesheet('view')}>Saved Timesheets</button>
+</div>
+            
               {openp&&
         <div className="profio procio">
                <div className="profilepage">
@@ -479,8 +664,74 @@ const [i, seti] = useState(0)
 
         </div>
          
+{activesheet==='view'&&
+<div className="tablerow">
+<div className="subtable">
+<div className="headertable clop">
+<span className='sxx'>  </span>
+        
+      <h1>File name</h1>
+      <h3  >Company</h3>
+      <h2 className='cpp' style={{width:'250px'}}> Projects</h2>
+    
+      <h4>Users</h4>
+      
+      <h4>Weekend</h4>
+      <h4>Date Created</h4>
 
-{activetype==='daily'&&
+
+  </div>
+  {timesheet&&timesheet.map(val=>(
+    val.Data.length>0&&
+      <>
+       <div className="headertable" >
+       <span className='sxx'> <input type="checkbox" 
+        /> </span>
+                    
+      <h1 > {val.filename?val.filename:'New sheet'}</h1>
+      <h3 className='cppg' >{val.clientname}</h3>
+      <h2 className='cpp' style={{width:'250px'}}>{val.projects.length>0&&val.projects[0].projectname+', '}
+      {val.projects.length>1&&val.projects.length+' more '}
+      </h2>
+      <h4 style={{
+display:'flex'   ,
+position:'relative'     
+      }}>{val.Data.map((vl,index)=>(
+        index<3?
+        <div className="crl" style={{
+            top:-15,
+            left:20*index
+        }} >
+            {vl.username.charAt(0)}
+        </div>:index===3?
+          <div className="crl" style={{
+            top:-15,
+            left:20*index
+        }} >
+            {val.Data.length}
+        </div>:
+        <></>
+
+      ))
+      
+      }</h4>
+      <h4>{val.Weekend&&formatDatea(val.Weekend)}</h4>
+      
+      <h4>{val.createdon&&formatDatea(val.createdon)}</h4>
+      <h4>
+<button onClick={e=>viewtimesheet(val)}>View</button>
+
+      </h4>
+
+
+  </div>
+      </>
+  ))
+
+  }
+</div>
+</div>}
+{activesheet==='create'&& activetype==='daily'&&
 
 <div className='clientpro clienttro' style={{
 backgroundColor:'transparent'
@@ -489,6 +740,30 @@ backgroundColor:'transparent'
 
 
 <div className="attfilt">
+    <button className='light mlight' onClick={e=>boxfixeda?setboxfixeda(false):setboxfixeda(true)}>{currcom?currcom.username:'Choose Company'}  <FaCaretDown className='fac' /> 
+    {
+        
+    boxfixeda&&<div className="boxfixed" >
+    <input type="text" onClick={e=>e.stopPropagation()}  onChange={e=>setsearchval(e.target.value)} placeholder='Search project' />
+{searchval.length===0&&companies&&companies.map(val=>(
+<>
+<div className="headertablenewx" onClick={e=>openthiscom(val)} >
+    <div className="rond">
+        {val.username.charAt(0)}
+    </div>
+<h1 style={{width:"100%"}}>
+    
+    {val.username}</h1>
+
+
+</div>
+</>
+))
+
+}
+</div>
+}
+    </button>
 <button
 className='light'
 onClick={e=>boxfixed?setboxfixed(false):setboxfixed(true)}
@@ -496,8 +771,9 @@ onClick={e=>boxfixed?setboxfixed(false):setboxfixed(true)}
 
 {
     boxfixed&&<div className="boxfixed" >
-    <input type="text" onChange={e=>setsearchval(e.target.value)} placeholder='Search project' />
-{searchval.length===0&&projects&&projects.map(val=>(
+    <input type="text" onClick={e=>e.stopPropagation()}  onChange={e=>setsearchval(e.target.value)} placeholder='Search project' />
+{currcom&& searchval.length===0&&projects&&projects.map(val=>(
+    val.clientid===currcom._id&&
 <>
 <div className="headertablenewx" onClick={e=>openthis(val)} >
     <div className="rond">
@@ -555,18 +831,31 @@ justifyContent:'flex-start'
 
 }}
 >
-{selectedjobsites&&selectedjobsites.map(val=>(
-    <button
-    style={{
+{selectedjobsites&&selectedjobsites.map((val,index)=>(
+   index<5?
+   <button
+   style={{
 
-        width:'max-content',
-        paddingLeft:10,
+       width:'max-content',
+       paddingLeft:10,
 
-        paddingRight:10,
-    }}
-    >{val.sitename}
-    <VscChromeClose onClick={e=>skipthis(val)} />
-</button>
+       paddingRight:10,
+   }}
+   >{val.sitename}
+   <VscChromeClose onClick={e=>skipthis(val)} />
+</button>:index===5?
+ <button
+ style={{
+
+     width:'max-content',
+     paddingLeft:10,
+
+     paddingRight:10,
+ }}
+ >{selectedjobsites.length-5} more
+ 
+</button>:
+<></>
 ))}
 
 <div className="a">
@@ -719,7 +1008,7 @@ val.chkouttime!=='-'&&
 </div>
 
 }
-{activetype==='weekly'
+{activesheet==='create'&&activetype==='weekly'
 &&
 <div className='clientpro clienttro' style={{
 backgroundColor:'transparent'
@@ -732,6 +1021,29 @@ backgroundColor:'transparent'
 >
 
     <>
+    <button className='light mlight' onClick={e=>boxfixeda?setboxfixeda(false):setboxfixeda(true)}>{currcom?currcom.username:'Choose Company'} <FaCaretDown className='fac' /> 
+    {
+    boxfixeda&&<div className="boxfixed" >
+    <input type="text" value={searchval} onClick={e=>e.stopPropagation()}   onChange={e=>setsearchval(e.target.value)} placeholder='Search company' />
+{searchval.length===0&&companies&&companies.map(val=>(
+<>
+<div className="headertablenewx" onClick={e=>openthiscom(val)} >
+    <div className="rond">
+        {val.username.charAt(0)}
+    </div>
+<h1 style={{width:"100%"}}>
+    
+    {val.username}</h1>
+
+
+</div>
+</>
+))
+
+}
+</div>
+}
+    </button>
     <button
  className='light'
     onClick={e=>boxfixed?setboxfixed(false):setboxfixed(true)}
@@ -739,8 +1051,9 @@ backgroundColor:'transparent'
 
 {
     boxfixed&&<div className="boxfixed" >
-    <input type="text" onChange={e=>setsearchval(e.target.value)} placeholder='Search project' />
-{searchval.length===0&&projects&&projects.map(val=>(
+    <input onClick={e=>e.stopPropagation()} type="text" onChange={e=>setsearchval(e.target.value)} placeholder='Search project' />
+{currcom&& searchval.length===0&&projects&&projects.map(val=>(
+     val.clientid===currcom._id&&
 <>
 <div className="headertablenewx" onClick={e=>openthis(val)} >
     <div className="rond">
@@ -790,6 +1103,8 @@ right:20,
         <button onClick={e=>setactivetypes('daily')} className={activetype==='daily'?'onthis':'onother'}>Daily</button>
 
         <button className={activetype==='weekly'?'onthis':'onother'} onClick={e=>setactivetypes('weekly')}>Weekly</button>
+
+        <button className='onthis' onClick={e=>savetimesheet()}>Save</button>
     </div>
   
 </div>
@@ -800,18 +1115,32 @@ justifyContent:'flex-start'
 
 }}
 >
-{selectedjobsites&&selectedjobsites.map(val=>(
-    <button
-    style={{
+{selectedjobsites&&selectedjobsites.map((val,index)=>(
+ 
+   index<5?
+   <button
+   style={{
 
-        width:'max-content',
-        paddingLeft:10,
+       width:'max-content',
+       paddingLeft:10,
 
-        paddingRight:10,
-    }}
-    >{val.sitename}
-        <VscChromeClose onClick={e=>skipthis(val)} />
-</button>
+       paddingRight:10,
+   }}
+   >{val.sitename}
+   <VscChromeClose onClick={e=>skipthis(val)} />
+</button>:index===5?
+ <button
+ style={{
+
+     width:'max-content',
+     paddingLeft:10,
+
+     paddingRight:10,
+ }}
+ >{selectedjobsites.length-5} more
+ 
+</button>:
+<></>
 ))}
 
 <div className="a">
@@ -877,9 +1206,29 @@ fontSize:14,
                             justifyContent:'center'
                         }}
                         >
-                            {
-                        `${(val.objects.find(obj => obj.date === val33.date) || {}).workinghours.split(':')[0]} h  ${(val.objects.find(obj => obj.date === val33.date) || {}).workinghours.split(':')[1]} m`}
-                        </h2>
+                       {(() => {
+      const val33WorkingHours = val.objects.filter(obj => (obj.date === val33.date&&obj.chkouttime!=='-'));
+
+      // If no objects found, display 'N/A'
+      if (val33WorkingHours.length === 0) {
+        return 'N/A';
+      }
+
+      // Calculate total working hours
+      const totalWorkingHours = val33WorkingHours.reduce((acc, curr) => {
+        const [hours, minutes] = curr.workinghours.split(':').map(Number);
+        acc.hours += hours;
+        acc.minutes += minutes;
+        return acc;
+      }, { hours: 0, minutes: 0 });
+
+      // Normalize total working hours
+      totalWorkingHours.hours += Math.floor(totalWorkingHours.minutes / 60);
+      totalWorkingHours.minutes %= 60;
+
+      // Format total working hours as 'hh:mm'
+      return `${String(totalWorkingHours.hours).padStart(2, '0')} h ${String(totalWorkingHours.minutes).padStart(2, '0')} m`;
+    })()}   </h2>
                         
                         </>:
                    
@@ -946,7 +1295,11 @@ position:'relative'
         <div className="nupoint">
             
         </div>
-        {currtaskforinterval&&currtaskforinterval.projectname}
+        {currtaskforinterval&&currtaskforinterval.map(val=>
+        (
+            <>{
+            val.projectname}
+        </>))}
     </div>
     
     </h2>
@@ -960,8 +1313,7 @@ position:'relative'
 
        }}
        >
-Hours:  {currtaskforinterval&&currtaskforinterval.workinghours.split(':')[0]} hours {currtaskforinterval&&currtaskforinterval.workinghours.split(':')[1]} mins
-       </button>
+ </button>
       
     </div>
     <div className="flxx"
@@ -999,54 +1351,57 @@ height:60,
 position:'relative'
 
       }}>
-      <div className={index%2===0?'fi':'fi2'}      style={{
-position:'absolute',
-marginTop: ( currtaskforinterval.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).mins-Number(val.split(':')[1].split(' ')[0]),
-height: ( currtaskforinterval.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).interval
-      
-      }}
-      >
-      {currtaskforinterval.tasks.some(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0])))&&
-
-      <>
-      
-      
-              <div className='fr'>
-             { (   ( currtaskforinterval.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).task
-        )     }
-                    <p>
-            Task
-        </p>
-              </div>  
-              <div className='fr'>
-             { (   ( currtaskforinterval.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).start
-        )     }
-                  <p>
-                    Start Time
-                  </p>
-              </div>  
-              <div className='fr'>
-             { (   ( currtaskforinterval.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).end
-        )     }
-                     <p>
-            End Time
-        </p>
-              </div>  
-              <div className='fr'>
-             { (   parseInt(( currtaskforinterval.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).interval/60) 
-        )     } hr { (   parseInt(( currtaskforinterval.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).interval%60) 
-        )     } mins
-        <p>
-            Total Time
-        </p>
+     {currtaskforinterval.map(vala=>(
+     vala.tasks.length>0&&
+         <div className={index%2===0?'fi':'fi2'}      style={{
+            position:'absolute',
+            marginTop: ( vala.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).mins-Number(val.split(':')[1].split(' ')[0]),
+            height: ( vala.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).interval
                   
-              </div>  
-              </>
-
-
-                    }
-
-      </div>
+                  }}
+                  >
+                  {vala.tasks.some(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0])))&&
+            
+                  <>
+                  
+                  
+                          <div className='fr'>
+                         { (   ( vala.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).task
+                    )     }
+                                <p>
+                        Task
+                    </p>
+                          </div>  
+                          <div className='fr'>
+                         { (   ( vala.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).start
+                    )     }
+                              <p>
+                                Start Time
+                              </p>
+                          </div>  
+                          <div className='fr'>
+                         { (   ( vala.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).end
+                    )     }
+                                 <p>
+                        End Time
+                    </p>
+                          </div>  
+                          <div className='fr'>
+                         { (   parseInt(( vala.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).interval/60) 
+                    )     } hr { (   parseInt(( vala.tasks.find(obj => (Number(obj.start.split(':')[0])>= Number(val.split(':')[0])&&Number(obj.start.split(':')[0])< Number((index<timeinterval.length-1?timeinterval[index+1]:timeinterval[index]).split(':')[0]))) || {}).interval%60) 
+                    )     } mins
+                    <p>
+                        Total Time
+                    </p>
+                              
+                          </div>  
+                          </>
+            
+            
+                                }
+            
+                  </div>
+     ))}
     </h1>
 
 ))

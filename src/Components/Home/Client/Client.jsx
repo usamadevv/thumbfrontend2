@@ -49,8 +49,7 @@ function submit() {
     axios.post(`${tz}/client/add`,{
       
         username:username,
-        address:address+" "+cty+" "+state+" "+zip,
-        number:phone,
+        address:address+"\n"+cty+" "+state+" "+zip,        number:phone,
         terms:terms,
         depts:depts,
         markup:markup,     
@@ -94,8 +93,7 @@ function submit() {
     axios.post(`${tz}/client/updatedata`,{
       
         username:username,
-        address:address,
-        number:phone,
+        address:address+"\n"+cty+" "+state+" "+zip,        number:phone,
         terms:terms,
         depts:depts,
         markup:markup,

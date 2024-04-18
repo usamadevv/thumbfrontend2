@@ -2592,7 +2592,19 @@ departments.map((val)=>(
                       Bill To:
                   </h3>
                   <h2>{incname}</h2>
-                  <h2>{inadd}</h2>
+               
+                  {
+                            inadd&&inadd.search('\n')>0?
+                            <>
+                            <h2>{inadd.split('\n')[0]}</h2>
+                            <h2>{inadd.split('\n')[1]}</h2>
+                            </>
+:<>
+
+<h2>
+    {inadd}</h2></>
+
+                         }
 {!multiple&&<>
 
 
