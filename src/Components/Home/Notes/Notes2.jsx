@@ -15,7 +15,8 @@ import {RiSendPlaneFill} from 'react-icons/ri'
 import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../../Context/SocketContext';
 import { FaPhone } from 'react-icons/fa';
-const Notes2 = () => {
+import { addNewChatToAdmin, addNewChatToSiteUser, addNewChatUserToAdmin, adminViewedMessage, createNote, findNotesbyIds, getAactiveSiteusers, getAllNotes, getTime, loginAdmin2 } from '../../../Utils/api';
+const Notes2 = ({props}) => {
 
     const currentDatee = new Date();
     const [emailw, setEmailw] = useState("");
@@ -88,29 +89,29 @@ const [date, setdate] = useState('')
 const [username, setusername] = useState('Lynda koo')
 const [leave, setleave] = useState('')
 
-const [senderids, setsenderids] = useState(localStorage.getItem('userid'))
-const [sender, setsender] = useState(localStorage.getItem('username'))
+const [senderids, setsenderids] = useState('')
+const [sender, setsender] = useState('')
 const [reciever, setreciever] = useState('') 
 const [seen, setseen] = useState('false')
 const [note, setnote] = useState('')
 const [time, settime] = useState('02:23')
 function submit() {
-    
-    axios.post(`${tz}/note/add`,{
+    var postData={
         sender:sender,
         reciever:reciever,
         recieverid:recid,
         seen:seen,
         note:note,
         time:time
-    }).then( res=>{
+    }
+    createNote(postData).then( res=>{
         console.log(res)
         
     }).then(()=>{
         setadduser('adduser2')
-         axios.get(`${tz}/note/getall`).then(res=>{
+         getAllNotes().then(res=>{
             console.log(res)
-            setuserd(res.data.Notes)
+            setuserd(res.Notes)
     })
     })
     
@@ -128,29 +129,32 @@ useEffect(() => {
     var ustime=datec.toLocaleString("en-US", {hour12:false,timeZone: "America/New_York"})
 settimede(ustime.split(',')[0])
     
-    axios.get(`${tz}/note/getall`).then(res=>{
+    getAllNotes().then(res=>{
         console.log(res)
-        setuserd(res.data.Notes)
+        setuserd(res.Notes)
     }).catch(err=>console.log(err))
  
-    axios.get(`${tz}/siteuser/getall`).then(resx=>{
+    getAactiveSiteusers().then(resx=>{
         console.log(resx)
-        var sstaff=resx.data.Siteuserd
-        axios.post(`${tz}/admin/find`,{
-            _id:localStorage.getItem('userid')
+        var sstaff=resx.Siteuserd
+        var postData={
+            email:props
     
-        }).then(res=>{
+        }
+        loginAdmin2(postData).then(res=>{
             
             console.log(res)
-            setaddedusers(res.data.Admin)
-            setEmailw(res.data.Admin.email)
+            setaddedusers(res.Admin)
+            setEmailw(res.Admin.email)
+            setsender(res.Admin.name)
+            setsenderids(res.Admin._id)
             axios.get(`${tz}/super/getall`).then(resxx=>{
                 console.log(resxx)
             
                 var sstaff2=resxx.data.Supervisor
                 setuserd2(  sstaff2.sort((a, b) => {
-                    const dateA = res.data.Admin.contacts.find(obj => obj.userid === a._id)?.timestamp || '';
-                    const dateB = res.data.Admin.contacts.find(obj => obj.userid === b._id)?.timestamp || '';
+                    const dateA = res.Admin.contacts.find(obj => obj.userid === a._id)?.timestamp || '';
+                    const dateB = res.Admin.contacts.find(obj => obj.userid === b._id)?.timestamp || '';
                 
                     // Use the Intl.Collator to compare ISO 8601 date strings
                     return new Intl.Collator(undefined, { numeric: true }).compare(dateB, dateA);
@@ -162,8 +166,8 @@ settimede(ustime.split(',')[0])
             
             // Sort arrayOfObjects2 based on the dates in arrayOfObjects
           setsitestaff(  sstaff.sort((a, b) => {
-            const dateA = res.data.Admin.contacts.find(obj => obj.userid === a._id)?.timestamp || '';
-            const dateB = res.data.Admin.contacts.find(obj => obj.userid === b._id)?.timestamp || '';
+            const dateA = res.Admin.contacts.find(obj => obj.userid === a._id)?.timestamp || '';
+            const dateB = res.Admin.contacts.find(obj => obj.userid === b._id)?.timestamp || '';
         
             // Use the Intl.Collator to compare ISO 8601 date strings
             return new Intl.Collator(undefined, { numeric: true }).compare(dateB, dateA);
@@ -242,9 +246,8 @@ if(addedusers&&addedusers.addedusers&&addedusers.addedusers.length>0){
     }
     else if(index===addedusers.addedusers.length-1){
 if(y===0){
-    
-    axios.post(`${tz}/admin/addchat`,{
-        _id:localStorage.getItem('userid'),
+    var postData={
+        _id:addedusers._id,
             name:val.name,
             userid:val._id,
             status:'No new chats',
@@ -253,28 +256,31 @@ if(y===0){
     
     
     
-        }).then(res2=>{  
-            axios.post(`${tz}/siteuser/addchat`,{
-                _id:val._id,
-                    name:val.name,
-                    userid:localStorage.getItem('userid'),
-                    status:'No new chats',
-                    role:'User'
-            
-            
-            
-            
-                }).then(res2x=>{  
+        }
+   addNewChatToAdmin(postData).then(res2=>{  
+    var postData2={
+        _id:val._id,
+            name:val.name,
+            userid:addedusers._id,
+            status:'No new chats',
+            role:'User'
+    
+    
+    
+    
+        }
+            addNewChatToSiteUser(postData2).then(res2x=>{  
                 
                     console.log(res2)
         
-                    axios.post(`${tz}/admin/find`,{
-                        _id:localStorage.getItem('userid')
+                    var postData3={
+                        email:props
                 
-                    }).then(res=>{
+                    }
+                    loginAdmin2(postData3).then(res=>{
                         setadduser('adduser2')
                         console.log(res)
-                        setaddedusers(res.data.Admin)
+                        setaddedusers(res.Admin)
                     }).catch(err=>console.log(err))
                 
                 })        
@@ -287,8 +293,8 @@ if(y===0){
 }
 else{
     
-    axios.post(`${tz}/admin/addchat`,{
-        _id:localStorage.getItem('userid'),
+    var postData={
+        _id:addedusers._id,
             name:val.name,
             userid:val._id,
             status:'No new chats',
@@ -297,28 +303,30 @@ else{
     
     
     
-        }).then(res2=>{  
-            axios.post(`${tz}/siteuser/addchat`,{
-                _id:val._id,
-                    name:val.name,
-                    userid:localStorage.getItem('userid'),
-                    status:'No new chats',
-                    role:'User'
-            
-            
-            
-            
-                }).then(res2x=>{  
+        }
+   addNewChatToAdmin(postData).then(res2=>{  
+    var postData2={
+        _id:val._id,
+            name:val.name,
+            userid:addedusers._id,
+            status:'No new chats',
+            role:'User'
+    
+    
+    
+    
+        }
+           addNewChatToSiteUser(postData2).then(res2x=>{  
                 
                     console.log(res2)
-        
-                    axios.post(`${tz}/admin/find`,{
-                        _id:localStorage.getItem('userid')
-                
-                    }).then(res=>{
+        var postData3={
+            email:props
+     
+         }
+                   loginAdmin2(postData3).then(res=>{
                         setadduser('adduser2')
                         console.log(res)
-                        setaddedusers(res.data.Admin)
+                        setaddedusers(res.Admin)
                     }).catch(err=>console.log(err))
                 
                 })        
@@ -331,24 +339,25 @@ else{
 const [activeid, setactiveid] = useState()
 
 function openthischat(val,val2){
-
-    axios.post(`${tz}/admin/viewed`,{
-        sender:localStorage.getItem('userid') ,
-               user:val._id,
-               unseen:0
-       
-           }).then( resx=>{
+var postData={
+    sender:addedusers._id ,
+           user:val._id,
+           unseen:0
+   
+       }
+adminViewedMessage(postData).then( resx=>{
               
            })
     setutype(val2)
     console.log(val)
     setactiveid(val)
-    axios.post(`${tz}/note/find`,{
+    var postData2={
       
-        senderid:localStorage.getItem('userid'),
+        senderid:addedusers._id,
         recieverid:val._id
-       }).then( res=>{
-        setmessages(res.data.Notes)
+       }
+   findNotesbyIds(postData2).then( res=>{
+        setmessages(res.Notes)
         
         setlsection('leftsection leftsectionp')
         messageEl.current.addEventListener('DOMNodeInserted', event => {
@@ -361,31 +370,19 @@ function openthischat(val,val2){
 
 
 }
-function deleted(val){
-    axios.post(`${tz}/note/delete`,{
-     _id:val
-    }).then( res=>{
-        console.log(res)
-        
-        axios.get(`${tz}/note/getall`).then(resa=>{
-            console.log(resa)
-            setuserd(resa.data.Notes)
-    })
-    })
-}
+
 const [msg, setmsg] = useState('')
 function sendmsg(){
     setprocess(true)
     
     if(activeid){
-        axios.get(`${tz}/att/time`).then(res1 => {
+       getTime().then(res1 => {
             console.log(res1)
     
-            var dateput = res1.data.Date.split(', ')
-           
-        axios.post(`${tz}/note/add`,{
+            var dateput = res1.Date.split(', ')
+           var postData={
             sender:sender,
-            senderid:localStorage.getItem('userid'),
+            senderid:addedusers._id,
             reciever:activeid.name,
             recieverid:activeid._id,
             seen:'false',
@@ -393,25 +390,27 @@ function sendmsg(){
             time:dateput[1],
             date:dateput[0]
     
-        }).then( res=>{
+        }
+        createNote(postData).then( res=>{
             console.log(res)
         
            if(utype==='user'){
-            axios.post(`${tz}/siteuser/adduser`,{
+            var postData2={
                 sender: activeid._id,
-                       user:localStorage.getItem('userid'),
+                       user:addedusers._id,
                        unseen:1,
                        msg:msg,
                
-                   }).then( resx=>{
-                      
-                       axios.post(`${tz}/admin/adduser`,{
-                           sender:localStorage.getItem('userid'),
-                                  user:activeid._id,
-                                  unseen:0,
-                                  msg:msg,
-                          
-                              }).then( resx2=>{
+                   }
+           addNewChatToSiteUser(postData2).then( resx=>{
+                      var postData3={
+                        sender:addedusers._id,
+                               user:activeid._id,
+                               unseen:0,
+                               msg:msg,
+                       
+                           }
+                       addNewChatUserToAdmin(postData3).then( resx2=>{
                                   setadduser('adduser2')
                                   setmsg('')
                                   openthischat(activeid,utype)
@@ -419,7 +418,7 @@ function sendmsg(){
                   setprocess(false)
                   socket.emit('newmessage',{activeid:activeid._id,msg:{time:dateput[1],
                 
-               date:dateput[0],msg:msg },from:localStorage.getItem('userid')})
+               date:dateput[0],msg:msg },from:addedusers._id})
                   
                               })
        
@@ -428,20 +427,26 @@ function sendmsg(){
            else{
             axios.post(`${tz}/super/adduser`,{
                 sender: activeid._id,
-                       user:localStorage.getItem('userid'),
+                       user:addedusers._id,
                        unseen:1,
                        msg:msg
                
                    }).then( resx=>{
                       
                        axios.post(`${tz}/admin/adduser`,{
-                           sender:localStorage.getItem('userid'),
+                           sender:addedusers._id,
                                   user:activeid._id,
                                   unseen:0
                                   ,
                        msg:msg
                           
-                              }).then( resx2=>{
+                              }, {
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    // Add Authorization header with the token
+                                    'Authorization': `${props}`
+                                }
+                            }).then( resx2=>{
                                   setadduser('adduser2')
                                   setmsg('')
                                   openthischat(activeid,utype)
@@ -450,7 +455,7 @@ function sendmsg(){
                                   setprocess(false)
                                   socket.emit('newmessage',{activeid:activeid._id,msg:{time:dateput[1],
                                 
-                               date:dateput[0],msg:msg },from:localStorage.getItem('userid')})
+                               date:dateput[0],msg:msg },from:addedusers._id})
                                   
                               })
        

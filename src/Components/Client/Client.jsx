@@ -54,6 +54,7 @@ function onChanges(e) {
 console.log(e)
     
 }
+const [adminrights, setadminrights] = useState(false)
 function submit() {
     if(actiontype==='edit'){
     

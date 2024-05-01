@@ -1084,6 +1084,25 @@ border: 1px solid #babcc8;
     color: #605cdc;
 
 }
+.exportbtn4 {
+
+    transform: translateY(145px);
+    z-index: 99999;
+    position: fixed;
+    right: 20px;
+    width: 11%;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #605cdc;
+    background-color: white;
+    color: #605cdc;
+
+}
 
 .ss333 {
     z-index: 99999;
@@ -5827,6 +5846,9 @@ background-color: #0ba488;
 }
 .hglight>.select2i{
     margin-top: -5px;
+}
+.react-calendar__tile--now{
+    background-color: white!important;
 }
 .select2i{
     padding-right: 10px;

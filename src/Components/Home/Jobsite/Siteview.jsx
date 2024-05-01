@@ -10,7 +10,8 @@ import axios from 'axios';
 import Profile from './Profile';
 import { IoClose } from 'react-icons/io5';
 import { Calendar } from 'react-calendar';
-const Siteview = () => {
+import { findSiteUserImg, getAactiveSiteusers, getAllJobsites, getAttByDate, getTime } from '../../../Utils/api';
+const Siteview = ({props}) => {
     function formatDate(inputDate) {
         const parts = inputDate.split('/');
         const month = parseInt(parts[0]);
@@ -54,26 +55,27 @@ const Siteview = () => {
         var yt = ustime.split(', ')
         setindate(yt[0])
 
-        axios.get(`${tz}/siteuser/active`).then(res => {
+        getAactiveSiteusers().then(res => {
             console.log(res)
-            setempdata(res.data.Siteuserd)
+            setempdata(res.Siteuserd)
         })
-        axios.get(`${tz}/att/time`).then(res => {
+        getTime().then(res => {
 
-            var dateput = res.data.Date.split(', ')
+            var dateput = res.Date.split(', ')
             setdatep(dateput[0])
-            axios.post(`${tz}/siteatt/findbydate`,{
+            var postData={
                 date:yt[0],
-            }).then(resa => {
+            }
+           getAttByDate(postData).then(resa => {
                 console.log(resa)
-                setdata(resa.data.Siteatt)
+                setdata(resa.Siteatt)
             })
         })
        
 
-        axios.get(`${tz}/jobsite/getall`).then(res => {
+        getAllJobsites().then(res => {
             console.log(res)
-            setdataj(res.data.Jobsite)
+            setdataj(res.Jobsite)
 
          
 
@@ -145,7 +147,7 @@ const Siteview = () => {
 
 
 
-                res.data.Jobsite.forEach(element => {
+                res.Jobsite.forEach(element => {
                     if (element.latlang) {
                         marker2.current = new mapboxgl.Marker()
                             .setLngLat(JSON.parse(element.latlang))
@@ -216,15 +218,16 @@ setabs(abs=>abs+1)
         imgElement.width = 40; // Set width of the image
         imgElement.height = 50 // Set height of the image
     
-
-        axios.post(`${tz}/siteuser/findimg`,{
+        var postData={
             id:val.userid
-          }).then(res=>{
-            console.log(res.data.Siteuserd)
-           if(res.data.Siteuserd!=='not')
+          }
+
+        findSiteUserImg(postData).then(res=>{
+            console.log(res.Siteuserd)
+           if(res.Siteuserd!=='not')
            {
             const imgElement2 = document.createElement('img');
-            imgElement2.src =res.data.Siteuserd ; // URL of the image
+            imgElement2.src =res.Siteuserd ; // URL of the image
             imgElement2.width = 30; // Set width of the image
             imgElement2.height = 30 // Set height of the image
              imgElement2.style.marginLeft = '5px'; // Set width of the image
@@ -335,11 +338,12 @@ const [value2, valuex] = useState(new Date());
     var yt = ustime.split(', ')
     setindate(yt[0])
     console.log(yt[0])
-    axios.post(`${tz}/siteatt/findbydate`,{
+    var postData={
         date:yt[0],
-    }).then(resa => {
+    }
+    getAttByDate(postData).then(resa => {
         console.log(resa)
-        setdata(resa.data.Siteatt)
+        setdata(resa.Siteatt)
     })
 }
   return (
@@ -378,7 +382,7 @@ const [value2, valuex] = useState(new Date());
                     {val.chkouttime==='-'?formatTime(val.time):formatTime(val.chkouttime)}
                 </div>
            <div className="topnot">
-          <Profile id={val} />
+          <Profile id={val} props={props} />
          
             <div className="lineno">
                 <p><h5>{val.username}</h5>

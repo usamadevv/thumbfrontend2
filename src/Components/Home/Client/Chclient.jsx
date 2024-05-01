@@ -2,17 +2,17 @@ import React, { useState } from 'react'
 import Client from './Client'
 import Clientnew from './Clientnew'
 
-const Chclient = () => {
+const Chclient = ({props}) => {
 const [i, seti] = useState(1)
 
   return (
     <>
     {i===1&&
-        <Client />
+        <Client props={props} />
 
         }
         {i===2&&
-        <Clientnew />
+        <Clientnew  props={props} />
 
         } 
     {i===0&&

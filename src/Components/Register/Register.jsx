@@ -72,7 +72,7 @@ const [lname, setlname] = useState('')
     }
     else {
       setcheckinfo(false)
-      axios.post(`${tz}/client/add`, {
+      axios.post(`${tz}/client/addinactive`, {
        email:emailc,
         username: companyname,
         address: address + " " + city + " " + state + " " + zip,
@@ -96,7 +96,7 @@ const [lname, setlname] = useState('')
     else {
       setcheckinfo(false)
 
-      axios.post(`${tz}/siteuser/add`, {
+      axios.post(`${tz}/siteuser/addinactive`, {
         name: name+fname+lname,
         nc: 'no',
         taxes: 0,
@@ -231,7 +231,7 @@ else{
   useEffect(() => {
 
     axios
-      .get(`${tz}/skills/getall`).then(res => {
+      .get(`${tz}/skills/getallview`).then(res => {
         console.log(res)
         setskildata(res.data.Skillsdata)
       })

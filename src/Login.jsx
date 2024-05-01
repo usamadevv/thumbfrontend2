@@ -3,6 +3,7 @@ import { useState } from 'react'
 import ss from './images/ss.png'
 import axios from 'axios'
 import { tz } from './Components/apis'
+import { adminPass, adminReset, loginAdmin } from './Utils/api'
 const Login = () => {
 
   
@@ -16,13 +17,14 @@ function  resetmail2() {
     setsending(true)
     var seq = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
 setotp(`45${seq}`)
-    axios.post(`${tz}/admin/reset`, {
-        email: resetmail,
-        otp:`45${seq}`
+var postData={
+  email: resetmail,
+  otp:`45${seq}`
 
-    }).then((res) => {
+}
+   adminReset(postData).then((res) => {
 console.log(res)
-if(res.data.Admin==='emailok'){
+if(res.Admin==='emailok'){
     setsteps(1)
 }
 else{
@@ -52,21 +54,18 @@ else{
       }, [])
     function login(e) {
         e.preventDefault()
-        axios.post(`${tz}/admin/login`,{
-            email:email,
-            pass:pass
-        }).then((res)=>{
+        var postData={
+          email:email,
+          pass:pass
+      }
+       loginAdmin(postData).then((res)=>{
             console.log(res)
             if(res.data==='error'){
                 alert('Invalid Credentials')
             }
             else{
-             if(res.data.Admin){
-                localStorage.setItem('userid',res.data.Admin._id)
-                localStorage.setItem('username',res.data.Admin.email)
-                localStorage.setItem('emptype','admin')
-
-                localStorage.setItem('emptype2','admin')
+             if(res.Admin){
+                localStorage.setItem('usertoken',res.Admin)
                 window.location.pathname=''
              }
              else{
@@ -88,11 +87,12 @@ else{
         }
     }
     function apipass() {
-        axios.post(`${tz}/admin/pass`, {
-            email: resetmail,
-            password:npass
-    
-        }).then((res) => {
+      var postData={
+        email: resetmail,
+        password:npass
+
+    }
+        adminPass(postData).then((res) => {
             console.log(res)
             alert('Password changed')
             window.location.reload()

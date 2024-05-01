@@ -49,7 +49,8 @@ import { async } from '@firebase/util'
 import g from '../../../images/g.png'
 import g2 from '../../../images/g2.png'
 import Invoice from './invoice'
-const Files = () => {
+import { addJobiste, addPayroll, findClientById, getAactiveSiteusers, getActiveClients, getAllClients, getAllJobsites, loginAdmin2, sendClientInvoice, updateClient, updateClientOnly, updateJobiste } from '../../../Utils/api';
+const Files = ({props}) => {
     const [files, setfiles] = useState([])
 const [companies, setcompanies] = useState([])
 
@@ -71,6 +72,14 @@ function importthis(val) {
       setpreparedata((prevData) => [
         ...prevData,
         {
+        
+
+            siteid:element.p_siteid,
+            userid: element.p_userid,
+            perdiemel:element.p_perdiemel,
+            onperdiemel:element.p_onperdiemel,
+            p_perdiem:element.p_perdiem, 
+         p_onperdiem:element.p_onperdiem,
           Taxes: element.taxes,
           Client: incname,
           Date: element.date,
@@ -101,7 +110,94 @@ function importthis(val) {
     setadduserd('adduser2');
    }
 }
-  
+function savepayroll(){
+    var updatedata=preparedata
+    const updatedData = updatedata.map(element => {
+        // Check if the element's siteid and userid match the provided values
+        if (element.siteid  && element.userid) {
+            // Find the site corresponding to siteid
+            const site = data.find(site => site._id === element.siteid);
+            if (site) {
+                // Find the user corresponding to userid in the site's users array
+                const user = site.user.find(user => user.userid === element.userid);
+                
+                if (user) {
+                    // Update OT_Pay_rate with user's otpayrate
+                    return {
+                        ...element,
+                        OT_Pay_rate: Number(user.otpayrate),
+                        Client:comp.username,
+                        Payrate:Number(user.cpr==='0'?user.payrate:user.cpr),
+                        perdiem:element.p_perdiem,
+                        onperdiem:element.p_onperdiem,
+                        total: ((Number(user.cpr==='0'?user.payrate:user.cpr)) * (Number(element.Hrs))) + (Number(element.Ot_Hrs) * (Number(user.otpayrate))),
+                        net:
+                        ((Number(user.cpr==='0'?user.payrate:user.cpr)) * Number(element.Hrs)) + (Number(element.Ot_Hrs) * (Number(user.otpayrate)))
+                        +(element.onperdiemel==='Yes'?Number(element.onperdiem):0)
+                        +(element.perdiemel==='Yes'?Number(element.perdiem)*Number(element.days):0)
+    -
+                        (
+                            element.nc_4 === 'no'|| element.nc_4 === '-'|| element.nc_4===0
+                              ? 0
+                              : (
+                                  (Number(user.cpr==='0'?user.payrate:user.cpr) * 0) +
+                                  (0 * parseInt(user.otpayrate))
+                                ) * 4 / 100
+                          )-(element.deductions)
+                         
+                    };
+                }
+            }
+            else{
+                const user = empdata.find(user => user._id === element.userid);
+                return {
+                    ...element,
+                    OT_Pay_rate: Number(user.otpayrate),
+                    Client:comp.username,
+                    perdiem:element.p_perdiem,
+                    onperdiem:element.p_onperdiem,
+                    Payrate:Number(user.cpr==='0'?user.payrate:user.cpr),
+                    total: ((Number(user.cpr==='0'?user.payrate:user.cpr,)) * (Number(element.Hrs))) + (Number(element.Ot_Hrs) * (Number(user.otpayrate))),
+                    net:
+                    ((Number(user.cpr==='0'?user.payrate:user.cpr,)) * Number(element.Hrs)) + (Number(element.Ot_Hrs) * (Number(user.otpayrate)))
+                    +(element.onperdiemel==='Yes'?Number(element.onperdiem):0)
+                    +(element.perdiemel==='Yes'?Number(element.perdiem)*Number(element.days):0)
+    -
+                    (
+                        element.nc_4 === 'no'|| element.nc_4 === '-'|| element.nc_4===0
+                          ? 0
+                          : (
+                              (Number(user.cpr==='0'?user.payrate:user.cpr,) * 0) +
+                              (0 * parseInt(user.otpayrate))
+                            ) * 4 / 100
+                      )-(element.deductions)
+                     
+                };
+    
+            }
+        }
+        return element; // Return the original element if no update is made
+    });
+    console.log(updatedData)
+    console.log(updatedata)
+    var postData={
+        data:updatedData,
+        companyid:selected,
+        status:'Pending',
+        by:datax.name,
+        createdon:new Date().toLocaleDateString('en-US'),
+        date:invoiced.weekno,
+
+    }
+      
+        addPayroll(postData).then(rees=>{
+    alert("Payroll saved")
+        })
+    
+    
+    }
+    
+
 const mapContainer2 = useRef(null);
 const map = useRef(null);
 const [lng, setLng] = useState(-70.9);
@@ -495,7 +591,8 @@ function save() {
         if (index === preparedata.length - 1) {
 
             if (l === 2) {
-                axios.post(`${tz}/client/update`, {
+
+                var postData= {
 
                     date: indate,
                     weekno: currentWeekNumber,
@@ -517,7 +614,8 @@ function save() {
 
 
 
-                }).then(res => {
+                }
+                updateClientOnly(postData).then(res => {
                     console.log(res)
                     alert('Saved')
 
@@ -526,7 +624,7 @@ function save() {
                 })
             }
             else {
-                axios.post(`${tz}/client/update`, {
+                var postData={
 
 
                     _id: currid,
@@ -547,7 +645,8 @@ function save() {
 
 
 
-                }).then(res => {
+                }
+                updateClientOnly(postData).then(res => {
                     console.log(res)
                     alert('Saved')
 
@@ -606,10 +705,11 @@ function preparesheet(valx) {
 
                     setinname(val.sitename)
 
-                    axios.post(`${tz}/client/findbyid`, {
+                    var postData={
                         Client_id: val.clientid
-                    }).then(res => {
-                        setinadd(res.data.Client[0].address)
+                    }
+                    findClientById(postData).then(res => {
+                        setinadd(res.Client[0].address)
                     })
 
                     setinnum(val.no)
@@ -639,14 +739,11 @@ function preparesheet(valx) {
                             Hrs: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Hrs)||0,
                             Payrate: valx === 1 ? Number(element.payrate) : Number(element.payrate) + Number(element.payrate) * Number(val.markup) / 100,
                             siteid:val._id,
-
                             userid: element.userid,
                             distance: parseInt(element.distance),
                             days: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.days)||0,
                             perdiemel: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.perdiemel)||element.perdiem, onperdiemel: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.onperdiemel)||element.onperdiem,
                             perdiem: applyperdiemx ? (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.perdiem)||0 : 0, onperdiem: applyperdiemx ? (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.onperdiem)||0 : 0,
-
-
                             Ot_Hrs: (allhours.find(obj => obj.userid === element.userid&& obj.siteid === val._id)?.Ot_Hrs)||0,
                             OT_Pay_rate: Number(element.otpayrate) + Number(element.otpayrate) * Number(val.markup) / 100,
                             nc_4: element.nc === 'no' ? '-' : ((Number(element.payrate) * 0) + (0 * Number(element.otpayrate))) * 4 / 100,
@@ -767,10 +864,11 @@ function preparesheet(valx) {
 
                 }
                 if (ind.search(' ' + index.toString() + ' ') >= 0) {
-                    axios.post(`${tz}/client/findbyid`, {
+                    var postData={
                         Client_id: val.clientid
-                    }).then(res => {
-                        setinadd(res.data.Client[0].address)
+                    }
+                    findClientById(postData).then(res => {
+                        setinadd(res.Client[0].address)
                     })
 
 
@@ -1367,6 +1465,7 @@ function exports2() {
                     horizontal: "center",
                 },
                 numFmt: "$#,###.00"
+
             };
             var styl2x =
             {
@@ -1723,19 +1822,29 @@ function selectthis(val) {
 
 }
 
-
+const [datax, setdatax] = useState(null)
 useEffect(() => {
-    axios.get(`${tz}/siteuser/active`).then(res => {
+    var postData={
+        email:props
+    }
+  
+   loginAdmin2(postData).then(res=>
+        {
+            console.log(res
+                )
+                setdatax(res.Admin)
+        })
+   getAactiveSiteusers().then(res => {
         console.log(res)
-        setempdata(res.data.Siteuserd)
+        setempdata(res.Siteuserd)
     })
 
-    axios.get(`${tz}/jobsite/getall`).then(res => {
+    getAllJobsites().then(res => {
         console.log(res)
-        setdata(res.data.Jobsite)
+        setdata(res.Jobsite)
 
-        setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
-        setpageCount(Math.ceil(res.data.Jobsite.length / 5))
+        setcurrentItems(res.Jobsite.slice(itemOffset, endOffset))
+        setpageCount(Math.ceil(res.Jobsite.length / 5))
 
 
 
@@ -1756,7 +1865,7 @@ useEffect(() => {
         map2.current.addControl(geocoder2);
 
         map2.current.on('style.load', function () {
-            res.data.Jobsite.forEach(element => {
+            res.Jobsite.forEach(element => {
                 if (element.latlang) {
                     marker2.current = new mapboxgl.Marker()
                         .setLngLat(JSON.parse(element.latlang))
@@ -1801,7 +1910,7 @@ useEffect(() => {
 
 function req() {
     if (actiontype === 'update') {
-        axios.post(`${tz}/jobsite/updatesite`, {
+        var postData={
             clientid: clientid,
             clientname: cname,
             status: 'Active',
@@ -1817,24 +1926,24 @@ function req() {
 
 
 
-        }).then(res => {
-            axios.get(`${tz}/jobsite/getall`).then(res => {
+        }
+        updateJobiste(postData).then(res => {
+            getAllJobsites().then(res => {
                 setsteps(0)
                 setcheckinfo(false)
                 console.log(res)
-                setdata(res.data.Jobsite)
+                setdata(res.Jobsite)
                 setadduser('adduser2')
 
-                setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
-                setpageCount(Math.ceil(res.data.Jobsite.length / 5))
+                setcurrentItems(res.Jobsite.slice(itemOffset, endOffset))
+                setpageCount(Math.ceil(res.Jobsite.length / 5))
                 setactiontype('edit')
             })
 
         })
     }
     else {
-
-        axios.post(`${tz}/jobsite/add`, {
+        var postData={
 
             clientid: clientid,
             clientname: cname,
@@ -1848,71 +1957,27 @@ function req() {
             perdiemamnt: perdiemamnt,
             onperdiemamnt: onperdiemamnt,
             latlang: latlang
-        }).then(res => {
-            axios.get(`${tz}/jobsite/getall`).then(res => {
+        }
+
+        addJobiste(postData).then(res => {
+            getAllJobsites().then(res => {
                 setsteps(0)
                 setcheckinfo(false)
                 console.log(res)
-                setdata(res.data.Jobsite)
+                setdata(res.Jobsite)
                 setadduser('adduser2')
 
-                setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
-                setpageCount(Math.ceil(res.data.Jobsite.length / 5))
+                setcurrentItems(res.Jobsite.slice(itemOffset, endOffset))
+                setpageCount(Math.ceil(res.Jobsite.length / 5))
             })
         })
     }
 
 }
 
-function turnon() {
-    if (is === 0) {
-        settaxas('yes')
-
-        setcircle('circle2')
-        settaxes('taxes2')
-        setis(1)
-    }
-    else {
-
-        settaxas('no')
-
-        setcircle('circle')
-        settaxes('taxes')
-        setis(0)
-    }
-
-}
-function turnon2() {
-    if (is2 === 0) {
-        setnc('4')
-
-        setcircle2('circle2')
-        settaxes2('taxes2')
-        setis2(1)
-    }
-    else {
-
-        setcircle2('circle')
-        settaxes2('taxes')
-        setis2(0)
-
-        setnc('no')
-    }
-
-}
 const [lastselected, setlastselected] = useState('XXXXXX')
 const [lastcom, setlastcom] = useState('')
 const [allhours, setallhours] = useState([])
-
-function backtop() {
-    setk(0)
-    setlastselected(ind)
-    setlast2(lastcom)
-    setallhours(prevData => [...prevData.map(existingObj => preparedata.find(newObj => newObj.siteid === existingObj.siteid&&newObj.userid === existingObj.userid) || existingObj), ...preparedata.filter(newObj => !prevData.find(existingObj => newObj.siteid === existingObj.siteid&&newObj.userid === existingObj.userid))]);
-console.log(allhours)
-preparesheet(2)
-
-}
 
 const [jobn, setjobn] = useState('')
 const [nc, setnc] = useState('')
@@ -1926,101 +1991,34 @@ const [ind, setind] = useState('')
 function sendemail(val){
     const yx=document.getElementById('shareable').innerHTML
 
-
-    axios.post(`${tz}/client/sendinvoice`, {
+    var postData={
         email:val.email,
         html:yx,
         key:uuidv4(),
-    }).then(rees=>{
+    }
+
+    sendClientInvoice(postData).then(rees=>{
 console.log(rees)
 alert(`Email sent to ${val.dept} department`)
 setshowlistviewxx(false)
         })
 
 }
-function addindex(index,val) {
-    setlastcom(val.clientid)
-    if (ind.search(' ' + index.toString() + ' ') >= 0) {
 
-        console.log(ind)
-        setind(ind.replace(' ' + index.toString() + ' ', ''))
-    }
-    else {
-
-        setind(ind + ' ' + index.toString() + ' ')
-        console.log(ind)
-    }
-
-
-}
 
 const [steps, setsteps] = useState(0)
 const [adduser3, setadduser3] = useState('adduser2')
 const [tempjson, settempjson] = useState()
 const [upind, setupind] = useState(0)
-function showadd(index) {
-    setupind(index)
-    setadduser3('adduser')
-    console.log(preparedata[index])
-    settempjson(preparedata[index])
 
 
-}
-
-function updatedata() {
-    var p = preparedata
-    p[upind] = tempjson
-    p[upind].total = (p[upind].Payrate * p[upind].Hrs) + (p[upind].Ot_Hrs * p[upind].OT_Pay_rate)
-
-
-    if (tempjson.nc_4 !== '-') {
-
-        p[upind].nc_4 = ((p[upind].Payrate * p[upind].Hrs) + (p[upind].Ot_Hrs * p[upind].OT_Pay_rate)) * 4 / 100
-
-    }
-
-    p[upind].net = p[upind].total - (tempjson.nc_4 !== '-' ? p[upind].nc_4 : 0) - p[upind].deductions + (applyperdiemx ? Number(p[upind].perdiem * p[upind].days) : 0) + (applyperdiemx ? Number(p[upind].onperdiem * p[upind].days) : 0)
-
-    setpreparedata(p)
-    setadduser3('adduser2')
-
-}
 const [l, setl] = useState(2)
 const [currone, setcurrone] = useState()
-const [mx, setmx] = useState(0)
-const [currproject, setcurrproject] = useState()
-function setms(val) {
-    setcurrproject(val)
-    if (mx === 0) {
-        setmx(1)
-    } else {
-        setmx(0)
-    }
-
-}
-function setnameq(val) {
-    empdata.forEach(element => {
-        if (element._id === val) {
-
-            setname(element.name)
-            setskill(element.skill)
-            setpayrate(element.payrate)
-            setotpayrate(element.otpayrate)
-            setnc(val.nc)
-            settaxas(val.taxes)
-
-        }
-
-    });
-
-
-
-}
 const [clients, setclients] = useState()
 useEffect(() => {
-    axios.get(`${tz}/client/getall`).then(res => {
+    getAllClients().then(res => {
         console.log(res)
-        setclients(res.data.Client)
+        setclients(res.Client)
     })
 
     return () => {
@@ -2044,146 +2042,10 @@ function skipthis(element) {
     });
 }
 
-function skipthis2(element) {
-
-    var y = userdata
-    setuserdata([])
-    y.forEach((elemen, index) => {
-        if (index === element) {
-
-        }
-        else {
-            setuserdata(pre => [...pre, elemen])
-        }
-
-
-    });
-}
 const [deleteids, setdeleteids] = useState([])
-function setadduserx() {
-    setadduser('adduser2')
-    setsteps(0)
-    setcheckinfo(false)
-    setactiontype('edit')
-}
-function deletedata() {
 
-    console.log(ind)
-    var r = []
-    data.forEach((element, index) => {
-        if (index === data.length - 1) {
-
-            if (ind.search(' ' + index.toString() + ' ') >= 0) {
-                r.push(element._id)
-
-
-
-            }
-            axios.post(`${tz}/jobsite/delete`, {
-                ids: r
-
-
-
-            }).then(res => {
-                console.log(res)
-                setdeleteids([])
-                axios.get(`${tz}/jobsite/getall`).then(res2 => {
-                    console.log(res2)
-                    setdata(res2.data.Jobsite)
-                    setind('')
-
-                    setcurrentItems(res2.data.Jobsite.slice(itemOffset, endOffset))
-                    setpageCount(Math.ceil(res2.data.Jobsite.length / 5))
-                })
-            })
-        } else {
-
-            if (ind.search(' ' + index.toString() + ' ') >= 0) {
-                setdeleteids(del => [...del, element._id])
-                r.push(element._id)
-
-
-
-            }
-        }
-
-    });
-
-
-}
-const [nameskill, setnameskill] = useState([])
 const [indue, setindue] = useState('')
 const [divfile, setdivfile] = useState('')
-
-function postclient() {
-    var tx = []
-
-    txp.forEach((val, index) => {
-        tx.push({
-            empname: val["NAME"],
-            hrs: val["REG HRS"],
-            date: val["WEEKEND"],
-            payrate: val["REG RTE"],
-            othrs: val["OT HRS"],
-            otpayrate: val["OT RTE"],
-            total: val["TOTAL"],
-            skill: val["SKILL"],
-
-
-
-
-
-
-
-
-
-        })
-        if (preparedata.length - 1 === index) {
-            axios.post(`${tz}/client/update`, {
-                _id: currid,
-                date: indate,
-                no: inno,
-                due: indue,
-                total: Number(totalall).toFixed(2).toLocaleString('en'),
-                paid: 0,
-                balance: Number(totalall).toFixed(2).toLocaleString('en'),
-                status: 'pending',
-
-
-
-
-                data: tx
-
-
-
-
-            }).then(res => {
-                console.log(res)
-                alert('Updated')
-                setsteps(0)
-                setcheckinfo(false)
-                {/*     axios.post(`${tz}/noti/add`, {
-                message:`Company Sent an invoice of ${totalall}`,
-                idp:project.clientid,
-                time:dateput[1],
-                status:'att',
-            }).then(resp => {
-                console.log(resp)
-          
-                
-
-
-            })
-        */}
-
-
-            })
-        }
-
-
-    });
-
-}
 const [indate, setindate] = useState('')
 const [inno, setinno] = useState('')
 const [inname, setinname] = useState('')
@@ -2191,255 +2053,31 @@ const [innum, setinnum] = useState('')
 const [inadd, setinadd] = useState('')
 const [mapx, setmapx] = useState('mapx')
 const [cfm, setcfm] = useState(true)
-function updateaccount() {
-    console.log(preparedata)
-    axios.post(`${tz}/siteuser/updatebulk`, {
-        preparedata: preparedata
 
-
-
-    }).then(res => {
-        console.log(res)
-        alert('Updated')
-        setsteps(0)
-        setcheckinfo(false)
-        {/*     axios.post(`${tz}/noti/add`, {
-         message:`Company Sent an invoice of ${totalall}`,
-         idp:project.clientid,
-         time:dateput[1],
-         status:'att',
-     }).then(resp => {
-         console.log(resp)
-   
-         
-
-
-     })
- */}
-
-
-    })
-}
 const [currjobid, setcurrjobid] = useState('')
-function selectthiscompany(val){
-    setcurrjobid(val)
-    setind('')
-    setcurrid(val)
-    setboxprojects('boxprojects2')
- 
 
-}
 const [selectedweek, setselectedweek] = useState('')
 function openfiles(val){
     setselectedweek(val)
     setshowfiles(true)
  
 }
-function setaduserl2() {
-    setaduserl('adduser2')
-    alert('Email sent!')
-}
-function turn(val, index) {
-    if (val === 'No') {
-        setuserdata(Object.values({ ...userdata, [index]: { ...userdata[index], perdiem: 'Yes' } }))
-    }
 
-    else {
 
-        setuserdata(Object.values({ ...userdata, [index]: { ...userdata[index], perdiem: 'No' } }))
-    }
-}
 
-function turn2(val, index) {
-    if (val === 'No') {
-        setuserdata(Object.values({ ...userdata, [index]: { ...userdata[index], onperdiem: 'Yes' } }))
-    }
 
-    else {
-
-        setuserdata(Object.values({ ...userdata, [index]: { ...userdata[index], onperdiem: 'No' } }))
-    }
-}
-
-function turn3(val, index) {
-    if (val === 'No') {
-        setuserdata(Object.values({ ...userdata, [index]: { ...userdata[index], food: 'Yes' } }))
-    }
-
-    else {
-
-        setuserdata(Object.values({ ...userdata, [index]: { ...userdata[index], food: 'No' } }))
-    }
-}
 const [checkinfo, setcheckinfo] = useState(false)
 const [incname, setincname] = useState('')
 const componentRef = useRef();
 
 
-function setstex() {
-
-    if (steps === 0) {
-        if (!sname || !pno || !cname) {
-            setcheckinfo(true)
-
-        } else {
-
-            setcheckinfo(false)
-
-            setsteps(steps => steps + 1)
-        }
-    }
-    else if (steps === 1) {
-        if (!chklatlang) {
-            setcheckinfo(true)
-
-        } else {
-
-            setcheckinfo(false)
-
-            setsteps(steps => steps + 1)
-        }
-    }
-
-    else if (steps === 2) {
-        if (tasks.length === 0) {
-            alert('Add at least 1 task')
-
-        } else {
-
-
-            setsteps(steps => steps + 1)
-        }
-    }
-    else if (steps === 3) {
-
-
-        setsteps(steps => steps + 1)
-        var t = userdata
-
-        setuserdata([])
-        const fetchData = async () => {
-            const updatedObjects = await Promise.all(
-                t.map(async (obj) => {
-                    const res = await axios.get(`https://api.mapbox.com/directions/v5/mapbox/driving/${JSON.parse(obj.latlang).lng},${JSON.parse(obj.latlang).lat};${chklatlang.lng},${chklatlang.lat}?access_token=pk.eyJ1IjoiYXlhYW56YXZlcmkiLCJhIjoiY2ttZHVwazJvMm95YzJvcXM3ZTdta21rZSJ9.WMpQsXd5ur2gP8kFjpBo8g`);
-
-                    var di = ((res.data.routes[0].distance / 1000) * 0.62) + 6
-                    console.log(di)
-                    if (di >= perdiemmil && di >= onperdiemmil) {
-                        const updatedObj = { ...obj, distance: di, onperdiem: 'Yes', perdiem: 'Yes', };
-                        return updatedObj
-
-                    }
-                    else if (di >= perdiemmil && di < onperdiemmil) {
-                        const updatedObj = { ...obj, distance: di, onperdiem: 'No', perdiem: 'Yes' };
-                        return updatedObj
-
-                    }
-                    else if (di < perdiemmil && di >= onperdiemmil) {
-                        const updatedObj = { ...obj, distance: di, onperdiem: 'Yes', perdiem: 'No' };
-                        return updatedObj
-
-                    }
-                    else {
-                        const updatedObj = { ...obj, distance: di, onperdiem: 'No', perdiem: 'No' };
-                        return updatedObj
-
-                    }
-                })
-            )
-            console.log(updatedObjects)
-            setuserdata(updatedObjects)
-
-
-        };
-        fetchData()
-
-
-
-    }
-}
 const [compnay, setcompnay] = useState('City Force LLC')
 const [adduser2, setadduser2] = useState('adduser2')
 const [add, setadd] = useState('1106 W CORNWALLIS RD, STE 105')
 const [actiontype, setactiontype] = useState('edit')
-function updateuser() {
-    setactiontype('update')
-    setadduser('adduser fixedarea')
-    setclientid(currone.clientid)
-    setcname(currone.clientname)
-    setsname(currone.sitename)
-    setmarkupcuee(currone.markup)
-    setuserdata(currone.user)
-    setpno(currone.no)
-    setaddress(currone.address)
-    setchklatlang(JSON.parse(currone.latlang))
 
-
-
-}
 const [applyperdiemx, setapplyperdiemx] = useState(true)
-function applyperdiem() {
-    const updatedArray = preparedata.map((obj, index) => {
-        if (index === preparedata.length - 1) {
 
-            setapplyperdiemx(true)
-        }
-        if (obj.perdiemel === 'Yes' && obj.onperdiemel === 'Yes') {
-            var updobj = {
-                ...obj,
-                perdiem: perdiemamnt1,
-                onperdiem: onperdiemamnt1,
-            }
-            updobj.total = Number(updobj.total) + Number(perdiemamnt1) * updobj.days + Number(onperdiemamnt1) * updobj.days
-            updobj.net = Number(updobj.net) + Number(perdiemamnt1) * updobj.days + Number(onperdiemamnt1) * updobj.days
-            return updobj
-        }
-        else if (obj.perdiemel === 'Yes' && obj.onperdiemel === 'No') {
-
-            var updobj = {
-                ...obj,
-                perdiem: perdiemamnt1,
-                onperdiem: 0,
-            }
-            updobj.total = Number(updobj.total) + Number(perdiemamnt1) * updobj.days + 0
-            updobj.net = Number(updobj.net) + Number(perdiemamnt1) * updobj.days + 0
-            return updobj
-        }
-        else if (obj.perdiemel === 'No' && obj.onperdiemel === 'Yes') {
-
-            var updobj = {
-                ...obj,
-                perdiem: 0,
-                onperdiem: onperdiemamnt1,
-            }
-            updobj.total = Number(updobj.total) + Number(onperdiemamnt1) * updobj.days + 0
-            updobj.net = Number(updobj.net) + Number(onperdiemamnt1) * updobj.days + 0
-            return updobj
-        }
-        else {
-            var updobj = {
-                ...obj,
-                perdiem: 0,
-                onperdiem: 0,
-            }
-            updobj.total = Number(updobj.total) + 0 + 0
-            updobj.net = Number(updobj.net) + 0 + 0
-            return updobj
-        }
-    });
-
-    setpreparedata(updatedArray);
-    console.log(updatedArray)
-    console.log(perdiemamnt1)
-    console.log(onperdiemamnt1)
-
-    setadduser2('adduser2')
-    console.log(preparedata)
-
-
-
-
-}
 const [zpi, setzpi] = useState('Durham NC 27705')
 const [mail, setmail] = useState('admin@cfl-solution.com')
 const [aduserx, setaduserx] = useState('adduser2')
@@ -2455,14 +2093,12 @@ const [perdiemmil1, setperdiemmil1] = useState(0)
 const [onperdiemamnt1, setonperdiemamnt1] = useState(0)
 const [onperdiemmil1, setonperdiemmil1] = useState(0)
 const [aduserl, setaduserl] = useState('adduser2')
-function opm() {
-    setaduserx('adduser')
-}
+
 
     useEffect(() => {
-        axios.get(`${tz}/client/active`).then(res => {
+        getActiveClients().then(res => {
             console.log(res)
-            setcompanies(res.data.Client)
+            setcompanies(res.Client)
         })
 
       
@@ -2512,7 +2148,8 @@ function opm() {
         setcomp(val)
         setshowfiles(false)
         setselected(val._id)
-        setfiles(val.invoicedata)
+        var ar = [...val.invoicedata]; // Create a shallow copy of the array
+        setfiles(ar.reverse()); 
         setdivfile('')
         const distinctWeekNumbers = [...new Set(val.invoicedata.map(obj => obj.weekno))];
 setmonthss(getLast12Months().reverse())
@@ -2525,8 +2162,8 @@ setweekends(distinctWeekNumbers)
     <>
     
     {active===0?
-    
-<Invoice onCancel={e=>setactive(1)} />
+     
+<Invoice onCancel={e=>setactive(1)} props={props} />
 
 :
 <>
@@ -2564,6 +2201,8 @@ departments.map((val)=>(
 </div>
 }
       </button>
+      <button className='exportbtn4' onClick={e => savepayroll()}>Send to Payroll</button>
+ 
   <div className="mainpage" ref={componentRef}>
 
 
@@ -2846,7 +2485,7 @@ val&&valx.month===Number(val.split('/')[0])&&<div className='divfile' onClick={e
 {divfile.length>0&&
 <button className='btn1' onClick={e=>exports2()}>Open</button>}
 </div>
-{files&&files.map(val=>(
+{files&&files.map((val,index)=>(
 val.weekno===selectedweek&&
 <>{
 val._id===divfile? <div className='divfilenew divfilenewx ' onClick={e=>importthis(val)}>
@@ -2854,20 +2493,20 @@ val._id===divfile? <div className='divfilenew divfilenewx ' onClick={e=>importth
 <div className="subfilenew">
 
 <img src={g2} alt="" />
-<h1>{val.weekno}</h1>
+<h1>{val.weekno}  </h1>
 </div>
 <span>
-Updated by: {val.by&&val.by} on {val.created&&val.created}
+Updated by: {val.by&&val.by} on {val.created&&val.created}  {val.createdtime&&val.createdtime} 
 </span>
 </div>: <div className='divfilenew' onClick={e=>importthis(val)}>
 
 <div className="subfilenew">
 
 <img src={g2} alt="" />
-<h1>{val.weekno}</h1>
+<h1>{val.weekno} </h1>
 </div>
 <span>
-Updated by: {val.by&&val.by} on {val.created&&val.created}
+Updated by: {val.by&&val.by} on {val.created&&val.created}  {val.createdtime&&val.createdtime} 
 </span>
 </div>
 }   </>

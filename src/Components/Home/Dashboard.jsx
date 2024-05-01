@@ -36,6 +36,7 @@ import {BiStats} from 'react-icons/bi'
 import { tz } from '../apis';
 import { useState } from 'react';
 import { VscNote } from 'react-icons/vsc';
+import { getAllNotes } from '../../Utils/api';
 const Dashboard = () => {
   
   const [steps, setsteps] = useState(0)
@@ -125,7 +126,7 @@ var percemp=0;
 var latepp=0
 
 
-axios.get(`${tz}/noti/getall`).then((res2)=>{
+getAllNotes().then((res2)=>{
 
 setnoti(res2.data.Not)
 

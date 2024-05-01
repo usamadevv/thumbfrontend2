@@ -49,7 +49,8 @@ import dots from '../../../images/dots.png'
 import filep from '../../../images/filep.png'
 import Invoice from './invoice'
 import Payroll from './Payroll'
-const Payrollfiles = () => {
+import { addSiteUserHours, findClientById, getAactiveSiteusers, getActiveClients, getAllClients, getAllJobsites, getAllPayroll, updateClient, updateClientOnly, updatePayrollStatus } from '../../../Utils/api'
+const Payrollfiles = ({props}) => {
     const [files, setfiles] = useState([])
 const [companies, setcompanies] = useState([])
 
@@ -464,105 +465,6 @@ const [searchval, setsearchval] = useState('')
 const [preparedata, setpreparedata] = useState([])
 
 
-function save() {
-    const currentWeekNumber = Math.ceil((new Date() - new Date(new Date().getFullYear(), 0, 1) + 1) / 604800000);
-    const currentYear = new Date().getFullYear();
-
-    var ts = []
-
-    preparedata.forEach((val, index) => {
-
-
-        ts.push({
-
-            taxes: val.Taxes,
-            date: val.Date,
-            empname: val.Employee,
-            skill: val.skill,
-            hrs: val.Hrs,
-            payrate: val.Payrate,
-            distance: val.distance,
-            othrs: val.Ot_Hrs,
-            otpayrate: val.OT_Pay_rate,
-            nc: val.nc_4,
-            total: val.total,
-            deductions: val.deductions,
-            net: val.net,
-            perdiem: applyperdiemx ? val.perdiem : 0,
-            onperdiem: applyperdiemx ? val.onperdiem : 0,
-            days: applyperdiemx ? val.days : 0,
-        })
-        if (index === preparedata.length - 1) {
-
-            if (l === 2) {
-                axios.post(`${tz}/client/update`, {
-
-                    date: indate,
-                    weekno: currentWeekNumber,
-                    year: currentYear,
-                    no: inno,
-                    _id: currid,
-                    due: indue,
-                    total: Number(totalall).toFixed(2).toLocaleString('en'),
-                    paid: 0,
-                    balance: Number(totalall).toFixed(2).toLocaleString('en'),
-                    status: 'pending',
-                    reporttype: 'invoice',
-                    perdiemapplied: applyperdiemx,
-
-                    filename: inname + '-' + incname + '-' + new Date().toLocaleDateString('en-US'),
-
-                    data: ts
-
-
-
-
-                }).then(res => {
-                    console.log(res)
-                    alert('Saved')
-
-
-
-                })
-            }
-            else {
-                axios.post(`${tz}/client/update`, {
-
-
-                    _id: currid,
-                    reporttype: 'report',
-                    perdiemapplied: applyperdiemx,
-                    weekno: currentWeekNumber,
-                    year: currentYear,
-                    filename: inname + '-' + incname + '-' + new Date().toLocaleDateString('en-US'),
-
-
-
-
-
-
-
-                    data: ts
-
-
-
-
-                }).then(res => {
-                    console.log(res)
-                    alert('Saved')
-
-
-                })
-            }
-        }
-
-    })
-
-
-
-
-
-}
 const [clientadd, setclientadd] = useState('')
 const [last2, setlast2] = useState('')
 function preparesheet(valx) {
@@ -606,10 +508,11 @@ function preparesheet(valx) {
 
                     setinname(val.sitename)
 
-                    axios.post(`${tz}/client/findbyid`, {
+                    var postData= {
                         Client_id: val.clientid
-                    }).then(res => {
-                        setinadd(res.data.Client[0].address)
+                    }
+                    findClientById(postData).then(res => {
+                        setinadd(res.Client[0].address)
                     })
 
                     setinnum(val.no)
@@ -767,10 +670,11 @@ function preparesheet(valx) {
 
                 }
                 if (ind.search(' ' + index.toString() + ' ') >= 0) {
-                    axios.post(`${tz}/client/findbyid`, {
+                    var postData={
                         Client_id: val.clientid
-                    }).then(res => {
-                        setinadd(res.data.Client[0].address)
+                    }
+                   findClientById(postData).then(res => {
+                        setinadd(res.Client[0].address)
                     })
 
 
@@ -1745,23 +1649,23 @@ function selectthis(val) {
 const [payrolldata, setpayrolldata] = useState([])
 
 useEffect(() => {
-    axios.get(`${tz}/siteuser/active`).then(res => {
+    getAactiveSiteusers().then(res => {
         console.log(res)
-        setempdata(res.data.Siteuserd)
+        setempdata(res.Siteuserd)
     })
 
-    axios.get(`${tz}/jobsite/getall`).then(res => {
+    getAllJobsites().then(res => {
         console.log(res)
-        setdata(res.data.Jobsite)
-        axios.get(`${tz}/payroll/getall`).then(rese => {
+        setdata(res.Jobsite)
+        getAllPayroll().then(rese => {
             console.log(rese)
-            setpayrolldata(rese.data.Payroll)
+            setpayrolldata(rese.Payroll)
       
 
         })
 
-        setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
-        setpageCount(Math.ceil(res.data.Jobsite.length / 5))
+        setcurrentItems(res.Jobsite.slice(itemOffset, endOffset))
+        setpageCount(Math.ceil(res.Jobsite.length / 5))
 
 
 
@@ -1782,7 +1686,7 @@ useEffect(() => {
         map2.current.addControl(geocoder2);
 
         map2.current.on('style.load', function () {
-            res.data.Jobsite.forEach(element => {
+            res.Jobsite.forEach(element => {
                 if (element.latlang) {
                     marker2.current = new mapboxgl.Marker()
                         .setLngLat(JSON.parse(element.latlang))
@@ -1825,89 +1729,6 @@ useEffect(() => {
     }
 }, [])
 
-function req() {
-    if (actiontype === 'update') {
-        axios.post(`${tz}/jobsite/updatesite`, {
-            clientid: clientid,
-            clientname: cname,
-            status: 'Active',
-            sitename: sname,
-            markup: markupcuee,
-            user: userdata,
-            no: pno,
-            task: tasks,
-            address: address,
-            latlang: latlang,
-            _id: currone._id
-
-
-
-
-        }).then(res => {
-            axios.get(`${tz}/jobsite/getall`).then(res => {
-                setsteps(0)
-                setcheckinfo(false)
-                console.log(res)
-                setdata(res.data.Jobsite)
-                setadduser('adduser2')
-
-                setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
-                setpageCount(Math.ceil(res.data.Jobsite.length / 5))
-                setactiontype('edit')
-            })
-
-        })
-    }
-    else {
-
-        axios.post(`${tz}/jobsite/add`, {
-
-            clientid: clientid,
-            clientname: cname,
-            status: 'Active',
-            sitename: sname,
-            task: tasks,
-            markup: markupcuee,
-            user: userdata,
-            no: pno,
-            address: address,
-            perdiemamnt: perdiemamnt,
-            onperdiemamnt: onperdiemamnt,
-            latlang: latlang
-        }).then(res => {
-            axios.get(`${tz}/jobsite/getall`).then(res => {
-                setsteps(0)
-                setcheckinfo(false)
-                console.log(res)
-                setdata(res.data.Jobsite)
-                setadduser('adduser2')
-
-                setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
-                setpageCount(Math.ceil(res.data.Jobsite.length / 5))
-            })
-        })
-    }
-
-}
-
-function turnon() {
-    if (is === 0) {
-        settaxas('yes')
-
-        setcircle('circle2')
-        settaxes('taxes2')
-        setis(1)
-    }
-    else {
-
-        settaxas('no')
-
-        setcircle('circle')
-        settaxes('taxes')
-        setis(0)
-    }
-
-}
 function turnon2() {
     if (is2 === 0) {
         setnc('4')
@@ -2012,19 +1833,20 @@ function updatestatus(val){
     alert('Payroll is already approved ')
    }
    else{
-    axios.post(`${tz}/payroll/updatestatus`, {
-        _id: selected,
-        status: val,
-      
-
-   
+   var postData={
+    _id: selected,
+    status: val,
+  
 
 
 
-    }).then(res => {
+
+
+}
+    updatePayrollStatus(postData).then(res => {
   
         if(val==='Approved'){
-            axios.post(`${tz}/siteuser/adduserhours`, {
+            var postData2={
               
                 preparedata: currdata.data,
               
@@ -2033,7 +1855,8 @@ function updatestatus(val){
         
         
         
-            }).then(res => {
+            }
+            addSiteUserHours(postData2).then(res => {
                 alert(`Payroll is ${val} `)
         
             })
@@ -2050,7 +1873,7 @@ function updatestatus2(val,val2){
     alert('Payroll is already approved')
    }else{
     var payr=payrolldata
-    axios.post(`${tz}/payroll/updatestatus`, {
+    var postData2={
         _id: val2._id,
         status: val,
       
@@ -2059,10 +1882,11 @@ function updatestatus2(val,val2){
 
 
 
-    }).then(res => {
+    }
+    updatePayrollStatus(postData2).then(res => {
 
         if(val==='Approved'){
-            axios.post(`${tz}/siteuser/adduserhours`, {
+            var postData= {
               
                 preparedata: val2.data,
               
@@ -2071,7 +1895,8 @@ function updatestatus2(val,val2){
         
         
         
-            }).then(res => {
+            }
+            addSiteUserHours(postData).then(res => {
                 alert(`Payroll is ${val} `)
                 setshowlistviewx(false)
               // Update the array of JSON objects
@@ -2144,9 +1969,9 @@ function setnameq(val) {
 }
 const [clients, setclients] = useState()
 useEffect(() => {
-    axios.get(`${tz}/client/getall`).then(res => {
+    getAllClients().then(res => {
         console.log(res)
-        setclients(res.data.Client)
+        setclients(res.Client)
     })
 
     return () => {
@@ -2193,124 +2018,11 @@ function setadduserx() {
     setcheckinfo(false)
     setactiontype('edit')
 }
-function deletedata() {
 
-    console.log(ind)
-    var r = []
-    data.forEach((element, index) => {
-        if (index === data.length - 1) {
-
-            if (ind.search(' ' + index.toString() + ' ') >= 0) {
-                r.push(element._id)
-
-
-
-            }
-            axios.post(`${tz}/jobsite/delete`, {
-                ids: r
-
-
-
-            }).then(res => {
-                console.log(res)
-                setdeleteids([])
-                axios.get(`${tz}/jobsite/getall`).then(res2 => {
-                    console.log(res2)
-                    setdata(res2.data.Jobsite)
-                    setind('')
-
-                    setcurrentItems(res2.data.Jobsite.slice(itemOffset, endOffset))
-                    setpageCount(Math.ceil(res2.data.Jobsite.length / 5))
-                })
-            })
-        } else {
-
-            if (ind.search(' ' + index.toString() + ' ') >= 0) {
-                setdeleteids(del => [...del, element._id])
-                r.push(element._id)
-
-
-
-            }
-        }
-
-    });
-
-
-}
 const [nameskill, setnameskill] = useState([])
 const [indue, setindue] = useState('')
 const [divfile, setdivfile] = useState('')
 
-function postclient() {
-    var tx = []
-
-    txp.forEach((val, index) => {
-        tx.push({
-            empname: val["NAME"],
-            hrs: val["REG HRS"],
-            date: val["WEEKEND"],
-            payrate: val["REG RTE"],
-            othrs: val["OT HRS"],
-            otpayrate: val["OT RTE"],
-            total: val["TOTAL"],
-            skill: val["SKILL"],
-
-
-
-
-
-
-
-
-
-        })
-        if (preparedata.length - 1 === index) {
-            axios.post(`${tz}/client/update`, {
-                _id: currid,
-                date: indate,
-                no: inno,
-                due: indue,
-                total: Number(totalall).toFixed(2).toLocaleString('en'),
-                paid: 0,
-                balance: Number(totalall).toFixed(2).toLocaleString('en'),
-                status: 'pending',
-
-
-
-
-                data: tx
-
-
-
-
-            }).then(res => {
-                console.log(res)
-                alert('Updated')
-                setsteps(0)
-                setcheckinfo(false)
-                {/*     axios.post(`${tz}/noti/add`, {
-                message:`Company Sent an invoice of ${totalall}`,
-                idp:project.clientid,
-                time:dateput[1],
-                status:'att',
-            }).then(resp => {
-                console.log(resp)
-          
-                
-
-
-            })
-        */}
-
-
-            })
-        }
-
-
-    });
-
-}
 const [indate, setindate] = useState('')
 const [inno, setinno] = useState('')
 const [inname, setinname] = useState('')
@@ -2318,44 +2030,9 @@ const [innum, setinnum] = useState('')
 const [inadd, setinadd] = useState('')
 const [mapx, setmapx] = useState('mapx')
 const [cfm, setcfm] = useState(true)
-function updateaccount() {
-    console.log(preparedata)
-    axios.post(`${tz}/siteuser/updatebulk`, {
-        preparedata: preparedata
 
-
-
-    }).then(res => {
-        console.log(res)
-        alert('Updated')
-        setsteps(0)
-        setcheckinfo(false)
-        {/*     axios.post(`${tz}/noti/add`, {
-         message:`Company Sent an invoice of ${totalall}`,
-         idp:project.clientid,
-         time:dateput[1],
-         status:'att',
-     }).then(resp => {
-         console.log(resp)
-   
-         
-
-
-     })
- */}
-
-
-    })
-}
 const [currjobid, setcurrjobid] = useState('')
-function selectthiscompany(val){
-    setcurrjobid(val)
-    setind('')
-    setcurrid(val)
-    setboxprojects('boxprojects2')
- 
 
-}
 const [selectedweek, setselectedweek] = useState('')
 const [currdata, setcurrdata] = useState(null)
 function openfiles(val){
@@ -2588,9 +2265,9 @@ function opm() {
 }
 
     useEffect(() => {
-        axios.get(`${tz}/client/active`).then(res => {
+        getActiveClients().then(res => {
             console.log(res)
-            setcompanies(res.data.Client)
+            setcompanies(res.Client)
         })
 
       
@@ -3075,7 +2752,7 @@ marginRight:5,
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >{val.Hrs}</h4>
 
-<h4 style={{ width: '80px', marginBottom: '0px' }}  >$ {val.cpr}</h4>
+<h4 style={{ width: '80px', marginBottom: '0px' }}  >$ {val.Payrate}</h4>
 
 <h4 style={{ width: '80px', marginBottom: '0px' }}  >{val.Ot_Hrs}</h4>
 

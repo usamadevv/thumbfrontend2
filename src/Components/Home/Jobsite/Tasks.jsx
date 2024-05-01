@@ -1,18 +1,20 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { createTask, deleteTask, getActiveClients, getAllTasks } from '../../../Utils/api'
 import { tz } from '../../apis'
 
 const Tasks = (props) => {
     const [companies, setcompanies] = useState([])
     const [tasks, settasks] = useState([])
    useEffect(() => {
-    axios.get(`${tz}/client/getall`).then(res => {
+    console.log(props)
+    getActiveClients().then(res => {
         console.log(res)
-        setcompanies(res.data.Client)
+        setcompanies(res.Client)
     })
-    axios.get(`${tz}/task/getall`).then(res => {
+   getAllTasks().then(res => {
         console.log(res)
-        settasks(res.data.Tasks)
+        settasks(res.Tasks)
     })
    
      return () => {
@@ -34,15 +36,15 @@ const Tasks = (props) => {
         tasks.forEach((element, index) => {
             if (index === tasks.length - 1) {
 
-            
-                axios.post(`${tz}/task/delete`, {
-                    ids: r   
-                             }).then(res => {
+            var postData={
+                ids: r   
+                         }
+                deleteTask(postData).then(res => {
                     console.log(res)
                
-                    axios.get(`${tz}/task/getall`).then(res2 => {
+                    getAllTasks().then(res2 => {
                         console.log(res2)
-                        settasks(res2.data.Tasks)
+                        settasks(res2.Tasks)
                         setind('')
 
                     })
@@ -63,19 +65,20 @@ const Tasks = (props) => {
 
     }
     function addtask(){
-        axios.post(`${tz}/task/add`, {
+        var postData={
 
             clientid: taskid,
             clientname:taskcompany,
             name: taskname,
             status:'Active',
-            description: taskno,}).then(res=>{
+            description: taskno,}
+        createTask(postData).then(res=>{
 console.log(res)
 
 
-axios.get(`${tz}/task/getall`).then(res2 => {
+getAllTasks().then(res2 => {
     console.log(res2)
-    settasks(res2.data.Tasks)
+    settasks(res2.Tasks)
     setind('')
     settaskname('')
 settaskno('')

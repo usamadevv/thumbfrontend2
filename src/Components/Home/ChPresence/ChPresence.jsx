@@ -6,17 +6,17 @@ import Sitepresence from './Sitepresence'
 import {TbBuildingSkyscraper} from 'react-icons/tb'
 import {GiOfficeChair} from 'react-icons/gi'
 
-const ChPresence = () => {
+const ChPresence = ({props}) => {
 const [i, seti] = useState(0)
 
   return (
     <>
     {i===1&&
-        <Presence />
+        <Presence props={props} />
 
         }
         {i===2&&
-        <Sitepresence />
+        <Sitepresence props={props} />
 
         }
     {i===0&&

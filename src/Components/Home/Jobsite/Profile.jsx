@@ -1,5 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { findSiteUserImg } from '../../../Utils/api'
 import { tz } from '../../apis'
 
 const Profile = (props) => {
@@ -7,13 +8,14 @@ const Profile = (props) => {
     useEffect(() => {
         
         console.log(props)
-      axios.post(`${tz}/siteuser/findimg`,{
-        id:props.id.userid
-      }).then(res=>{
-        console.log(res.data.Siteuserd)
-       if(res.data.Siteuserd!=='not')
+        var postData={
+          id:props.id.userid
+        }
+      findSiteUserImg(postData).then(res=>{
+        console.log(res.Siteuserd)
+       if(res.Siteuserd!=='not')
        {
-        setuserimg(res.data.Siteuserd)
+        setuserimg(res.Siteuserd)
        }
       })
     

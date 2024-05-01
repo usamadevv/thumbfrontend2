@@ -48,6 +48,7 @@ import html2canvas from 'html2canvas'
 import { tz } from '../../apis'
 import { useRef } from 'react'
 import { async } from '@firebase/util'
+import { addJobiste, addPayroll, deleteJobsite, findClientById, getAactiveSiteusers, getActiveClients, getAllJobsites, getAllTimesheets, getSiteUserDistance, loginAdmin2, sendClientInvoice, updateClientOnly, updateJobiste, updateSiteUserCPR, updateSiteUserHours, updateSiteUserPayRateType } from '../../../Utils/api'
 const Invoice = (props) => {
 
 
@@ -135,15 +136,16 @@ const updatedData = updatedata.map(element => {
         if (site) {
             // Find the user corresponding to userid in the site's users array
             const user = site.user.find(user => user.userid === element.userid);
+            
             if (user) {
                 // Update OT_Pay_rate with user's otpayrate
                 return {
                     ...element,
                     OT_Pay_rate: Number(user.otpayrate),
-                    Payrate:element.cpr,
-                    total: ((Number(element.cpr)) * (Number(element.Hrs))) + (Number(element.Ot_Hrs) * (Number(user.otpayrate))),
+                    Payrate:Number(user.cpr==='0'?user.payrate:user.cpr),
+                    total: ((Number(user.cpr==='0'?user.payrate:user.cpr)) * (Number(element.Hrs))) + (Number(element.Ot_Hrs) * (Number(user.otpayrate))),
                     net:
-                    ((Number(element.cpr)) * Number(element.Hrs)) + (Number(element.Ot_Hrs) * (Number(user.otpayrate)))
+                    ((Number(user.cpr==='0'?user.payrate:user.cpr)) * Number(element.Hrs)) + (Number(element.Ot_Hrs) * (Number(user.otpayrate)))
                     +(element.onperdiemel==='Yes'?Number(element.onperdiem):0)
                     +(element.perdiemel==='Yes'?Number(element.perdiem)*Number(element.days):0)
 -
@@ -151,7 +153,7 @@ const updatedData = updatedata.map(element => {
                         element.nc_4 === 'no'|| element.nc_4 === '-'|| element.nc_4===0
                           ? 0
                           : (
-                              (Number(element.cpr) * 0) +
+                              (Number(user.cpr==='0'?user.payrate:user.cpr) * 0) +
                               (0 * parseInt(user.otpayrate))
                             ) * 4 / 100
                       )-(element.deductions)
@@ -164,10 +166,10 @@ const updatedData = updatedata.map(element => {
             return {
                 ...element,
                 OT_Pay_rate: Number(user.otpayrate),
-                Payrate:user.cpr,
-                total: ((Number(user.cpr)) * (Number(element.Hrs))) + (Number(element.Ot_Hrs) * (Number(user.otpayrate))),
+                Payrate:Number(user.cpr==='0'?user.payrate:user.cpr),
+                total: ((Number(user.cpr==='0'?user.payrate:user.cpr,)) * (Number(element.Hrs))) + (Number(element.Ot_Hrs) * (Number(user.otpayrate))),
                 net:
-                ((Number(user.cpr)) * Number(element.Hrs)) + (Number(element.Ot_Hrs) * (Number(user.otpayrate)))
+                ((Number(user.cpr==='0'?user.payrate:user.cpr,)) * Number(element.Hrs)) + (Number(element.Ot_Hrs) * (Number(user.otpayrate)))
                 +(element.onperdiemel==='Yes'?Number(element.onperdiem):0)
                 +(element.perdiemel==='Yes'?Number(element.perdiem)*Number(element.days):0)
 -
@@ -175,7 +177,7 @@ const updatedData = updatedata.map(element => {
                     element.nc_4 === 'no'|| element.nc_4 === '-'|| element.nc_4===0
                       ? 0
                       : (
-                          (Number(user.cpr) * 0) +
+                          (Number(user.cpr==='0'?user.payrate:user.cpr,) * 0) +
                           (0 * parseInt(user.otpayrate))
                         ) * 4 / 100
                   )-(element.deductions)
@@ -189,16 +191,17 @@ const updatedData = updatedata.map(element => {
 console.log(updatedData)
   
 console.log(updatedata)
-  
-    axios.post(`${tz}/payroll/add`, {
-        data:updatedData,
-        companyid:currid,
-        status:'Pending',
-        by:datax.name,
-        createdon:new Date().toLocaleDateString('en-US'),
-        date:inend,
+var postData={
+    data:updatedData,
+    companyid:currid,
+    status:'Pending',
+    by:datax.name,
+    createdon:new Date().toLocaleDateString('en-US'),
+    date:inend,
 
-    }).then(rees=>{
+}
+  
+   addPayroll(postData).then(rees=>{
 console.log(rees)
 setshowlistview(false)
 alert("Payroll saved")
@@ -406,12 +409,12 @@ alert("Payroll saved")
     function sendemail(val){
         const yx=document.getElementById('shareable').innerHTML
 
-
-        axios.post(`${tz}/client/sendinvoice`, {
-            email:val.email,
-            html:yx,
-            key:uuidv4(),
-        }).then(rees=>{
+var postData={
+    email:val.email,
+    html:yx,
+    key:uuidv4(),
+}
+        sendClientInvoice(postData).then(rees=>{
 console.log(rees)
 
 alert(`Email sent to ${val.dept} department`)
@@ -638,9 +641,10 @@ const [boxprojects, setboxprojects] = useState('boxprojects2')
 const [currentWeekNumber2, setcurrentWeekNumber2] = useState(0)
 
     function save() {
-        axios.post(`${tz}/siteuser/updateuserhours`, {
+        var postData={
             preparedata:preparedata
-        }).then(rees=>{
+        }
+        updateSiteUserHours(postData).then(rees=>{
 console.log(rees)
         })
 
@@ -668,6 +672,14 @@ console.log(rees)
                 total: val.total,
                 deductions: val.deductions,
                 net: val.net,
+                p_userid:val.userid,
+                p_siteid:val.siteid,
+                p_perdiemel:val.perdiemel,
+                p_onperdiemel:val.onperdiemel,
+                p_perdiem:val.perdiem,
+                p_onperdiem:val.onperdiem,
+ p_nc4:val.nc_4,
+ p_deductions:val.deductions,
                 perdiem: applyperdiemx ? val.perdiem : 0,
                 onperdiem: applyperdiemx ? val.onperdiem : 0,
                 days: applyperdiemx ? val.days : 0,
@@ -675,7 +687,7 @@ console.log(rees)
             if (index === preparedata.length - 1) {
 
                 if (l === 2) {
-                    axios.post(`${tz}/client/update`, {
+                    var postData= {
 
                         date: indate,
                         weekno: inend,
@@ -693,13 +705,15 @@ console.log(rees)
                         filename: inname + '-' + incname + '-' + new Date().toLocaleDateString('en-US'),
                         by:datax.name,
                         created:new Date().toLocaleDateString('en-US'),
+                        createdtime:new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
 
                         data: ts
 
 
 
 
-                    }).then(res => {
+                    }
+                   updateClientOnly(postData).then(res => {
                         console.log(res)
                         alert('Saved')
 
@@ -708,7 +722,7 @@ console.log(rees)
                     })
                 }
                 else {
-                    axios.post(`${tz}/client/update`, {
+                    var postData= {
 
 
                         _id: currid,
@@ -719,6 +733,7 @@ console.log(rees)
                         filename: inname + '-' + incname + '-' + new Date().toLocaleDateString('en-US'),
                         by:datax.name,
                         created:new Date().toLocaleDateString('en-US'),
+                        createdtime:new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
 
 
 
@@ -731,7 +746,8 @@ console.log(rees)
 
 
 
-                    }).then(res => {
+                    }
+                    updateClientOnly(postData).then(res => {
                         console.log(res)
                         alert('Saved')
 
@@ -794,13 +810,14 @@ console.log(rees)
 
 
                         setinname(val.sitename)
-
-                        axios.post(`${tz}/client/findbyid`, {
+                        var postData={
                             Client_id: val.clientid
-                        }).then(res => {
-                            setinadd(res.data.Client[0].address)
+                        }
+
+                        findClientById(postData).then(res => {
+                            setinadd(res.Client[0].address)
                       
-         var t =Number(res.data.Client[0].weekend)+1
+         var t =Number(res.Client[0].weekend)+1
 
          const currentDate = new Date();
          const dayOfWeek = currentDate.getDay(); // 0 (Sunday) to 6 (Saturday)
@@ -1069,12 +1086,13 @@ console.log(rees)
                         setindue(currentDate2)
                     }
                     if (ind.search(' ' + index.toString() + ' ') >= 0) {
-                        axios.post(`${tz}/client/findbyid`, {
+                        var postData={
                             Client_id: val.clientid
-                        }).then(res => {
-                            setinadd(res.data.Client[0].address)
+                        }
+                        findClientById(postData).then(res => {
+                            setinadd(res.Client[0].address)
                       
-         var t =Number(res.data.Client[0].weekend)+1
+         var t =Number(res.Client[0].weekend)+1
 
          const currentDate = new Date();
          const dayOfWeek = currentDate.getDay(); // 0 (Sunday) to 6 (Saturday)
@@ -1277,40 +1295,7 @@ console.log(rees)
 
 
 
-    function preparesheetclient(val) {
-        setl(val)
-        setpreparedata([])
-        console.log(data)
-        data.forEach((val, index) => {
-            if (ind.search(' ' + index.toString() + ' ') >= 0) {
-                val.user.length > 0 && val.user.forEach(element => {
-                    console.log(val)
-                    setpreparedata(pr => [...pr, {
-                        Taxes: element.taxes,
-                        Client: val.clientname,
-                        Date: new Date(new Date().setDate(new Date().getDate() + ((clients.find((client) => client._id === val.clientid) || {}).weekend- (new Date().getDay() === 0 ? 7 : new Date().getDay()) + 1))).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' }).replace(/\//g, '-'),
-                        Employee: element.name,
-                        Hrs: 0,
-                        Payrate: parseInt(element.payrate),
-                        Ot_Hrs: 0,
-                        OT_Pay_rate: parseInt(element.otpayrate),
-                        nc_4: element.nc === 'no' ? '-' : ((parseInt(element.payrate) * 0) + (0 * parseInt(element.otpayrate))) * 4 / 100,
-                        total: (parseInt(element.payrate) * 0) + (0 * parseInt(element.otpayrate)),
-                        deductions: 0,
-                        net: (parseInt(element.payrate) * 0) + (0 * parseInt(element.otpayrate)) - 0 - (element.nc === 'no' ? 0 : ((parseInt(element.payrate) * 0) + (0 * parseInt(element.otpayrate))) * 4 / 100)
 
-
-
-
-                    }])
-
-                });
-            }
-
-        });
-        setk(1)
-        console.log(preparedata)
-    }
     function setcurronex(val) {
         setcurrone(val)
         setkshow(true)
@@ -1383,292 +1368,7 @@ console.log(rees)
 
 
     }
-    function exports3() {
-        const filteredData = preparedata.filter(row => row.Hrs !== 0);
 
-
-        var styl1p =
-        {
-            border: {
-                right: {
-                    style: "thin",
-                    color: { rgb: 'FFFFFF' }
-                },
-                left: {
-                    style: "thin",
-                    color: { rgb: 'FFFFFF' }
-                },
-                bottom: {
-                    style: "thin",
-                    color: { rgb: 'FFFFFF' }
-                },
-                top: {
-                    style: "thin",
-                    color: { rgb: 'FFFFFF' }
-                },
-            },
-            font: {
-                name: "arial",
-                bold: true,
-                sz: 10,
-                color: { rgb: 'FFFFFF' }
-            },
-            alignment: {
-                vertical: "center",
-                horizontal: "center",
-            },							// set the style for target cell
-            fill: {
-                fgColor: {
-
-                    theme: 8,
-                    tint: 0.3999755851924192,
-                    rgb: '4480b8'
-                }
-            },
-        };
-
-        var cstyl2x =
-        {
-            border: {
-                right: {
-                    style: "thin",
-                    color: { rgb: "8DB2D5" }
-                },
-                left: {
-                    style: "thin",
-                    color: { rgb: "8DB2D5" }
-                },
-                bottom: {
-                    style: "thin",
-                    color: { rgb: "8DB2D5" }
-                },
-                top: {
-                    style: "thin",
-                    color: { rgb: "8DB2D5" }
-                },
-            },
-            font: {
-                name: "arial",
-                bold: false,
-                sz: 10,
-                color: '000000'
-            },
-            alignment: {
-                vertical: "center",
-                horizontal: "center",
-            },
-            numFmt: "$#,###.00"
-        };
-        var styl2xp =
-        {
-            border: {
-                right: {
-                    style: "thin",
-                    color: { rgb: "8DB2D5" }
-                },
-                left: {
-                    style: "thin",
-                    color: { rgb: "8DB2D5" }
-                },
-                bottom: {
-                    style: "thin",
-                    color: { rgb: "8DB2D5" }
-                },
-                top: {
-                    style: "thin",
-                    color: { rgb: "8DB2D5" }
-                },
-            },
-            fill: {
-                fgColor: {
-
-                    theme: 8,
-                    tint: 0.3999755851924192,
-                    rgb: 'C2D6E8'
-                }
-            },
-            font: {
-                name: "arial",
-                bold: false,
-                sz: 10,
-                color: '000000'
-            },
-            alignment: {
-                vertical: "center",
-                horizontal: "center",
-            },
-        };
-        var cstyl2xp =
-        {
-            border: {
-                right: {
-                    style: "thin",
-                    color: { rgb: "8DB2D5" }
-                },
-                left: {
-                    style: "thin",
-                    color: { rgb: "8DB2D5" }
-                },
-                bottom: {
-                    style: "thin",
-                    color: { rgb: "8DB2D5" }
-                },
-                top: {
-                    style: "thin",
-                    color: { rgb: "8DB2D5" }
-                },
-            },
-            fill: {
-                fgColor: {
-
-                    theme: 8,
-                    tint: 0.3999755851924192,
-                    rgb: 'C2D6E8'
-                }
-            },
-            font: {
-                name: "arial",
-                bold: false,
-                sz: 10,
-                color: '000000'
-            },
-            alignment: {
-                vertical: "center",
-                horizontal: "center",
-            },
-            numFmt: "$#,###.00"
-        };
-        var styl2x =
-        {
-            border: {
-                right: {
-                    style: "thin",
-                    color: { rgb: "8DB2D5" }
-                },
-                left: {
-                    style: "thin",
-                    color: { rgb: "8DB2D5" }
-                },
-                bottom: {
-                    style: "thin",
-                    color: { rgb: "8DB2D5" }
-                },
-                top: {
-                    style: "thin",
-                    color: { rgb: "8DB2D5" }
-                },
-            },
-            font: {
-                name: "arial",
-                bold: false,
-                sz: 10,
-                color: '000000'
-            },
-            alignment: {
-                vertical: "center",
-                horizontal: "center",
-            },
-        };
-        const filetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
-        var ext = '.xlsx'
-
-        const myHeader = ["Taxes", "Client", "Date", 'Employee', 'Hrs', 'Payrate', 'Ot_Hrs', 'OT_Pay_rate', 'total', 'nc_4', 'deductions', 'net'];
-     
-        const filteredData2 = filteredData.map(item => {
-            const formattedItem = {};
-            Object.keys(item).forEach(key => {
-                if (myHeader.includes(key)) {
-                    if (key === 'Payrate' && typeof item[key] === 'string') {
-                        formattedItem[key] = parseFloat(item[key].replace(/[^0-9.-]+/g,""));
-                    } else {
-                        formattedItem[key] = item[key];
-                    }
-                }
-            });
-            return formattedItem;
-        });
-        
-        const ws = XLSX.utils.json_to_sheet(filteredData2, { header: myHeader })
-
-      
-        
-        var wscols = [
-            { wch: 6 },
-            { wch: 7 },
-            { wch: 8 },
-            { wch: 20 },
-            { wch: 6 },
-            { wch: 7 },
-            { wch: 8 },
-            { wch: 10 },
-            { wch: 7 },
-            { wch: 8 },
-            { wch: 12 },
-        ];
-        for (var k = 0; k < filteredData.length + 1; k++) {
-            if (k === 0) {
-
-                ws[`B${k + 1}`].s = styl1p
-                ws[`A${k + 1}`].s = styl1p
-                ws[`C${k + 1}`].s = styl1p
-                ws[`D${k + 1}`].s = styl1p
-                ws[`E${k + 1}`].s = styl1p
-                ws[`F${k + 1}`].s = styl1p
-                ws[`G${k + 1}`].s = styl1p
-                ws[`H${k + 1}`].s = styl1p
-                ws[`I${k + 1}`].s = styl1p
-                ws[`J${k + 1}`].s = styl1p
-                ws[`K${k + 1}`].s = styl1p
-                ws[`L${k + 1}`].s = styl1p
-            }
-            else {
-                
-                if (k % 2 === 0) {
-
-                    ws[`B${k + 1}`].s = styl2x
-                    ws[`A${k + 1}`].s = styl2x
-                    ws[`C${k + 1}`].s = styl2x
-                    ws[`D${k + 1}`].s = styl2x
-                    ws[`E${k + 1}`].s = styl2x
-                    ws[`F${k + 1}`].s = cstyl2x
-                    ws[`G${k + 1}`].s = styl2x
-                    ws[`H${k + 1}`].s = cstyl2x
-                    ws[`I${k + 1}`].s = cstyl2x
-                    ws[`J${k + 1}`].s = styl2x
-                    ws[`K${k + 1}`].s = styl2x
-                    ws[`L${k + 1}`].s = cstyl2x
-                } else if (k % 2 !== 0) {
-
-                    ws[`B${k + 1}`].s = styl2xp
-                    ws[`A${k + 1}`].s = styl2xp
-                    ws[`C${k + 1}`].s = styl2xp
-                    ws[`D${k + 1}`].s = styl2xp
-                    ws[`E${k + 1}`].s = styl2xp
-                    ws[`F${k + 1}`].s = cstyl2xp
-                    ws[`G${k + 1}`].s = styl2xp
-                    ws[`H${k + 1}`].s = cstyl2xp
-                    ws[`I${k + 1}`].s = cstyl2xp
-                    ws[`J${k + 1}`].s = styl2xp
-                    ws[`K${k + 1}`].s = styl2xp
-                    ws[`L${k + 1}`].s = cstyl2xp
-                }
-
-            }
-        }
-
-
-
-
-        ws['!cols'] = wscols;
-        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] }
-        const excelbuffer = XLSX.write(wb, { booktype: 'xlsx', type: 'array' })
-        const dar = new Blob([excelbuffer], { type: filetype })
-        file.saveAs(dar, 'asd.xlsx',)
-
-
-
-
-    }
     const [totalall, settotalall] = useState(0)
     const [markupcuee, setmarkupcuee] = useState(0)
     const [multiple, setmultiple] = useState(false)
@@ -2099,38 +1799,34 @@ const [timesheets, settimesheets] = useState([])
 const [activebtnn, setactivebtnn] = useState('timesheet')
     useEffect(() => {
 
+console.log(props)
+var postData={
+    email:props.props
+}
 
-
-        if(localStorage.getItem('userid')&&localStorage.getItem('userid').length>0){
-            if(localStorage.getItem('emptype')==='admin'){
-            
-                axios.post(`${tz}/admin/login2`,
-                {
-                    email:localStorage.getItem('username')
-                }).then(res=>
+               loginAdmin2(postData).then(res=>
                     {
                         console.log(res
                             )
-                            setdatax(res.data.Admin)
+                            setdatax(res.Admin)
                     })
                 
-            }
-        }
-        axios.get(`${tz}/siteuser/active`).then(res => {
+          
+        getAactiveSiteusers().then(res => {
             console.log(res)
-            setempdata(res.data.Siteuserd)
+            setempdata(res.Siteuserd)
         })
 
-        axios.get(`${tz}/timesheet/getall`).then(res => {
+        getAllTimesheets().then(res => {
             console.log(res)
-            settimesheets(res.data.Timesheet)
+            settimesheets(res.Timesheet)
         })
-        axios.get(`${tz}/jobsite/getall`).then(res => {
+        getAllJobsites().then(res => {
             console.log(res)
-            setdata(res.data.Jobsite)
+            setdata(res.Jobsite)
 
-            setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
-            setpageCount(Math.ceil(res.data.Jobsite.length / 5))
+            setcurrentItems(res.Jobsite.slice(itemOffset, endOffset))
+            setpageCount(Math.ceil(res.Jobsite.length / 5))
 
 
 
@@ -2151,7 +1847,7 @@ const [activebtnn, setactivebtnn] = useState('timesheet')
             map2.current.addControl(geocoder2);
 
             map2.current.on('style.load', function () {
-                res.data.Jobsite.forEach(element => {
+                res.Jobsite.forEach(element => {
                     if (element.latlang) {
                         marker2.current = new mapboxgl.Marker()
                             .setLngLat(JSON.parse(element.latlang))
@@ -2196,7 +1892,7 @@ const [activebtnn, setactivebtnn] = useState('timesheet')
 
     function req() {
         if (actiontype === 'update') {
-            axios.post(`${tz}/jobsite/updatesite`, {
+            var postData={
                 clientid: clientid,
                 clientname: cname,
                 status: 'Active',
@@ -2212,24 +1908,24 @@ const [activebtnn, setactivebtnn] = useState('timesheet')
 
 
 
-            }).then(res => {
-                axios.get(`${tz}/jobsite/getall`).then(res => {
+            }
+            updateJobiste(postData).then(res => {
+                getAllJobsites().then(res => {
                     setsteps(0)
                     setcheckinfo(false)
                     console.log(res)
-                    setdata(res.data.Jobsite)
+                    setdata(res.Jobsite)
                     setadduser('adduser2')
 
-                    setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
-                    setpageCount(Math.ceil(res.data.Jobsite.length / 5))
+                    setcurrentItems(res.Jobsite.slice(itemOffset, endOffset))
+                    setpageCount(Math.ceil(res.Jobsite.length / 5))
                     setactiontype('edit')
                 })
 
             })
         }
         else {
-
-            axios.post(`${tz}/jobsite/add`, {
+            var postData={
 
                 clientid: clientid,
                 clientname: cname,
@@ -2243,16 +1939,18 @@ const [activebtnn, setactivebtnn] = useState('timesheet')
                 perdiemamnt: perdiemamnt,
                 onperdiemamnt: onperdiemamnt,
                 latlang: latlang
-            }).then(res => {
-                axios.get(`${tz}/jobsite/getall`).then(res => {
+            }
+
+           addJobiste(postData).then(resa => {
+                getAllJobsites().then(res => {
                     setsteps(0)
                     setcheckinfo(false)
                     console.log(res)
-                    setdata(res.data.Jobsite)
+                    setdata(res.Jobsite)
                     setadduser('adduser2')
 
-                    setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
-                    setpageCount(Math.ceil(res.data.Jobsite.length / 5))
+                    setcurrentItems(res.Jobsite.slice(itemOffset, endOffset))
+                    setpageCount(Math.ceil(res.Jobsite.length / 5))
                 })
             })
         }
@@ -2390,27 +2088,29 @@ setl(1)
 
       if(l!==2){
         if(tempjson.siteid==='193039'){
-            axios.post(`${tz}/siteuser/updatecpr`, {
+            var postData={
                 id:tempjson.userid,
            
                 cprapply:tempjson.cprapply==='yes'?'custom':'normal'
     
     
     
-            }).then(res => {
+            }
+            updateSiteUserCPR(postData).then(res => {
                 console.log(res)
     
             setadduser3('adduser2')
             })
         }else{
-            axios.post(`${tz}/jobsite/updatepayratetype`, {
+            var postData={
                 id:tempjson.siteid,
                 userid:tempjson.userid,
                 payratetype:tempjson.cprapply==='yes'?'custom':'normal'
     
     
     
-            }).then(res => {
+            }
+            updateSiteUserPayRateType(postData).then(res => {
                 console.log(res)
     
             setadduser3('adduser2')
@@ -2461,9 +2161,9 @@ setl(1)
     const [boxprojectsx, setboxprojectsx] = useState('boxprojects2')
     const [clients, setclients] = useState()
     useEffect(() => {
-        axios.get(`${tz}/client/getall`).then(res => {
+        getActiveClients().then(res => {
             console.log(res)
-            setclients(res.data.Client)
+            setclients(res.Client)
         })
 
         return () => {
@@ -2522,21 +2222,22 @@ setl(1)
 
 
                 }
-                axios.post(`${tz}/jobsite/delete`, {
+                var postData={
                     ids: r
 
 
 
-                }).then(res => {
+                }
+                deleteJobsite(postData).then(res => {
                     console.log(res)
                     setdeleteids([])
-                    axios.get(`${tz}/jobsite/getall`).then(res2 => {
+                    getAllJobsites().then(res2 => {
                         console.log(res2)
-                        setdata(res2.data.Jobsite)
+                        setdata(res2.Jobsite)
                         setind('')
 
-                        setcurrentItems(res2.data.Jobsite.slice(itemOffset, endOffset))
-                        setpageCount(Math.ceil(res2.data.Jobsite.length / 5))
+                        setcurrentItems(res2.Jobsite.slice(itemOffset, endOffset))
+                        setpageCount(Math.ceil(res2.Jobsite.length / 5))
                     })
                 })
             } else {
@@ -2557,75 +2258,7 @@ setl(1)
     const [nameskill, setnameskill] = useState([])
     const [proval, setproval] = useState('')
     const [indue, setindue] = useState('')
-    function postclient() {
-        var tx = []
-
-        txp.forEach((val, index) => {
-            tx.push({
-                empname: val["NAME"],
-                hrs: val["REG HRS"],
-                date: val["WEEKEND"],
-                payrate: val["REG RTE"],
-                othrs: val["OT HRS"],
-                otpayrate: val["OT RTE"],
-                total: val["TOTAL"],
-                skill: val["SKILL"],
-
-
-
-
-
-
-
-
-
-            })
-            if (preparedata.length - 1 === index) {
-                axios.post(`${tz}/client/update`, {
-                    _id: currid,
-                    date: indate,
-                    no: inno,
-                    due: indue,
-                    total: Number(totalall).toFixed(2).toLocaleString('en'),
-                    paid: 0,
-                    balance: Number(totalall).toFixed(2).toLocaleString('en'),
-                    status: 'pending',
-
-
-
-
-                    data: tx
-
-
-
-
-                }).then(res => {
-                    console.log(res)
-                    alert('Updated')
-                    setsteps(0)
-                    setcheckinfo(false)
-                    {/*     axios.post(`${tz}/noti/add`, {
-                    message:`Company Sent an invoice of ${totalall}`,
-                    idp:project.clientid,
-                    time:dateput[1],
-                    status:'att',
-                }).then(resp => {
-                    console.log(resp)
-              
-                    
-    
-    
-                })
-            */}
-
-
-                })
-            }
-
-
-        });
-
-    }
+   
     function setinnox(val){
         const newValue = val.target.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
 
@@ -2641,35 +2274,7 @@ setl(1)
     const [mapx, setmapx] = useState('mapx')
     const [cfm, setcfm] = useState(true)
     const [showlistview, setshowlistview] = useState(false)
-    function updateaccount() {
-        console.log(preparedata)
-        axios.post(`${tz}/siteuser/updatebulk`, {
-            preparedata: preparedata
-
-
-
-        }).then(res => {
-            console.log(res)
-            alert('Updated')
-            setsteps(0)
-            setcheckinfo(false)
-            {/*     axios.post(`${tz}/noti/add`, {
-             message:`Company Sent an invoice of ${totalall}`,
-             idp:project.clientid,
-             time:dateput[1],
-             status:'att',
-         }).then(resp => {
-             console.log(resp)
-       
-             
-
-
-         })
-     */}
-
-
-        })
-    }
+  
     const [currjobid, setcurrjobid] = useState('')
     const [currcompany, setcurrcompany] = useState('')
     const [departments, setdepartments] = useState([])
@@ -2683,31 +2288,8 @@ setl(1)
      
 
     }
-    function setaduserl2() {
-        setaduserl('adduser2')
-        alert('Email sent!')
-    }
-    function turn(val, index) {
-        if (val === 'No') {
-            setuserdata(Object.values({ ...userdata, [index]: { ...userdata[index], perdiem: 'Yes' } }))
-        }
-
-        else {
-
-            setuserdata(Object.values({ ...userdata, [index]: { ...userdata[index], perdiem: 'No' } }))
-        }
-    }
-
-    function turn2(val, index) {
-        if (val === 'No') {
-            setuserdata(Object.values({ ...userdata, [index]: { ...userdata[index], onperdiem: 'Yes' } }))
-        }
-
-        else {
-
-            setuserdata(Object.values({ ...userdata, [index]: { ...userdata[index], onperdiem: 'No' } }))
-        }
-    }
+ 
+   
 
     function turn3(val, index) {
         if (val === 'No') {
@@ -2850,16 +2432,16 @@ setl(1)
              
             };
         });
-        
+        var postData={
+            users:extractedData,
+            weekend:inend
+         }
       
-        axios.post(`${tz}/siteuser/getdistance`, {
-           users:extractedData,
-           weekend:inend
-        }).then(rees=>{
+        getSiteUserDistance(postData).then(rees=>{
             console.log(rees)
             const updatedArray = preparedata.map((obj, index) => {
 
-                const foundUser = rees.data.find(user => user.userid === obj.userid);
+                const foundUser = rees.find(user => user.userid === obj.userid);
 const elday=foundUser.dailymiles.some(val=>val>=obj.perdiemmiles)
 const elon=foundUser.dailymiles.some(val=>val>=obj.onperdiemmiles)
                 if (index === preparedata.length - 1) {
@@ -3047,10 +2629,11 @@ const elon=foundUser.dailymiles.some(val=>val>=obj.onperdiemmiles)
           setindate(currentDate)
           let currentDate2 = `${month2}/${day2}/${year2}`;
           setindue(currentDate2)
-          axios.post(`${tz}/client/findbyid`, {
+          var postData={
             Client_id: currid
-        }).then(res => {
-            setinadd(res.data.Client[0].address)
+        }
+          findClientById(postData).then(res => {
+            setinadd(res.Client[0].address)
         })
 
        var userdone=[]

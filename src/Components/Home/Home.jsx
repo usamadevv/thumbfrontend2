@@ -102,6 +102,7 @@ import { useSocket } from '../Context/SocketContext'
 import { useNavigate } from 'react-router-dom'
 import Siteview from './Jobsite/Siteview'
 import Payrollfiles from './Jobsite/Payrollfiles'
+import { adminGetUser } from '../../Utils/api'
 const Sector = ({ radius, startAngle, endAngle, fillColor }) => {
   // Convert angles to radians
   const startRadians = (startAngle * Math.PI) / 180;
@@ -150,7 +151,7 @@ const [calling, setcalling] = useState(false)
     
         console.log(localStorage.getItem('username'))
 
-        if(data.email===localStorage.getItem('username')){
+        if(data.email===datax.email){
            setcalling(true)
            setRoom(room)
 
@@ -180,29 +181,46 @@ const [calling, setcalling] = useState(false)
 
 
 
-
+const [adminn, setadminn] = useState(null)
+const [usertoken, setusertoken] = useState('')
 useEffect(() => {
+var usertoken=localStorage.getItem('usertoken')
+setusertoken(usertoken)
 
 
+  if(localStorage.getItem('usertoken')&&localStorage.getItem('usertoken').length>0){
+    setusertoken(usertoken)
 
-  if(localStorage.getItem('userid')&&localStorage.getItem('userid').length>0){
-if(localStorage.getItem('emptype')==='admin'){
-
-    axios.post(`${tz}/admin/login2`,
-    {
-        email:localStorage.getItem('username')
-    }).then(res=>
-        {
-            console.log(res
-                )
-                setdatax(res.data.Admin)
-        })
+    var postData= {
+      email:usertoken
+  }
+try {
+  adminGetUser(postData).then(res=>
     
+    {
+      console.log(res)
+      if(res.Admin==='error'){
+        window.location.pathname='/login'
+      }else{
+        if(res.Admin){
+          setdatax(res.Admin)
+        }
+        else{
+          window.location.pathname='/login'
+        }
+        
+      }
+        console.log(res)
+       
+    })
+  
+} catch (error) {
+  console.log('401')
+  
 }
-else{
+   
+    
 
-    window.location.pathname='/user'
-}
   }
   else{
     window.location.pathname='/login'
@@ -222,7 +240,7 @@ function setis(val){
 function logout(){
   
 
-    localStorage.removeItem('userid')
+    localStorage.removeItem('usertoken')
     window.location.pathname='/login'
 }
     const [i, seti] = useState(0)
@@ -514,93 +532,93 @@ function logout(){
           </div>
             {
                 i === 0 &&
-                <Dashboard />
+                <Dashboard props={usertoken} />
 
             }{i === 1 &&
-                <Users />
+                <Users props={usertoken} />
 
             }
             {i === 46 &&
-                <Menu />
+                <Menu props={usertoken} />
 
             }
             {i === 2 &&
-                <ChPresence />
+                <ChPresence props={usertoken} />
 
             }
             {i === 4 &&
-                <Prod />
+                <Prod props={usertoken} />
 
             }
              {i === 87 &&
-                <Siteview />
+                <Siteview props={usertoken} />
 
             }
             {
                 i === 5 &&
-                <Emp />
+                <Emp props={usertoken} />
             }
             {i===6&&
-            <Snapshot />
+            <Snapshot props={usertoken} />
 
             }
               {i===7&&
-            <Apps />
+            <Apps props={usertoken} />
 
             }
             {i===8&&
-            <Projects />
+            <Projects props={usertoken} />
 
             }
             {i===9&&
-            <Track />
+            <Track props={usertoken} />
 
             }
               {i===10&&
-            <Reports />
+            <Reports props={usertoken} />
 
             }
             {i===11&&
-            <Leave2 />
+            <Leave2 props={usertoken} />
 
             }
             {i===12&&
-            <Notes2 />
+            <Notes2 props={usertoken} />
             
 
             }
              {i===13&&
-            <Jobsite />
+            <Jobsite props={usertoken} />
             
 
             }
             {i===16&&
-           <Chclient />
+           <Chclient props={usertoken} />
            
 
            }
            {i===14&&
-          <Admin />
+          <Admin props={usertoken} />
           
 
           } {i===62&&
-            <Files />
+            <Files props={usertoken} />
             
   
             }{i===61&&
-              <Files />
+              <Files props={usertoken} />
               
     
               }
               {i===41&&
-              <Payrollfiles />
+              <Payrollfiles props={usertoken} />
               
     
               }
               
               
               {i===32&&
-                <Formdat />
+                <Formdat props={usertoken} />
                 
       
                 }

@@ -37,6 +37,7 @@ import Mapview2 from './Mapview2'
 import { BsBuilding } from 'react-icons/bs'
 import { Calendar } from 'react-calendar'
 import Loader from './Loader'
+import { createSiteUser, createSkill, deleteSiteUser, getAactiveSiteusers, getActiveClients, getAllJobsites, getAllSkills, updateSiteUser, updateSiteUserOfficialPhoto, updateSiteUserUpdateTravel, updateSiteUserUpdateTravelMiles } from '../../../Utils/api'
 const Siteemp = ({props}) => {
     const [clientidd, setclientidd] = useState('')
     function setclientx(val){
@@ -113,21 +114,27 @@ const [fromcalendar, setfromcalendar] = useState(false)
 const [tocalendar, settocalendar] = useState(false)
     useEffect(() => {
       
-        axios.get(`${tz}/siteuser/active`).then(res => {
+        getAactiveSiteusers().then(res => {
             console.log(res)
-            setdata(res.data.Siteuserd)
+            setdata(res.Siteuserd)
 
-        setcurrentItems(res.data.Siteuserd.slice(itemOffset, endOffset))
-        setpageCount(Math.ceil(res.data.Siteuserd.length / 10))
+        setcurrentItems(res.Siteuserd.slice(itemOffset, endOffset))
+        setpageCount(Math.ceil(res.Siteuserd.length / 10))
         })
-        axios.get(`${tz}/super/getall`).then(res => {
+        axios.get(`${tz}/super/getall`, {
+            headers: {
+                'Content-Type': 'application/json',
+                // Add Authorization header with the token
+                'Authorization': `${props}`
+            }
+        }).then(res => {
             console.log(res)
             setsupervisors(res.data.Supervisor)
         })
-        axios.get(`${tz}/skills/getall`).then(res => {
+        getAllSkills().then(res => {
             console.log(res)
-            setskildata(res.data.Skillsdata)
-            setskill(res.data.Skillsdata&&res.data.Skillsdata[0].name)
+            setskildata(res.Skillsdata)
+            setskill(res.Skillsdata&&res.Skillsdata[0].name)
         })
 
         return () => {
@@ -179,7 +186,7 @@ const [tocalendar, settocalendar] = useState(false)
 
 
         if (actiontype === 'update') {
-            axios.post(`${tz}/siteuser/update`, {
+            var postData= {
                 name: name,
                 nc: nc,
                 taxas: taxas,
@@ -207,10 +214,11 @@ const [tocalendar, settocalendar] = useState(false)
 
 
 
-            }).then(res => {
-                axios.get(`${tz}/siteuser/active`).then(res => {
+            }
+           updateSiteUser(postData).then(res => {
+               getAactiveSiteusers().then(res => {
                     console.log(res)
-                    setdata(res.data.Siteuserd)
+                    setdata(res.Siteuserd)
                     setadduser('adduser2')
 
 
@@ -218,8 +226,8 @@ const [tocalendar, settocalendar] = useState(false)
                     setcheckinfo(false)
                     setids('')
 
-            setcurrentItems(res.data.Siteuserd.slice(itemOffset, endOffset))
-            setpageCount(Math.ceil(res.data.Siteuserd.length / 10))
+            setcurrentItems(res.Siteuserd.slice(itemOffset, endOffset))
+            setpageCount(Math.ceil(res.Siteuserd.length / 10))
                     setactiontype('edit')
 setlatlang('')
                     setname('')
@@ -246,7 +254,7 @@ setlatlang('')
             })
         }
         else {
-            axios.post(`${tz}/siteuser/add`, {
+            var postData=  {
                 name: name,
                 nc: nc,
                 taxes: taxas,
@@ -270,22 +278,23 @@ setlatlang('')
               password:password
 
 
-            }).then(res2 => {
-              if(res2.data.Siteuserd==='user exist'){
+            }
+            createSiteUser(postData).then(res2 => {
+              if(res2.Siteuserd==='user exist'){
 alert('User already exist')
               }
               else{
-                axios.get(`${tz}/siteuser/active`).then(res => {
+                getAactiveSiteusers().then(res => {
                     console.log(res)
-                    setdata(res.data.Siteuserd)
+                    setdata(res.Siteuserd)
                     setadduser('adduser2')
 
 
                     setsteps(0)
                     setcheckinfo(false)
                     setids('')
-            setcurrentItems(res.data.Siteuserd.slice(itemOffset, endOffset))
-            setpageCount(Math.ceil(res.data.Siteuserd.length / 10))
+            setcurrentItems(res.Siteuserd.slice(itemOffset, endOffset))
+            setpageCount(Math.ceil(res.Siteuserd.length / 10))
                 })
               }
             })
@@ -488,23 +497,24 @@ setsupermode('true')
             var r = ids.split('4sd')
             r[r.length - 1] = r[r.length - 2]
             setdata()
-            axios.post(`${tz}/siteuser/delete`, {
+            var postData={
                 ids: r
 
 
 
-            }).then(res => {
+            }
+            deleteSiteUser(postData).then(res => {
                 console.log(res)
                 setids('')
-                axios.get(`${tz}/siteuser/active`).then(res2 => {
+                getAactiveSiteusers().then(res2 => {
                     console.log(res2)
-                    setdata(res2.data.Siteuserd)
+                    setdata(res2.Siteuserd)
                     setadduser('adduser2')
                     setids('')
 
 
-            setcurrentItems(res2.data.Siteuserd.slice(itemOffset, endOffset))
-            setpageCount(Math.ceil(res2.data.Siteuserd.length / 10))
+            setcurrentItems(res2.Siteuserd.slice(itemOffset, endOffset))
+            setpageCount(Math.ceil(res2.Siteuserd.length / 10))
                 })
             })
         }
@@ -518,6 +528,12 @@ setsupermode('true')
 
 
 
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add Authorization header with the token
+                    'Authorization': `${props}`
+                }
             }).then(res => {
                 console.log(res)
                 setids('')
@@ -548,14 +564,14 @@ setsupermode('true')
     const [actiontype, setactiontype] = useState('edit')
     const [clients, setclients] = useState()
     useEffect(() => {
-        axios.get(`${tz}/client/getall`).then(res => {
+        getActiveClients().then(res => {
             console.log(res)
-            setclients(res.data.Client)
-            setclient(res.data.Client&&res.data.Client[0].username)
+            setclients(res.Client)
+            setclient(res.Client&&res.Client[0].username)
         })
-        axios.get(`${tz}/jobsite/getall`).then(res => {
+       getAllJobsites().then(res => {
             console.log(res)
-            setsites(res.data.Jobsite)
+            setsites(res.Jobsite)
         })
 
         return () => {
@@ -600,13 +616,13 @@ setsupermode('true')
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           console.log('File available at', downloadURL);
-    
-          axios.post(`${tz}/siteuser/originalphoto`,{
+    var postData={
              
              
-         _id:currone._id,
-         imgurl:downloadURL
-        }).then((resa2)=>{
+        _id:currone._id,
+        imgurl:downloadURL
+       }
+          updateSiteUserOfficialPhoto(postData).then((resa2)=>{
              // Find the index of the item with the given ID
     const itemIndex = currentItems.findIndex(item => item._id === currone._id);
 
@@ -656,7 +672,7 @@ setcurrone(updatedItems[itemIndex])
     );
     }
     function updateuser() {
-        if (showusers === 'users') {
+      
             setactiontype('update')
             setadduser('adduser fixedarea')
             var idx = ids.split('4sd')
@@ -748,27 +764,7 @@ setlatlang(val.langlat)
                 }
 
             });
-        }
-        else {
-            setactiontype('update')
-            setadduser('adduser fixedarea')
-            setusertype('supervisor')
-            var idx = ids.split('4sd')
-            supervisors.forEach(val => {
-                if (val._id ===currone2._id) {
-                    setsupername(val.name)
-                    setsname(val.sitename)
-                    setsid(val.siteid)
-                    setsadd(val.address)
-                    setsphone(val.phone)
-                    setsstatus(val.status)
-                    setcsr(val._id)
-
-
-                }
-
-            });
-        }
+        
 
 
     }
@@ -1027,14 +1023,15 @@ setlatlang(val.langlat)
 
     const [o, seto] = useState(0)
     function addskills() {
-        axios.post(`${tz}/skills/add`, {
+        var postData={
             name: skillname,
 
 
 
-        }).then(res => {
-            axios.get(`${tz}/skills/getall`).then(res => {
-                setskildata(res.data.Skillsdata)
+        }
+        createSkill(postData).then(res => {
+            getAllSkills().then(res => {
+                setskildata(res.Skillsdata)
                 
             })
         })
@@ -1069,16 +1066,13 @@ setlatlang(val.langlat)
         return totalDistance;
     }
     function setshowusersx(val) {
-        if (val === 'users') {
+
+        
             setshowusers(val)
             setusertype('user')
             setids('')
-        }
-        else {
-            setusertype('supervisor')
-            setshowusers(val)
-            setids('')
-        }
+        
+      
     }
 
     function onChangexd(e){
@@ -1252,14 +1246,15 @@ setlatlang(val.langlat)
     }
     const [skillname, setskillname] = useState('')
     function deleteskill(val) {
-        axios.post(`${tz}/skills/delete`, {
-            id: val,
+    var postData={
+        id: val,
 
 
 
-        }).then(res => {
-            axios.get(`${tz}/skills/getall`).then(res => {
-                setskildata(res.data.Skillsdata)
+    }
+        deleteskill(postData).then(res => {
+            getAllSkills().then(res => {
+                setskildata(res.Skillsdata)
             })
         })
     }
@@ -1272,12 +1267,13 @@ setlatlang(val.langlat)
     const [searchby, setsearchby] = useState('name')
 
     function updatetravel(val) {
-        axios.post(`${tz}/siteuser/updatetravel`,{
+        var postData={
             _id:currone._id,
             val
 
 
-        }).then(res => {
+        }
+        updateSiteUserUpdateTravel(postData).then(res => {
         console.log(res)
         })
 
@@ -1462,15 +1458,15 @@ const [newdistance, setnewdistance] = useState(0)
 function updatedistance()
 {
    
-
-
-axios.post(`${tz}/siteuser/updatetravelmiles`,{
+var postData={
     _id:currone._id,
     val:toupdate,
     distance:newdistance
 
 
-}).then(res => {
+}
+
+updateSiteUserUpdateTravelMiles(postData).then(res => {
 console.log(res)
 var temptravel=selectedtravel
 setselectedtravel(null)

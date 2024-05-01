@@ -45,6 +45,7 @@ import html2canvas from 'html2canvas'
 import { tz } from '../../apis'
 import { useRef } from 'react'
 import { async } from '@firebase/util'
+import { addJobiste, deleteJobsite, findClientById, getAactiveSiteusers, getAllClients, getAllJobsites, loginAdmin2, updateClientOnly, updateJobiste, updateSiteBulk, updateSiteUserCPR, updateSiteUserHours, updateSiteUserPayRateType } from '../../../Utils/api'
 const Payroll = (props) => {
 
 
@@ -524,9 +525,10 @@ const [boxprojects, setboxprojects] = useState('boxprojects2')
 const [currentWeekNumber2, setcurrentWeekNumber2] = useState(0)
 
     function save() {
-        axios.post(`${tz}/siteuser/updateuserhours`, {
+        var postData={
             preparedata:preparedata
-        }).then(rees=>{
+        }
+        updateSiteUserHours(postData).then(rees=>{
 console.log(rees)
         })
 
@@ -561,7 +563,7 @@ console.log(rees)
             if (index === preparedata.length - 1) {
 
                 if (l === 2) {
-                    axios.post(`${tz}/client/update`, {
+                    var postData={
 
                         date: indate,
                         weekno: inend,
@@ -585,7 +587,8 @@ console.log(rees)
 
 
 
-                    }).then(res => {
+                    }
+                    updateClientOnly(postData).then(res => {
                         console.log(res)
                         alert('Saved')
 
@@ -594,7 +597,7 @@ console.log(rees)
                     })
                 }
                 else {
-                    axios.post(`${tz}/client/update`, {
+                    var postData={
 
 
                         _id: currid,
@@ -617,7 +620,8 @@ console.log(rees)
 
 
 
-                    }).then(res => {
+                    }
+                    updateClientOnly(postData).then(res => {
                         console.log(res)
                         alert('Saved')
 
@@ -680,13 +684,14 @@ console.log(rees)
 
 
                         setinname(val.sitename)
-
-                        axios.post(`${tz}/client/findbyid`, {
+                        var postData={
                             Client_id: val.clientid
-                        }).then(res => {
-                            setinadd(res.data.Client[0].address)
+                        }
+
+                       findClientById(postData).then(res => {
+                            setinadd(res.Client[0].address)
                       
-         var t =Number(res.data.Client[0].weekend)+1
+         var t =Number(res.Client[0].weekend)+1
 
          const currentDate = new Date();
          const dayOfWeek = currentDate.getDay(); // 0 (Sunday) to 6 (Saturday)
@@ -950,12 +955,13 @@ console.log(rees)
 
                     }
                     if (ind.search(' ' + index.toString() + ' ') >= 0) {
-                        axios.post(`${tz}/client/findbyid`, {
+                        var postData={
                             Client_id: val.clientid
-                        }).then(res => {
-                            setinadd(res.data.Client[0].address)
+                        }
+                        findClientById(postData).then(res => {
+                            setinadd(res.Client[0].address)
                       
-         var t =Number(res.data.Client[0].weekend)+1
+         var t =Number(res.Client[0].weekend)+1
 
          const currentDate = new Date();
          const dayOfWeek = currentDate.getDay(); // 0 (Sunday) to 6 (Saturday)
@@ -1971,34 +1977,29 @@ console.log(rees)
 
 const [datax, setdatax] = useState(null)
     useEffect(() => {
+    var postData={
+        email:props
+    }
 
 
-        if(localStorage.getItem('userid')&&localStorage.getItem('userid').length>0){
-            if(localStorage.getItem('emptype')==='admin'){
-            
-                axios.post(`${tz}/admin/login2`,
-                {
-                    email:localStorage.getItem('username')
-                }).then(res=>
+               loginAdmin2(postData).then(res=>
                     {
                         console.log(res
                             )
-                            setdatax(res.data.Admin)
+                            setdatax(res.Admin)
                     })
-                
-            }
-        }
-        axios.get(`${tz}/siteuser/active`).then(res => {
+       
+       getAactiveSiteusers().then(res => {
             console.log(res)
-            setempdata(res.data.Siteuserd)
+            setempdata(res.Siteuserd)
         })
 
-        axios.get(`${tz}/jobsite/getall`).then(res => {
+        getAllJobsites().then(res => {
             console.log(res)
-            setdata(res.data.Jobsite)
+            setdata(res.Jobsite)
 
-            setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
-            setpageCount(Math.ceil(res.data.Jobsite.length / 5))
+            setcurrentItems(res.Jobsite.slice(itemOffset, endOffset))
+            setpageCount(Math.ceil(res.Jobsite.length / 5))
 
 
 
@@ -2019,7 +2020,7 @@ const [datax, setdatax] = useState(null)
             map2.current.addControl(geocoder2);
 
             map2.current.on('style.load', function () {
-                res.data.Jobsite.forEach(element => {
+                res.Jobsite.forEach(element => {
                     if (element.latlang) {
                         marker2.current = new mapboxgl.Marker()
                             .setLngLat(JSON.parse(element.latlang))
@@ -2064,7 +2065,7 @@ const [datax, setdatax] = useState(null)
 
     function req() {
         if (actiontype === 'update') {
-            axios.post(`${tz}/jobsite/updatesite`, {
+            var postData={
                 clientid: clientid,
                 clientname: cname,
                 status: 'Active',
@@ -2080,47 +2081,48 @@ const [datax, setdatax] = useState(null)
 
 
 
-            }).then(res => {
-                axios.get(`${tz}/jobsite/getall`).then(res => {
+            }
+            updateJobiste(postData).then(res => {
+                getAllJobsites().then(res => {
                     setsteps(0)
                     setcheckinfo(false)
                     console.log(res)
-                    setdata(res.data.Jobsite)
+                    setdata(res.Jobsite)
                     setadduser('adduser2')
 
-                    setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
-                    setpageCount(Math.ceil(res.data.Jobsite.length / 5))
+                    setcurrentItems(res.Jobsite.slice(itemOffset, endOffset))
+                    setpageCount(Math.ceil(res.Jobsite.length / 5))
                     setactiontype('edit')
                 })
 
             })
         }
         else {
+var postData= {
 
-            axios.post(`${tz}/jobsite/add`, {
-
-                clientid: clientid,
-                clientname: cname,
-                status: 'Active',
-                sitename: sname,
-                task: tasks,
-                markup: markupcuee,
-                user: userdata,
-                no: pno,
-                address: address,
-                perdiemamnt: perdiemamnt,
-                onperdiemamnt: onperdiemamnt,
-                latlang: latlang
-            }).then(res => {
-                axios.get(`${tz}/jobsite/getall`).then(res => {
+    clientid: clientid,
+    clientname: cname,
+    status: 'Active',
+    sitename: sname,
+    task: tasks,
+    markup: markupcuee,
+    user: userdata,
+    no: pno,
+    address: address,
+    perdiemamnt: perdiemamnt,
+    onperdiemamnt: onperdiemamnt,
+    latlang: latlang
+}
+            addJobiste(postData).then(res => {
+                getAllJobsites().then(res => {
                     setsteps(0)
                     setcheckinfo(false)
                     console.log(res)
-                    setdata(res.data.Jobsite)
+                    setdata(res.Jobsite)
                     setadduser('adduser2')
 
-                    setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
-                    setpageCount(Math.ceil(res.data.Jobsite.length / 5))
+                    setcurrentItems(res.Jobsite.slice(itemOffset, endOffset))
+                    setpageCount(Math.ceil(res.Jobsite.length / 5))
                 })
             })
         }
@@ -2259,27 +2261,29 @@ setl(1)
 
       if(l!==2){
         if(tempjson.siteid==='193039'){
-            axios.post(`${tz}/siteuser/updatecpr`, {
-                id:tempjson.userid,
-           
-                cprapply:tempjson.cprapply==='yes'?'custom':'normal'
-    
-    
-    
-            }).then(res => {
+        var postData={
+            id:tempjson.userid,
+       
+            cprapply:tempjson.cprapply==='yes'?'custom':'normal'
+
+
+
+        }
+           updateSiteUserCPR(postData).then(res => {
                 console.log(res)
     
             setadduser3('adduser2')
             })
         }else{
-            axios.post(`${tz}/jobsite/updatepayratetype`, {
+            var postData={
                 id:tempjson.siteid,
                 userid:tempjson.userid,
                 payratetype:tempjson.cprapply==='yes'?'custom':'normal'
     
     
     
-            }).then(res => {
+            }
+           updateSiteUserPayRateType(postData).then(res => {
                 console.log(res)
     
             setadduser3('adduser2')
@@ -2330,9 +2334,9 @@ setl(1)
     const [boxprojectsx, setboxprojectsx] = useState('boxprojects2')
     const [clients, setclients] = useState()
     useEffect(() => {
-        axios.get(`${tz}/client/getall`).then(res => {
+        getAllClients().then(res => {
             console.log(res)
-            setclients(res.data.Client)
+            setclients(res.Client)
         })
 
         return () => {
@@ -2391,21 +2395,22 @@ setl(1)
 
 
                 }
-                axios.post(`${tz}/jobsite/delete`, {
+                var postData={
                     ids: r
 
 
 
-                }).then(res => {
+                }
+               deleteJobsite(postData).then(res => {
                     console.log(res)
                     setdeleteids([])
-                    axios.get(`${tz}/jobsite/getall`).then(res2 => {
+                    getAllJobsites().then(res2 => {
                         console.log(res2)
-                        setdata(res2.data.Jobsite)
+                        setdata(res2.Jobsite)
                         setind('')
 
-                        setcurrentItems(res2.data.Jobsite.slice(itemOffset, endOffset))
-                        setpageCount(Math.ceil(res2.data.Jobsite.length / 5))
+                        setcurrentItems(res2.Jobsite.slice(itemOffset, endOffset))
+                        setpageCount(Math.ceil(res2.Jobsite.length / 5))
                     })
                 })
             } else {
@@ -2450,7 +2455,7 @@ setl(1)
 
             })
             if (preparedata.length - 1 === index) {
-                axios.post(`${tz}/client/update`, {
+                var postData={
                     _id: currid,
                     date: indate,
                     no: inno,
@@ -2468,7 +2473,8 @@ setl(1)
 
 
 
-                }).then(res => {
+                }
+               updateClientOnly(postData).then(res => {
                     console.log(res)
                     alert('Updated')
                     setsteps(0)
@@ -2478,7 +2484,13 @@ setl(1)
                     idp:project.clientid,
                     time:dateput[1],
                     status:'att',
-                }).then(resp => {
+                }, {
+            headers: {
+                'Content-Type': 'application/json',
+                // Add Authorization header with the token
+                'Authorization': `${props}`
+            }
+        }).then(resp => {
                     console.log(resp)
               
                     
@@ -2512,12 +2524,13 @@ setl(1)
     const [showlistview, setshowlistview] = useState(false)
     function updateaccount() {
         console.log(preparedata)
-        axios.post(`${tz}/siteuser/updatebulk`, {
+        var postData={
             preparedata: preparedata
 
 
 
-        }).then(res => {
+        }
+       updateSiteBulk(postData).then(res => {
             console.log(res)
             alert('Updated')
             setsteps(0)
@@ -2527,7 +2540,13 @@ setl(1)
              idp:project.clientid,
              time:dateput[1],
              status:'att',
-         }).then(resp => {
+         }, {
+            headers: {
+                'Content-Type': 'application/json',
+                // Add Authorization header with the token
+                'Authorization': `${props}`
+            }
+        }).then(resp => {
              console.log(resp)
        
              

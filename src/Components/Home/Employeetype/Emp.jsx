@@ -4,7 +4,7 @@ import Userdata from '../Userdata/Userdata'
 import Siteemp2 from './Siteemp2'
 import {FaTools,FaUserPlus } from 'react-icons/fa'
 import {HiOutlineStatusOnline} from 'react-icons/hi'
-const Emp = () => {
+const Emp = ({props}) => {
 const [i, seti] = useState(0)
 
   return (
@@ -40,14 +40,14 @@ const [i, seti] = useState(0)
         
             </div> }
     {i===1&&
-        <Userdata />
+        <Userdata props={props} />
 
         }
         {i===2&&
-        <Siteemp />
+        <Siteemp props={props} />
 
         }  {i===4&&
-          <Siteemp2 />
+          <Siteemp2 props={props} />
   
           }
  

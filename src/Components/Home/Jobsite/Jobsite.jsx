@@ -42,7 +42,8 @@ import { tz } from '../../apis'
 import { useRef } from 'react'
 import { async } from '@firebase/util'
 import Tasks from './Tasks'
-const Jobsite = () => {
+import { addJobiste, addUserToJobsite, deleteJobsite, findClientById, getAactiveSiteusers, getActiveClients, getAllJobsites, updateClientOnly, updateJobiste } from '../../../Utils/api'
+const Jobsite = ({props}) => {
 
     const mapContainer = useRef(null);
     mapboxgl.accessToken = 'pk.eyJ1IjoidXNhbWE3ODZhIiwiYSI6ImNsZXZwbDV5ZTF0M3Ezc3Axdmhmb2Z3bmwifQ.b3u24ezWs8--UJphBNY1rA'
@@ -540,7 +541,7 @@ setradius(val)
             if (index === preparedata.length - 1) {
 
                 if (l === 2) {
-                    axios.post(`${tz}/client/update`, {
+                    var postData= {
 
                         date: indate,
                         weekno: currentWeekNumber,
@@ -562,7 +563,8 @@ setradius(val)
 
 
 
-                    }).then(res => {
+                    }
+                    updateClientOnly(postData).then(res => {
                         console.log(res)
                         alert('Saved')
 
@@ -571,7 +573,7 @@ setradius(val)
                     })
                 }
                 else {
-                    axios.post(`${tz}/client/update`, {
+                    var postData={
 
 
                         _id: currid,
@@ -592,7 +594,8 @@ setradius(val)
 
 
 
-                    }).then(res => {
+                    }
+                    updateClientOnly(postData).then(res => {
                         console.log(res)
                         alert('Saved')
 
@@ -650,11 +653,12 @@ setradius(val)
 
 
                         setinname(val.sitename)
-
-                        axios.post(`${tz}/client/findbyid`, {
+                        var postData={
                             Client_id: val.clientid
-                        }).then(res => {
-                            setinadd(res.data.Client[0].address)
+                        }
+
+                       findClientById(postData).then(res => {
+                            setinadd(res.Client[0].address)
                         })
 
                         setinnum(val.no)
@@ -812,10 +816,11 @@ setradius(val)
 
                     }
                     if (ind.search(' ' + index.toString() + ' ') >= 0) {
-                        axios.post(`${tz}/client/findbyid`, {
+                        var postData={
                             Client_id: val.clientid
-                        }).then(res => {
-                            setinadd(res.data.Client[0].address)
+                        }
+                      findClientById(postData).then(res => {
+                            setinadd(res.Client[0].address)
                         })
 
 
@@ -1744,39 +1749,7 @@ setradius(val)
 
     }
 
-    useEffect(() => {
-      axios.post(`${tz}/siteuser/travel`,{
-        coords:  [
-            [-122.483696, 37.833818],
-            [-122.483482, 37.833174],
-            [-122.483396, 37.8327],
-            [-122.483568, 37.832056],
-            [-122.48404, 37.831141],
-            [-122.48404, 37.830497],
-            [-122.483482, 37.82992],
-            [-122.483568, 37.829548],
-            [-122.48507, 37.829446],
-            [-122.4861, 37.828802],
-            [-122.486958, 37.82931],
-            [-122.487001, 37.830802],
-            [-122.487516, 37.831683],
-            [-122.488031, 37.832158],
-            [-122.488889, 37.832971],
-            [-122.489876, 37.832632],
-            [-122.490434, 37.832937],
-            [-122.49125, 37.832429],
-            [-122.491636, 37.832564],
-            [-122.492237, 37.833378],
-            [-122.493782, 37.833683]
-            ]
-      }).then(res=>{
-        console.log(res)
-      })
     
-      return () => {
-        
-      }
-    }, [])
     
     function selectthis(val) {
         setcurrone(val)
@@ -1797,17 +1770,17 @@ setradius(val)
 
 
     useEffect(() => {
-        axios.get(`${tz}/siteuser/active`).then(res => {
+        getAactiveSiteusers().then(res => {
             console.log(res)
-            setempdata(res.data.Siteuserd)
+            setempdata(res.Siteuserd)
         })
 
-        axios.get(`${tz}/jobsite/getall`).then(res => {
+        getAllJobsites().then(res => {
             console.log(res)
-            setdata(res.data.Jobsite)
+            setdata(res.Jobsite)
 
-            setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
-            setpageCount(Math.ceil(res.data.Jobsite.length / 5))
+            setcurrentItems(res.Jobsite.slice(itemOffset, endOffset))
+            setpageCount(Math.ceil(res.Jobsite.length / 5))
 
 
 
@@ -1877,7 +1850,7 @@ setradius(val)
 
 
 
-                res.data.Jobsite.forEach(element => {
+                res.Jobsite.forEach(element => {
                     if (element.latlang) {
                         marker2.current = new mapboxgl.Marker()
                             .setLngLat(JSON.parse(element.latlang))
@@ -1930,7 +1903,7 @@ setradius(val)
 
     function req() {
         if (actiontype === 'update') {
-            axios.post(`${tz}/jobsite/updatesite`, {
+            var postData={
                 clientid: clientid,
                 clientname: cname,
                 status: 'Active',
@@ -1953,16 +1926,17 @@ setradius(val)
 
 
 
-            }).then(res => {
-                axios.get(`${tz}/jobsite/getall`).then(res => {
+            }
+            updateJobiste(postData).then(res => {
+                getAllJobsites().then(res => {
                     setsteps(0)
                     setcheckinfo(false)
                     console.log(res)
-                    setdata(res.data.Jobsite)
+                    setdata(res.Jobsite)
                     setadduser('adduser2')
 
-                    setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
-                    setpageCount(Math.ceil(res.data.Jobsite.length / 5))
+                    setcurrentItems(res.Jobsite.slice(itemOffset, endOffset))
+                    setpageCount(Math.ceil(res.Jobsite.length / 5))
                     setactiontype('edit')
                     setuserdata2([])
                     setuserdata([])
@@ -1971,37 +1945,37 @@ setradius(val)
             })
         }
         else {
+var postData={
 
-            axios.post(`${tz}/jobsite/add`, {
-
-                clientid: clientid,
-                clientname: cname,
-                status: 'Active',
-                sitename: sname,
-                task: tasks,
-                markup: markupcuee,
-                weekend:weekend,
-                user: userdata2,
-                no: pno,
-                radius:radius,
-                address: address,
-                perdiemamnt: perdiemamnt,
-                onperdiemamnt: onperdiemamnt,
-                latlang: latlang,
-                perdiemmiles:perdiemmil,
-                onperdiemmiles:onperdiemmil,
-                
-                
-            }).then(res => {
-                axios.get(`${tz}/jobsite/getall`).then(res => {
+    clientid: clientid,
+    clientname: cname,
+    status: 'Active',
+    sitename: sname,
+    task: tasks,
+    markup: markupcuee,
+    weekend:weekend,
+    user: userdata2,
+    no: pno,
+    radius:radius,
+    address: address,
+    perdiemamnt: perdiemamnt,
+    onperdiemamnt: onperdiemamnt,
+    latlang: latlang,
+    perdiemmiles:perdiemmil,
+    onperdiemmiles:onperdiemmil,
+    
+    
+}
+            addJobiste(postData).then(res => {
+               getAllJobsites().then(res => {
                     setsteps(0)
                     setcheckinfo(false)
                     console.log(res)
-                    setdata(res.data.Jobsite)
+                    setdata(res.Jobsite)
                     setadduser('adduser2')
 
-                    setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
-                    setpageCount(Math.ceil(res.data.Jobsite.length / 5))
+                    setcurrentItems(res.Jobsite.slice(itemOffset, endOffset))
+                    setpageCount(Math.ceil(res.Jobsite.length / 5))
                     setuserdata2([])
                     setuserdata([])
                 })
@@ -2148,9 +2122,9 @@ console.log(allhours)
     }
     const [clients, setclients] = useState()
     useEffect(() => {
-        axios.get(`${tz}/client/getall`).then(res => {
+        getActiveClients().then(res => {
             console.log(res)
-            setclients(res.data.Client)
+            setclients(res.Client)
         })
 
         return () => {
@@ -2224,20 +2198,20 @@ console.log(allhours)
         console.log(r)
         data.forEach((element, index) => {
             if (index === data.length - 1) {
-
+var postData={
+    ids: r   
+             }
             
-                axios.post(`${tz}/jobsite/delete`, {
-                    ids: r   
-                             }).then(res => {
+                deleteJobsite(postData).then(res => {
                     console.log(res)
                     setdeleteids([])
-                    axios.get(`${tz}/jobsite/getall`).then(res2 => {
+                   getAllJobsites().then(res2 => {
                         console.log(res2)
-                        setdata(res2.data.Jobsite)
+                        setdata(res2.Jobsite)
                         setind('')
 
-                        setcurrentItems(res2.data.Jobsite.slice(itemOffset, endOffset))
-                        setpageCount(Math.ceil(res2.data.Jobsite.length / 5))
+                        setcurrentItems(res2.Jobsite.slice(itemOffset, endOffset))
+                        setpageCount(Math.ceil(res2.Jobsite.length / 5))
                     })
                 })
             } else {
@@ -2281,7 +2255,7 @@ console.log(allhours)
 
             })
             if (preparedata.length - 1 === index) {
-                axios.post(`${tz}/client/update`, {
+                var postData={
                     _id: currid,
                     date: indate,
                     no: inno,
@@ -2299,7 +2273,8 @@ console.log(allhours)
 
 
 
-                }).then(res => {
+                }
+              updateClientOnly(postData).then(res => {
                     console.log(res)
                     alert('Updated')
                     setsteps(0)
@@ -2333,35 +2308,7 @@ console.log(allhours)
     const [inadd, setinadd] = useState('')
     const [mapx, setmapx] = useState('mapx')
     const [cfm, setcfm] = useState(true)
-    function updateaccount() {
-        console.log(preparedata)
-        axios.post(`${tz}/siteuser/updatebulk`, {
-            preparedata: preparedata
-
-
-
-        }).then(res => {
-            console.log(res)
-            alert('Updated')
-            setsteps(0)
-            setcheckinfo(false)
-            {/*     axios.post(`${tz}/noti/add`, {
-             message:`Company Sent an invoice of ${totalall}`,
-             idp:project.clientid,
-             time:dateput[1],
-             status:'att',
-         }).then(resp => {
-             console.log(resp)
-       
-             
-
-
-         })
-     */}
-
-
-        })
-    }
+   
     function setaduserl2() {
         setaduserl('adduser2')
         alert('Email sent!')
@@ -2629,26 +2576,26 @@ const [usersearch, setusersearch] = useState('')
           food: 'No',
         }];
         
-
-        axios.post(`${tz}/jobsite/adduser`, {
+var postData={
          
-            user: usdata,
-           
-            _id: currone._id
+    user: usdata,
+   
+    _id: currone._id
 
 
 
 
-        }).then(res => {
-          console.log(res)
+}
+        addUserToJobsite(postData).then(resa => {
+          console.log(resa)
           setadduserd2('adduser2')
-          axios.get(`${tz}/jobsite/getall`).then(res => {
+         getAllJobsites().then(res => {
            
-            setdata(res.data.Jobsite)
+            setdata(res.Jobsite)
             setadduser('adduser2')
 setcurrone(null)
-            setcurrentItems(res.data.Jobsite.slice(itemOffset, endOffset))
-            setpageCount(Math.ceil(res.data.Jobsite.length / 5))
+            setcurrentItems(res.Jobsite.slice(itemOffset, endOffset))
+            setpageCount(Math.ceil(res.Jobsite.length / 5))
             setactiontype('edit')
         })
         })

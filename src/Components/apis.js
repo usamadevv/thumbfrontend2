@@ -1,1 +1,1 @@
-export var tz='https://thumbffice.com/api'
+export var tz='http://localhost:4001/api'

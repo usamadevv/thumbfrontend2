@@ -8,7 +8,8 @@ import { BiTime } from 'react-icons/bi'
 import { MdSnooze } from 'react-icons/md'
 import { tz } from '../../apis';
 import { useEffect } from 'react';
-const Leave2 = () => {
+import { createLeave, getAllLeaves, loginAdmin2, updateLeaveStatus } from '../../../Utils/api';
+const Leave2 = ({props}) => {
     
 const [adduser, setadduser] = useState('adduser2')
 const [value, onChange] = useState(new Date());
@@ -27,20 +28,20 @@ const [date, setdate] = useState('')
 const [username, setusername] = useState('Lynda koo')
 const [leave, setleave] = useState('')
 function submit() {
-    
-    axios.post(`${tz}/leave/add`,{
+    var postData={
         username:username,
         status:'Pending',
         date:date,
         leave:leave,
-    }).then( res=>{
+    }
+    createLeave(postData).then( res=>{
         console.log(res)
         
     }).then(()=>{
         setadduser('adduser2')
-         axios.get(`${tz}/leave/getall`).then(res=>{
+       getAllLeaves().then(res=>{
             console.log(res)
-            setuserd(res.data.Leave)
+            setuserd(res.Leave)
     })
     })
     
@@ -49,18 +50,18 @@ const [userd, setuserd] = useState()
 const [usert, setusert] = useState()
 
 useEffect(() => {
-    axios.get(`${tz}/leave/getall`).then(res=>{
+    getAllLeaves().then(res=>{
         console.log(res)
-        setuserd(res.data.Leave)
+        setuserd(res.Leave)
     }).catch(err=>console.log(err))
-    axios.post(`${tz}/admin/login2`,
-    {
-        email:localStorage.getItem('username')
-    }).then(res=>
+    var postData={
+        email:props
+    }
+    loginAdmin2(postData).then(res=>
         {
             console.log(res
                 )
-                setusert(res.data.Admin)
+                setusert(res.Admin)
         })
     
 
@@ -101,20 +102,21 @@ var data=[
 ]
 
 function approve(val,val1) {
-    axios.post(`${tz}/leave/updatestatus`,{
+    var postData={
         status:val1,
         id:val,
         user:usert.name
 
 
-    }).then( res=>{
+    }
+    updateLeaveStatus(postData).then( res=>{
         console.log(res)
         
     }).then(()=>{
         setadduser('adduser2')
-         axios.get(`${tz}/leave/getall`).then(res=>{
+         getAllLeaves().then(res=>{
             console.log(res)
-            setuserd(res.data.Leave)
+            setuserd(res.Leave)
     })
     })
 
